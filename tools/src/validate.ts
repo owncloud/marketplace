@@ -35,3 +35,43 @@ export async function validateRelease(ref: ReleaseRef): Promise<AppInfo> {
   }
   return info;
 }
+
+export interface ChangedPath {
+  path: string;
+  /** Git status letter: A(dded), M(odified), D(eleted), R(enamed). */
+  status: "A" | "M" | "D" | "R";
+}
+
+const RELEASE_FILE_RE = /^apps\/([^/]+)\/releases\/([^/]+)\/.+/;
+
+function releaseDirOf(path: string): string | null {
+  const m = RELEASE_FILE_RE.exec(path);
+  return m ? `apps/${m[1]}/releases/${m[2]}` : null;
+}
+
+/**
+ * Enforce release immutability and no-collision over a set of changed paths.
+ * `existsOnMaster(releaseDir)` returns true if that release is already published.
+ */
+export function validateChangeset(
+  changed: ChangedPath[],
+  existsOnMaster: (releaseDir: string) => boolean,
+): void {
+  for (const change of changed) {
+    const releaseDir = releaseDirOf(change.path);
+    if (releaseDir === null) continue; // not an app release file; ignore
+
+    if (change.status === "M" || change.status === "D" || change.status === "R") {
+      throw new ValidationError(
+        `published releases are immutable: "${change.path}" may not be modified or deleted ` +
+          `(${releaseDir} is already published — submit a new version instead)`,
+      );
+    }
+    // status === "A": adding. Reject if the release already exists on master.
+    if (existsOnMaster(releaseDir)) {
+      throw new ValidationError(
+        `release collision: ${releaseDir} already exists on master and cannot be re-published`,
+      );
+    }
+  }
+}

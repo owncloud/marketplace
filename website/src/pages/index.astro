@@ -1,5 +1,5 @@
 ---
-import { loadApps } from "../lib/catalog.ts";
+import { loadApps, withBase } from "../lib/catalog.ts";
 const apps = await loadApps();
 const base = import.meta.env.BASE_URL;
 ---
@@ -10,7 +10,7 @@ const base = import.meta.env.BASE_URL;
     <ul>
       {apps.map((app) => (
         <li>
-          <a href={`${base}apps/${app.id}`}>{app.name}</a>
+          <a href={withBase(base, `apps/${app.id}`)}>{app.name}</a>
           {" — "}{app.description}
         </li>
       ))}

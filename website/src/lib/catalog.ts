@@ -19,6 +19,11 @@ export interface CatalogApp {
   releases: CatalogRelease[];
 }
 
+/** Join the site base path with a relative path, collapsing duplicate slashes. */
+export function withBase(base: string, path: string): string {
+  return `${base.replace(/\/$/, "")}/${path.replace(/^\//, "")}`;
+}
+
 /** Read the generated apps.json from the shared _site output. */
 export async function loadApps(): Promise<CatalogApp[]> {
   const path = fileURLToPath(new URL("../../../_site/api/v1/apps.json", import.meta.url));

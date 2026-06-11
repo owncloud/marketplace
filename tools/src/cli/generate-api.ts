@@ -28,7 +28,6 @@ async function main(): Promise<void> {
   }
 
   const created = await makeGitCreatedProvider(
-    appsDir,
     refs.map((r) => ({ appId: r.appId, version: r.version, dir: r.dir })),
     "1970-01-01T00:00:00+00:00",
   );

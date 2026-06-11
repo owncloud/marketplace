@@ -18,21 +18,13 @@ export function makeStaticCreatedProvider(
  * release is not yet committed (e.g. local uncommitted work).
  */
 export async function makeGitCreatedProvider(
-  appsRoot: string,
   releaseDirs: { appId: string; version: string; dir: string }[],
   fallbackIso: string,
 ): Promise<CreatedProvider> {
   const map: Record<string, string> = {};
   for (const { appId, version, dir } of releaseDirs) {
     try {
-      const { stdout } = await exec("git", [
-        "log",
-        "--diff-filter=A",
-        "--follow",
-        "--format=%aI",
-        "--",
-        dir,
-      ]);
+      const { stdout } = await exec("git", ["log", "--diff-filter=A", "--format=%aI", "--", dir]);
       const dates = stdout.trim().split("\n").filter(Boolean);
       map[`${appId}@${version}`] = dates.length ? dates[dates.length - 1] : fallbackIso;
     } catch {

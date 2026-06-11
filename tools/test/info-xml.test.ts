@@ -60,3 +60,80 @@ describe("parseInfoXml", () => {
     expect(() => parseInfoXml("<info><id>x")).toThrow(ValidationError);
   });
 });
+
+describe("parseInfoXml localized text fields", () => {
+  it("extracts text from a single localized <name>/<description>", () => {
+    const xml = `<?xml version="1.0"?>
+<info>
+  <id>calendar</id>
+  <name lang="en">Calendar</name>
+  <summary>A calendar</summary>
+  <description lang="en">An app.</description>
+  <licence>AGPL</licence>
+  <author>ownCloud GmbH</author>
+  <version>2.1.0</version>
+  <dependencies>
+    <owncloud min-version="10.0.0" max-version="10.99.99" />
+  </dependencies>
+</info>`;
+    const info = parseInfoXml(xml);
+    expect(info.name).toBe("Calendar");
+    expect(info.description).toBe("An app.");
+  });
+
+  it("picks the en entry from multiple localized <name> elements", () => {
+    const xml = `<?xml version="1.0"?>
+<info>
+  <id>calendar</id>
+  <name lang="en">Calendar</name>
+  <name lang="de">Kalender</name>
+  <summary>A calendar</summary>
+  <description>An app.</description>
+  <licence>AGPL</licence>
+  <author>ownCloud GmbH</author>
+  <version>2.1.0</version>
+  <dependencies>
+    <owncloud min-version="10.0.0" max-version="10.99.99" />
+  </dependencies>
+</info>`;
+    const info = parseInfoXml(xml);
+    expect(info.name).toBe("Calendar");
+  });
+
+  it("picks the untagged entry when no en localization is present", () => {
+    const xml = `<?xml version="1.0"?>
+<info>
+  <id>calendar</id>
+  <name>Foo</name>
+  <name lang="de">Bar</name>
+  <summary>A calendar</summary>
+  <description>An app.</description>
+  <licence>AGPL</licence>
+  <author>ownCloud GmbH</author>
+  <version>2.1.0</version>
+  <dependencies>
+    <owncloud min-version="10.0.0" max-version="10.99.99" />
+  </dependencies>
+</info>`;
+    const info = parseInfoXml(xml);
+    expect(info.name).toBe("Foo");
+  });
+
+  it("still coerces a numeric <version> to a string", () => {
+    const xml = `<?xml version="1.0"?>
+<info>
+  <id>calendar</id>
+  <name>Calendar</name>
+  <summary>A calendar</summary>
+  <description>An app.</description>
+  <licence>AGPL</licence>
+  <author>ownCloud GmbH</author>
+  <version>2</version>
+  <dependencies>
+    <owncloud min-version="10.0.0" max-version="10.99.99" />
+  </dependencies>
+</info>`;
+    const info = parseInfoXml(xml);
+    expect(info.version).toBe("2");
+  });
+});

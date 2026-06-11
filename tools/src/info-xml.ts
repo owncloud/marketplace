@@ -20,6 +20,33 @@ function requireString(value: unknown, field: string): string {
   return value.trim();
 }
 
+/**
+ * Extract a plain string from a text-bearing field that may be localized.
+ * Handles: plain string/number, a localized object `{ "#text", "@_lang" }`,
+ * and an array of those (preferring `@_lang === "en"`, then an untagged entry,
+ * else the first). Returns undefined when absent/empty.
+ */
+function localizedText(value: unknown): string | undefined {
+  if (value === undefined || value === null) return undefined;
+  if (typeof value === "number") return String(value);
+  if (typeof value === "string") {
+    const trimmed = value.trim();
+    return trimmed === "" ? undefined : trimmed;
+  }
+  if (Array.isArray(value)) {
+    if (value.length === 0) return undefined;
+    const en = value.find((v) => v && typeof v === "object" && v["@_lang"] === "en");
+    const untagged = value.find(
+      (v) => !(v && typeof v === "object") || v["@_lang"] === undefined,
+    );
+    return localizedText(en ?? untagged ?? value[0]);
+  }
+  if (typeof value === "object") {
+    return localizedText((value as Record<string, unknown>)["#text"]);
+  }
+  return undefined;
+}
+
 /** Parse and structurally validate an appinfo/info.xml string. */
 export function parseInfoXml(xml: string): AppInfo {
   const wellFormed = XMLValidator.validate(xml);
@@ -51,9 +78,9 @@ export function parseInfoXml(xml: string): AppInfo {
 
   return {
     id: requireString(info.id, "id"),
-    name: requireString(info.name, "name"),
-    summary: typeof info.summary === "string" ? info.summary.trim() : "",
-    description: requireString(info.description, "description"),
+    name: requireString(localizedText(info.name), "name"),
+    summary: localizedText(info.summary) ?? "",
+    description: requireString(localizedText(info.description), "description"),
     license: requireString(info.licence ?? info.license, "licence"),
     author: requireString(info.author, "author"),
     version: requireString(info.version, "version"),

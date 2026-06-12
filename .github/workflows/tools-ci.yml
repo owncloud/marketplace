@@ -1,0 +1,37 @@
+name: Tools CI
+on:
+  pull_request:
+    paths: ["tools/**", "website/**"]
+  push:
+    branches: [master]
+    paths: ["tools/**", "website/**"]
+
+env:
+  ASTRO_TELEMETRY_DISABLED: "1"
+
+jobs:
+  tools:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          lfs: true
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+      - name: Install
+        run: |
+          (cd tools && npm ci)
+          (cd website && npm ci)
+      - name: Lint
+        run: cd tools && npm run lint
+      - name: Format check
+        run: cd tools && npm run format:check
+      - name: Typecheck
+        run: cd tools && npm run typecheck
+      - name: Test
+        run: cd tools && npm test
+      - name: Website build smoke test
+        run: |
+          cd tools && npx tsx src/cli/generate-api.ts --apps ../apps --out ../_site
+          cd ../website && npm run build

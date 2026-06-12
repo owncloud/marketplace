@@ -1,0 +1,27 @@
+name: Validate submissions
+on:
+  pull_request:
+    paths: ["apps/**"]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          lfs: true
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+      - name: Install tools deps
+        working-directory: tools
+        run: npm ci
+      - name: Enforce immutability/collision over changed paths
+        working-directory: tools
+        run: |
+          git fetch origin "${{ github.base_ref }}" --depth=1
+          npx tsx src/cli/check-changeset.ts "origin/${{ github.base_ref }}"
+      - name: Validate all releases
+        working-directory: tools
+        run: npx tsx src/cli/validate.ts ../apps

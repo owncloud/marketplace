@@ -1,0 +1,19 @@
+---
+import { loadApps, withBase } from "../lib/catalog.ts";
+const apps = await loadApps();
+const base = import.meta.env.BASE_URL;
+---
+<html lang="en">
+  <head><meta charset="utf-8" /><title>ownCloud Marketplace</title></head>
+  <body>
+    <h1>ownCloud Marketplace</h1>
+    <ul>
+      {apps.map((app) => (
+        <li>
+          <a href={withBase(base, `apps/${app.id}`)}>{app.name}</a>
+          {" — "}{app.description}
+        </li>
+      ))}
+    </ul>
+  </body>
+</html>

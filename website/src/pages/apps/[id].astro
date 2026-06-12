@@ -1,0 +1,27 @@
+---
+import { loadApps } from "../../lib/catalog.ts";
+
+export async function getStaticPaths() {
+  const apps = await loadApps();
+  return apps.map((app) => ({ params: { id: app.id }, props: { app } }));
+}
+
+const { app } = Astro.props;
+---
+<html lang="en">
+  <head><meta charset="utf-8" /><title>{app.name} — ownCloud Marketplace</title></head>
+  <body>
+    <h1>{app.name}</h1>
+    <p>{app.description}</p>
+    <p>By {app.publisher.name}</p>
+    <h2>Releases</h2>
+    <ul>
+      {app.releases.map((r) => (
+        <li>
+          v{r.version} (ownCloud {r.platformMin}–{r.platformMax}) —
+          <a href={r.download}>download</a>
+        </li>
+      ))}
+    </ul>
+  </body>
+</html>

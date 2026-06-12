@@ -3,7 +3,7 @@ on:
   pull_request:
     paths: ["tools/**", "website/**"]
   push:
-    branches: [master]
+    branches: [main]
     paths: ["tools/**", "website/**"]
 
 env:

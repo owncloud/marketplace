@@ -13,7 +13,7 @@
     "format:check": "prettier --check ."
   },
   "dependencies": {
-    "fast-xml-parser": "^4.4.1",
+    "fast-xml-parser": "^5.8.0",
     "semver": "^7.6.3",
     "tar": "^7.4.3"
   },

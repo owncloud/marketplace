@@ -15,7 +15,7 @@
   },
   "dependencies": {
     "fast-xml-parser": "^5.8.0",
-    "image-size": "^1.2.1",
+    "image-size": "^2.0.2",
     "semver": "^7.6.3",
     "tar": "^7.4.3"
   },

@@ -7,7 +7,14 @@ export const BASE_URL = (
 ).replace(/\/$/, "");
 
 /**
- * ownCloud platform versions for which a per-version apps.json is generated
- * (back-compat with the existing market client). Extend as releases ship.
+ * ownCloud platform versions for which a per-version apps.json is generated.
+ * The store supports ownCloud 11+ only, so only the 11.0.0 endpoint is emitted.
+ * Extend as newer releases ship.
  */
-export const KNOWN_PLATFORM_VERSIONS = ["10.0.0", "10.11.0", "11.0.0"];
+export const KNOWN_PLATFORM_VERSIONS = ["11.0.0"];
+
+/**
+ * Supported ownCloud platform floor. New releases must declare an owncloud
+ * min-version at or above this; enforced on submission (see validatePlatformFloor).
+ */
+export const MIN_PLATFORM_VERSION = "11.0.0";

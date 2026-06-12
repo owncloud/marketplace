@@ -10,12 +10,12 @@ afterEach(async () => {
   while (cleanups.length) await cleanups.pop()!();
 });
 
-function infoXml(id: string, version: string, category = "tools"): string {
+function infoXml(id: string, version: string, category = "tools", minVersion = "10.0.0"): string {
   return `<?xml version="1.0"?><info>
     <id>${id}</id><name>App</name><description>d</description>
     <licence>AGPL</licence><author>me</author><version>${version}</version>
     <category>${category}</category>
-    <dependencies><owncloud min-version="10.0.0" max-version="10.99.99"/></dependencies>
+    <dependencies><owncloud min-version="${minVersion}" max-version="11.99.99"/></dependencies>
   </info>`;
 }
 
@@ -51,5 +51,13 @@ describe("validateRelease", () => {
   it("rejects an unknown category", async () => {
     const ref = await release("calendar", "2.1.0", infoXml("calendar", "2.1.0", "nonsense"));
     await expect(validateRelease(ref)).rejects.toThrow(/category.*nonsense/i);
+  });
+
+  it("does NOT apply the platform floor (historical sub-11 releases stay valid)", async () => {
+    // The min-version floor is enforced on new submissions (check-changeset),
+    // not over the whole catalog — already-published min-10 releases are immutable.
+    const ref = await release("calendar", "2.1.0", infoXml("calendar", "2.1.0", "tools", "10.0.0"));
+    const info = await validateRelease(ref);
+    expect(info.platformMin).toBe("10.0.0");
   });
 });

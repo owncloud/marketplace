@@ -20,6 +20,20 @@ function requireString(value: unknown, field: string): string {
   return value.trim();
 }
 
+/** Validate a <screenshot> value is a syntactically valid https:// URL. */
+function requireHttpsUrl(value: string): string {
+  let parsed: URL;
+  try {
+    parsed = new URL(value);
+  } catch {
+    throw new ValidationError(`info.xml <screenshot> is not a valid URL: "${value}"`);
+  }
+  if (parsed.protocol !== "https:") {
+    throw new ValidationError(`info.xml <screenshot> must use https:// — got "${value}"`);
+  }
+  return value;
+}
+
 /**
  * Extract a plain string from a text-bearing field that may be localized.
  * Handles: plain string/number, a localized object `{ "#text", "@_lang" }`,
@@ -83,7 +97,7 @@ export function parseInfoXml(xml: string): AppInfo {
     author: requireString(info.author, "author"),
     version: requireString(info.version, "version"),
     categories: toArray(info.category).map((c) => String(c).trim()),
-    screenshots: toArray(info.screenshot).map((s) => String(s).trim()),
+    screenshots: toArray(info.screenshot).map((s) => requireHttpsUrl(String(s).trim())),
     platformMin: String(platformMin).trim(),
     platformMax: String(platformMax).trim(),
   };

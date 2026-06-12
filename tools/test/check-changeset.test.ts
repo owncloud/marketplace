@@ -6,6 +6,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { parseNameStatus } from "../src/cli/check-changeset.js";
+import { makeTarball } from "./helpers/make-tarball.js";
 
 const exec = promisify(execFile);
 const toolsDir = fileURLToPath(new URL("..", import.meta.url));
@@ -46,6 +47,25 @@ function runCheck(repo: string, baseRef: string): Promise<{ stdout: string; stde
   return exec(tsx, [cli, baseRef], { cwd: repo });
 }
 
+function infoXml(version: string, minVersion: string): string {
+  return `<?xml version="1.0"?><info><id>foo</id><name>Foo</name>
+    <description>d</description><licence>AGPL</licence><author>me</author>
+    <version>${version}</version><category>tools</category>
+    <dependencies><owncloud min-version="${minVersion}" max-version="11.99.99"/></dependencies></info>`;
+}
+
+/** Write a real release package.tar.gz into the repo at the given version. */
+async function addReleaseTarball(repo: string, version: string, minVersion: string): Promise<void> {
+  const dir = join(repo, "apps", "foo", "releases", version);
+  await mkdir(dir, { recursive: true });
+  cleanups.push(
+    await makeTarball(join(dir, "package.tar.gz"), {
+      rootDir: "foo",
+      infoXml: infoXml(version, minVersion),
+    }),
+  );
+}
+
 describe("check-changeset CLI (integration, real git repos)", () => {
   it("case 1: adding a brand-new release passes (exit 0, 'Changeset OK')", async () => {
     const repo = await newRepo();
@@ -55,9 +75,9 @@ describe("check-changeset CLI (integration, real git repos)", () => {
     await gitC(repo, ["commit", "-q", "-m", "base"]);
     const base = (await gitC(repo, ["rev-parse", "HEAD"])).stdout.trim();
 
-    // branch: add a new release
+    // branch: add a new release (a real package so the floor gate can read it)
     await gitC(repo, ["checkout", "-q", "-b", "feature"]);
-    await writeFileEnsuringDir(repo, "apps/foo/releases/1.0.0/package.tar.gz", "pkg\n");
+    await addReleaseTarball(repo, "1.0.0", "11.0.0");
     await gitC(repo, ["add", "."]);
     await gitC(repo, ["commit", "-q", "-m", "add release"]);
 
@@ -121,6 +141,39 @@ describe("check-changeset CLI (integration, real git repos)", () => {
     await expect(runCheck(repo, base)).rejects.toMatchObject({
       stderr: expect.stringMatching(/collision|already|exists|immutable/i),
     });
+  });
+
+  it("case 5: a newly-added release below the platform floor is rejected", async () => {
+    const repo = await newRepo();
+    await writeFileEnsuringDir(repo, "README.md", "base\n");
+    await gitC(repo, ["add", "."]);
+    await gitC(repo, ["commit", "-q", "-m", "base"]);
+    const base = (await gitC(repo, ["rev-parse", "HEAD"])).stdout.trim();
+
+    await gitC(repo, ["checkout", "-q", "-b", "feature"]);
+    await addReleaseTarball(repo, "1.0.0", "10.0.0");
+    await gitC(repo, ["add", "."]);
+    await gitC(repo, ["commit", "-q", "-m", "add sub-11 release"]);
+
+    await expect(runCheck(repo, base)).rejects.toMatchObject({
+      stderr: expect.stringMatching(/min-version.*11/i),
+    });
+  });
+
+  it("case 6: a newly-added release at the platform floor passes", async () => {
+    const repo = await newRepo();
+    await writeFileEnsuringDir(repo, "README.md", "base\n");
+    await gitC(repo, ["add", "."]);
+    await gitC(repo, ["commit", "-q", "-m", "base"]);
+    const base = (await gitC(repo, ["rev-parse", "HEAD"])).stdout.trim();
+
+    await gitC(repo, ["checkout", "-q", "-b", "feature"]);
+    await addReleaseTarball(repo, "1.0.1", "11.0.0");
+    await gitC(repo, ["add", "."]);
+    await gitC(repo, ["commit", "-q", "-m", "add 11 release"]);
+
+    const { stdout } = await runCheck(repo, base);
+    expect(stdout).toMatch(/Changeset OK/i);
   });
 });
 

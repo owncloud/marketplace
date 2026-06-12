@@ -58,8 +58,8 @@ describe("static API is servable", () => {
     expect(apps.find((a) => a.id === "example-app")).toBeTruthy();
   });
 
-  it("serves the per-version apps.json for 10.0.0", async () => {
-    const res = await fetch(`http://127.0.0.1:${port}/api/v1/platform/10.0.0/apps.json`);
+  it("serves the per-version apps.json for 11.0.0", async () => {
+    const res = await fetch(`http://127.0.0.1:${port}/api/v1/platform/11.0.0/apps.json`);
     expect(res.status).toBe(200);
     const apps = (await res.json()) as { id: string }[];
     expect(apps.find((a) => a.id === "example-app")).toBeTruthy();

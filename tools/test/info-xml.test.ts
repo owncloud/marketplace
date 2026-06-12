@@ -60,6 +60,21 @@ describe("parseInfoXml", () => {
   it("rejects malformed XML", () => {
     expect(() => parseInfoXml("<info><id>x")).toThrow(ValidationError);
   });
+
+  it("accepts a valid https screenshot URL", () => {
+    const info = parseInfoXml(VALID);
+    expect(info.screenshots).toEqual(["https://example.com/1.png"]);
+  });
+
+  it("rejects a non-https (http) screenshot URL", () => {
+    const xml = VALID.replace("https://example.com/1.png", "http://example.com/1.png");
+    expect(() => parseInfoXml(xml)).toThrow(/screenshot.*https/i);
+  });
+
+  it("rejects a screenshot value that is not a URL", () => {
+    const xml = VALID.replace("https://example.com/1.png", "not a url");
+    expect(() => parseInfoXml(xml)).toThrow(/screenshot.*not a valid URL/i);
+  });
 });
 
 describe("parseInfoXml localized text fields", () => {

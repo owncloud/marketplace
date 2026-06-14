@@ -14,6 +14,7 @@ export interface CatalogRelease {
   created: string;
   platformMin: string;
   platformMax: string;
+  downloads: number;
 }
 export interface CatalogApp {
   id: string;
@@ -22,6 +23,7 @@ export interface CatalogApp {
   categories: string[];
   screenshots: { url: string }[];
   publisher: { name: string; url: string };
+  downloads: number;
   releases: CatalogRelease[];
 }
 

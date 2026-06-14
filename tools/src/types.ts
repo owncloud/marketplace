@@ -27,6 +27,8 @@ export interface ApiRelease {
   download: string;
   license: string;
   created: string; // ISO 8601
+  /** GitHub Release asset download count for this version (0 until counted). */
+  downloads: number;
 }
 
 /**

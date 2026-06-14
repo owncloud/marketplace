@@ -1,7 +1,7 @@
 import { describe, it, expect, afterEach } from "vitest";
 import { execFile } from "node:child_process";
 import { promisify } from "node:util";
-import { mkdtemp, mkdir, readFile, writeFile, rm } from "node:fs/promises";
+import { mkdtemp, mkdir, readFile, writeFile, rm, access } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -79,22 +79,25 @@ describe("CLI", () => {
     expect(apps[0].rating).toEqual({ "1": 0, "2": 0, "3": 0, "4": 0, "5": 0, mean: 0 });
   });
 
-  it("generate-api copies each release's package tarball into the served tree", async () => {
+  it("generate-api does not copy the package tarball (served as a GitHub Release asset)", async () => {
     const root = await fixtureRepo();
     const out = join(root, "_site");
     await exec(
       "npx",
       ["tsx", "src/cli/generate-api.ts", "--apps", join(root, "apps"), "--out", out],
-      { cwd: toolsDir },
+      { cwd: toolsDir, env: { ...process.env, GITHUB_REPOSITORY: "owner/repo" } },
     );
 
-    const copied = await readFile(
-      join(out, "apps", "calendar", "releases", "1.0.0", "package.tar.gz"),
+    // The tarball is distributed as a Release asset, not copied into _site.
+    await expect(
+      access(join(out, "apps", "calendar", "releases", "1.0.0", "package.tar.gz")),
+    ).rejects.toMatchObject({ code: "ENOENT" });
+
+    // The advertised download URL points at the Release asset on github.com.
+    const apps = JSON.parse(await readFile(join(out, "api/v1/apps.json"), "utf8"));
+    expect(apps[0].releases[0].download).toBe(
+      "https://github.com/owner/repo/releases/download/calendar/calendar-1.0.0.tar.gz",
     );
-    const source = await readFile(
-      join(root, "apps", "calendar", "releases", "1.0.0", "package.tar.gz"),
-    );
-    expect(copied.equals(source)).toBe(true);
   });
 
   it("generate-api rewrites ingested screenshots to same-origin URLs and copies the files", async () => {

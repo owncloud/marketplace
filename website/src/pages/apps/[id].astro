@@ -23,6 +23,9 @@ const fmtDate = (iso: string) => {
     ? iso
     : d.toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" });
 };
+
+const fmtCount = (n: number) => n.toLocaleString("en-US");
+const fmtDownloads = (n: number) => `${fmtCount(n)} download${n === 1 ? "" : "s"}`;
 ---
 <Base title={`${app.name} — ownCloud Marketplace`} description={app.description}>
   <nav class="breadcrumb container" aria-label="Breadcrumb">
@@ -52,6 +55,8 @@ const fmtDate = (iso: string) => {
           }
           {latest && <span class="dot" aria-hidden="true">·</span>}
           {latest && <span>Latest v{latest.version}</span>}
+          <span class="dot" aria-hidden="true">·</span>
+          <span>{fmtDownloads(app.downloads)}</span>
         </div>
         {
           latest && (
@@ -116,6 +121,8 @@ const fmtDate = (iso: string) => {
                   </span>
                   <span class="dot" aria-hidden="true">·</span>
                   <span>{r.license}</span>
+                  <span class="dot" aria-hidden="true">·</span>
+                  <span>{fmtDownloads(r.downloads)}</span>
                 </div>
                 <a class="release__dl" href={r.download} rel="nofollow">
                   Download package
@@ -156,6 +163,10 @@ const fmtDate = (iso: string) => {
           <div>
             <dt>Releases</dt>
             <dd>{app.releases.length}</dd>
+          </div>
+          <div>
+            <dt>Downloads</dt>
+            <dd>{fmtCount(app.downloads)}</dd>
           </div>
           <div>
             <dt>Categories</dt>

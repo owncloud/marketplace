@@ -1,7 +1,8 @@
 import { mkdir, writeFile } from "node:fs/promises";
 import { dirname } from "node:path";
 import { pathToFileURL } from "node:url";
-import type { RawRelease, RawDownloads } from "../downloads-types.js";
+import type { RawRelease, RawDownloads, AppDownloadCounts } from "../downloads-types.js";
+import { githubRepo } from "../config.js";
 
 /** A release as returned by the GitHub Releases API (the fields we read). */
 export interface GhRelease {
@@ -12,7 +13,7 @@ export interface GhRelease {
   body: string;
   draft: boolean;
   prerelease: boolean;
-  assets: { name: string; browser_download_url: string; size: number }[];
+  assets: { name: string; browser_download_url: string; size: number; download_count: number }[];
 }
 
 /** The download surfaces and the ownCloud repo each one tracks. */
@@ -60,6 +61,29 @@ export function buildRawDownloads(
   };
 }
 
+/**
+ * Reduce this repo's own releases into per-app download counts. App packages
+ * are published one release per app (tag = appId) with assets named
+ * `<appId>-<version>.tar.gz`; the version is recovered by stripping that exact
+ * prefix and suffix, so versions containing hyphens are handled correctly.
+ * Assets not matching the app's own naming (e.g. checksums) are ignored.
+ */
+export function buildAppCounts(releases: GhRelease[]): AppDownloadCounts {
+  const counts: AppDownloadCounts = {};
+  for (const release of releases) {
+    const appId = release.tag_name;
+    const prefix = `${appId}-`;
+    const suffix = ".tar.gz";
+    for (const asset of release.assets) {
+      if (!asset.name.startsWith(prefix) || !asset.name.endsWith(suffix)) continue;
+      const version = asset.name.slice(prefix.length, asset.name.length - suffix.length);
+      if (!version) continue;
+      (counts[appId] ??= {})[version] = asset.download_count;
+    }
+  }
+  return counts;
+}
+
 /** Fetch a repo's releases from the GitHub API (first page, newest first). */
 async function fetchReleases(repo: string): Promise<GhRelease[]> {
   const url = `https://api.github.com/repos/${repo}/releases?per_page=100`;
@@ -92,18 +116,24 @@ async function main(): Promise<void> {
   const now = new Date().toISOString();
 
   const surfaces = Object.keys(SURFACE_REPOS) as Surface[];
-  const fetched = await Promise.all(surfaces.map((s) => fetchReleases(SURFACE_REPOS[s])));
+  // Fetch the product surfaces plus this repo's own releases (app packages).
+  const ownRepo = githubRepo();
+  const [own, ...fetched] = await Promise.all([
+    fetchReleases(ownRepo),
+    ...surfaces.map((s) => fetchReleases(SURFACE_REPOS[s])),
+  ]);
   const perSurface = Object.fromEntries(surfaces.map((s, i) => [s, fetched[i]])) as Record<
     Surface,
     GhRelease[]
   >;
 
   const raw = buildRawDownloads(perSurface, now);
+  raw.apps = buildAppCounts(own);
   await mkdir(dirname(out), { recursive: true });
   await writeFile(out, JSON.stringify(raw, null, 2) + "\n", "utf8");
 
-  const counts = surfaces.map((s) => `${s}=${raw[s].length}`).join(" ");
-  console.log(`Wrote ${out} (${counts})`);
+  const surfaceCounts = surfaces.map((s) => `${s}=${raw[s].length}`).join(" ");
+  console.log(`Wrote ${out} (${surfaceCounts} apps=${Object.keys(raw.apps).length})`);
 }
 
 // Only run when executed directly as a CLI, not when imported (e.g. by tests).

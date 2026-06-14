@@ -15,6 +15,13 @@ export interface RawRelease {
   assets: RawAsset[];
 }
 
+/**
+ * Per-app download counts, keyed appId → version → count, sourced from this
+ * repo's own GitHub Release assets. Optional: absent before the fetch step has
+ * ever recorded any, and apps with no published assets simply have no entry.
+ */
+export type AppDownloadCounts = Record<string, Record<string, number>>;
+
 /** The raw, committed data/downloads.json: GitHub data, lightly trimmed. */
 export interface RawDownloads {
   generated_at: string;
@@ -22,6 +29,8 @@ export interface RawDownloads {
   client: RawRelease[];
   android: RawRelease[];
   ios: RawRelease[];
+  /** App package download counts from this repo's Release assets. */
+  apps?: AppDownloadCounts;
 }
 
 /** A single resolved binary download row in the normalized API. */

@@ -46,34 +46,36 @@ async function main(): Promise<void> {
   const screenshots = (appId: string, version: string): string[] =>
     screenshotsByRelease.get(`${appId}@${version}`) ?? [];
 
+  // Per-app download counts from this repo's Release assets, when fetched.
+  // The fetch step produces data/downloads.json; before it has ever run the
+  // build degrades to zero counts rather than failing.
+  const rawDownloads = await readRawDownloads(downloadsData);
+  const appCounts = rawDownloads?.apps ?? {};
+
   const apps = [...byApp.entries()]
-    .map(([appId, infos]) => buildApp(appId, infos, created, screenshots, BASE_URL))
+    .map(([appId, infos]) =>
+      buildApp(appId, infos, created, screenshots, BASE_URL, appCounts[appId] ?? {}),
+    )
     .sort((a, b) => a.id.localeCompare(b.id));
 
   await writeApi(outDir, apps, KNOWN_PLATFORM_VERSIONS);
 
   // Emit api/v1/downloads.json from the committed raw release data, when present.
-  // The fetch step produces data/downloads.json; before it has ever run the
-  // build simply skips the downloads endpoint rather than failing.
-  const rawDownloads = await readRawDownloads(downloadsData);
   if (rawDownloads) {
     await writeDownloads(outDir, rawDownloads);
   } else {
     console.warn(`No ${downloadsData}; skipping downloads.json`);
   }
 
-  // Copy each release's package tarball and ingested screenshots into the served
-  // tree so the absolute URLs in the API resolve same-origin:
-  //   _site/apps/{id}/releases/{version}/package.tar.gz
+  // Copy each release's ingested screenshots into the served tree so the
+  // absolute screenshot URLs in the API resolve same-origin:
   //   _site/apps/{id}/releases/{version}/screenshots/*
+  // Package tarballs are NOT copied here: they are distributed as GitHub
+  // Release assets (so GitHub counts downloads); see buildApp's download URL.
   for (const ref of refs) {
-    const releaseDir = join(outDir, "apps", ref.appId, "releases", ref.version);
-    await mkdir(releaseDir, { recursive: true });
-    await cp(ref.tarballPath, join(releaseDir, "package.tar.gz"));
-
     const files = screenshotsByRelease.get(`${ref.appId}@${ref.version}`) ?? [];
     if (files.length === 0) continue;
-    const shotsDest = join(releaseDir, "screenshots");
+    const shotsDest = join(outDir, "apps", ref.appId, "releases", ref.version, "screenshots");
     await mkdir(shotsDest, { recursive: true });
     for (const file of files) {
       await cp(join(screenshotsDir(ref.dir), file), join(shotsDest, file));

@@ -3,6 +3,7 @@ import { mkdir, writeFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import type { AppInfo, ApiApp, ApiRelease } from "./types.js";
 import { toApiCategories } from "./categories.js";
+import { appAssetUrl } from "./config.js";
 
 /** Provides the ISO-8601 created timestamp for a given appId/version. */
 export type CreatedProvider = (appId: string, version: string) => string;
@@ -27,9 +28,17 @@ function byVersionDesc(a: string, b: string): number {
   return semver.rcompare(coerce(a), coerce(b));
 }
 
+/** Per-version download counts for one app (version → count). */
+export type DownloadCounts = Record<string, number>;
+
 /**
  * Build one ApiApp from all of an app's release AppInfos. App-level display
  * fields come from the newest release; releases are sorted newest-first.
+ *
+ * `counts` carries this app's per-version GitHub Release asset download counts
+ * (version → count); missing versions count as 0. The app-level `downloads` is
+ * their sum. Each release's `download` points at the GitHub Release asset (not
+ * the Pages copy) so GitHub counts the download.
  */
 export function buildApp(
   appId: string,
@@ -37,6 +46,7 @@ export function buildApp(
   created: CreatedProvider,
   screenshots: ScreenshotsProvider,
   baseUrl: string,
+  counts: DownloadCounts = {},
 ): ApiApp {
   const sorted = [...infos].sort((a, b) => byVersionDesc(a.version, b.version));
   const newest = sorted[0];
@@ -50,9 +60,10 @@ export function buildApp(
     platformMin: info.platformMin,
     platformMax: info.platformMax,
     version: info.version,
-    download: `${baseUrl}/apps/${appId}/releases/${info.version}/package.tar.gz`,
+    download: appAssetUrl(appId, info.version),
     license: info.license,
     created: created(appId, info.version),
+    downloads: counts[info.version] ?? 0,
   }));
 
   return {
@@ -65,7 +76,7 @@ export function buildApp(
       url: `${baseUrl}/apps/${appId}/releases/${newest.version}/screenshots/${file}`,
     })),
     marketplace: `${baseUrl}/apps/${appId}`,
-    downloads: 0,
+    downloads: releases.reduce((sum, r) => sum + r.downloads, 0),
     rating: { "1": 0, "2": 0, "3": 0, "4": 0, "5": 0, mean: 0 },
     downloadable: true,
     publisher: { name: newest.author, url: "" },

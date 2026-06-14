@@ -28,6 +28,29 @@ const raw: RawDownloads = {
       ],
     },
   ],
+  server: [
+    {
+      tag_name: "v10.16.3",
+      name: "ownCloud 10.16.3",
+      published_at: "2026-05-22T14:24:17.000Z",
+      html_url: "https://github.com/owncloud/core/releases/tag/v10.16.3",
+      body: "",
+      assets: [
+        {
+          name: "owncloud-10.16.3.tar.bz2",
+          browser_download_url:
+            "https://download.owncloud.com/server/stable/owncloud-10.16.3.tar.bz2",
+          size: 58 * 1024 * 1024,
+        },
+        {
+          name: "owncloud-10.16.3.zip",
+          browser_download_url:
+            "https://download.owncloud.com/server/stable/owncloud-10.16.3.zip",
+          size: 72 * 1024 * 1024,
+        },
+      ],
+    },
+  ],
   client: [],
   android: [],
   ios: [],
@@ -48,6 +71,41 @@ describe("writeDownloads", () => {
       url: "https://example.com/ocis-7.1.0-linux-amd64",
     });
     expect(written.client).toBeNull();
+  });
+
+  it("normalizes the classic server into format-labelled archive rows", async () => {
+    out = await mkdtemp(join(tmpdir(), "dl-"));
+    await writeDownloads(out, raw);
+
+    const written = JSON.parse(await readFile(join(out, "api/v1/downloads.json"), "utf8"));
+    expect(written.server.version).toBe("10.16.3");
+    expect(written.server.releaseUrl).toBe(
+      "https://github.com/owncloud/core/releases/tag/v10.16.3",
+    );
+    expect(written.server.binaries).toEqual([
+      {
+        os: "Server archive",
+        arch: "tar.bz2",
+        size: "58.0 MB",
+        url: "https://download.owncloud.com/server/stable/owncloud-10.16.3.tar.bz2",
+      },
+      {
+        os: "Server archive",
+        arch: "zip",
+        size: "72.0 MB",
+        url: "https://download.owncloud.com/server/stable/owncloud-10.16.3.zip",
+      },
+    ]);
+  });
+
+  it("leaves server null when raw.server is absent (backward compat)", async () => {
+    out = await mkdtemp(join(tmpdir(), "dl-"));
+    const { server, ...withoutServer } = raw;
+    void server;
+    await writeDownloads(out, withoutServer);
+
+    const written = JSON.parse(await readFile(join(out, "api/v1/downloads.json"), "utf8"));
+    expect(written.server).toBeNull();
   });
 
   it("is deterministic: re-running yields byte-identical output", async () => {

@@ -29,6 +29,13 @@ export interface RawDownloads {
   client: RawRelease[];
   android: RawRelease[];
   ios: RawRelease[];
+  /**
+   * Classic ownCloud Server 10.x. Unlike the GitHub-fetched surfaces above, it
+   * has no GitHub releases — its version comes from the owncloud/core git tags
+   * and its archives from download.owncloud.com. Optional for backward
+   * compatibility with data/downloads.json committed before this field existed.
+   */
+  server?: RawRelease[];
   /** App package download counts from this repo's Release assets. */
   apps?: AppDownloadCounts;
 }
@@ -53,6 +60,7 @@ export interface DownloadSurface {
 export interface Downloads {
   generatedAt: string;
   ocis: DownloadSurface | null;
+  server: DownloadSurface | null;
   client: DownloadSurface | null;
   android: DownloadSurface | null;
   ios: DownloadSurface | null;

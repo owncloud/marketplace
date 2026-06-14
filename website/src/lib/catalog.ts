@@ -59,6 +59,7 @@ export interface DownloadSurface {
 export interface Downloads {
   generatedAt: string;
   ocis: DownloadSurface | null;
+  server: DownloadSurface | null;
   client: DownloadSurface | null;
   android: DownloadSurface | null;
   ios: DownloadSurface | null;

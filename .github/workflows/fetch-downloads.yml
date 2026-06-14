@@ -1,9 +1,10 @@
 name: Fetch downloads
-# Fetches the latest releases of the ownCloud server, desktop client and mobile
-# apps from GitHub and commits data/downloads.json, which the deploy build
-# normalizes into api/v1/downloads.json. Runs on the protected branch — on a
-# daily schedule or maintainer-triggered — never on PRs (fork PRs cannot be
-# granted write access).
+# Fetches the latest releases of Infinite Scale, the desktop client and mobile
+# apps from GitHub, plus the classic ownCloud Server 10.x (its version from the
+# owncloud/core git tags and archives from download.owncloud.com), and commits
+# data/downloads.json, which the deploy build normalizes into
+# api/v1/downloads.json. Runs on the protected branch — on a daily schedule or
+# maintainer-triggered — never on PRs (fork PRs cannot be granted write access).
 on:
   workflow_dispatch: {}
   schedule:

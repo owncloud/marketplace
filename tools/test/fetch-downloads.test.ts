@@ -3,9 +3,13 @@ import {
   selectReleases,
   buildRawDownloads,
   buildAppCounts,
+  selectClassicVersion,
+  buildClassicRelease,
+  CLASSIC_REPO,
   SURFACE_REPOS,
   type GhRelease,
 } from "../src/cli/fetch-downloads.js";
+import type { RawAsset } from "../src/downloads-types.js";
 
 const gh = (overrides: Partial<GhRelease> = {}): GhRelease => ({
   tag_name: "v1.0.0",
@@ -118,5 +122,81 @@ describe("SURFACE_REPOS", () => {
       android: "owncloud/android",
       ios: "owncloud/ios",
     });
+  });
+
+  it("does not include the classic server (it has no GitHub releases)", () => {
+    expect(Object.values(SURFACE_REPOS)).not.toContain(CLASSIC_REPO);
+  });
+});
+
+describe("selectClassicVersion", () => {
+  const tag = (name: string) => ({ name });
+
+  it("picks the highest stable 10.x version, without the leading v", () => {
+    expect(
+      selectClassicVersion([tag("v10.16.2"), tag("v10.16.3"), tag("v10.15.0")]),
+    ).toBe("10.16.3");
+  });
+
+  it("compares components numerically rather than lexically", () => {
+    expect(selectClassicVersion([tag("v10.9.0"), tag("v10.10.0")])).toBe("10.10.0");
+  });
+
+  it("ignores prerelease and stray tags", () => {
+    expect(
+      selectClassicVersion([
+        tag("v10.16.2RC1"),
+        tag("v10.16.2-rc1"),
+        tag("vv9.1.4RC1"),
+        tag("v9.1.8"),
+        tag("v10.16.2"),
+      ]),
+    ).toBe("10.16.2");
+  });
+
+  it("returns null when no stable 10.x tag is present", () => {
+    expect(selectClassicVersion([tag("v9.1.8"), tag("v10.16.2RC1")])).toBeNull();
+    expect(selectClassicVersion([])).toBeNull();
+  });
+});
+
+describe("buildClassicRelease", () => {
+  const archives: RawAsset[] = [
+    {
+      name: "owncloud-10.16.3.tar.bz2",
+      browser_download_url: "https://download.owncloud.com/server/stable/owncloud-10.16.3.tar.bz2",
+      size: 58_000_000,
+    },
+    {
+      name: "owncloud-10.16.3.zip",
+      browser_download_url: "https://download.owncloud.com/server/stable/owncloud-10.16.3.zip",
+      size: 72_000_000,
+    },
+  ];
+
+  it("assembles a release with both archives and a git-tag html_url", () => {
+    const rel = buildClassicRelease(
+      "10.16.3",
+      archives,
+      ["2026-05-22T14:24:17.000Z", "2026-05-22T14:24:17.000Z"],
+    );
+    expect(rel.tag_name).toBe("v10.16.3");
+    expect(rel.name).toBe("ownCloud 10.16.3");
+    expect(rel.html_url).toBe("https://github.com/owncloud/core/releases/tag/v10.16.3");
+    expect(rel.assets).toEqual(archives);
+  });
+
+  it("uses the newest archive last-modified as published_at", () => {
+    const rel = buildClassicRelease(
+      "10.16.3",
+      archives,
+      ["2026-05-20T00:00:00.000Z", "2026-05-22T14:24:17.000Z"],
+    );
+    expect(rel.published_at).toBe("2026-05-22T14:24:17.000Z");
+  });
+
+  it("tolerates a missing last-modified date", () => {
+    const rel = buildClassicRelease("10.16.3", archives, ["", "2026-05-22T14:24:17.000Z"]);
+    expect(rel.published_at).toBe("2026-05-22T14:24:17.000Z");
   });
 });

@@ -70,6 +70,45 @@ export function normalizeRelease(release: RawRelease): DownloadSurface {
   };
 }
 
+/**
+ * Resolve the classic server's archives into download rows. Classic ships a
+ * single PHP source archive per format rather than per-OS binaries, so the
+ * OS/arch RULES do not apply: the format is shown as the "arch" and the row's
+ * "os" label is the same for both. Returns rows in `.tar.bz2`, `.zip` order.
+ */
+export function matchClassicArchives(assets: RawAsset[]): DownloadBinary[] {
+  const FORMATS: { ext: string; label: string }[] = [
+    { ext: ".tar.bz2", label: "tar.bz2" },
+    { ext: ".zip", label: "zip" },
+  ];
+  const rows: DownloadBinary[] = [];
+  for (const fmt of FORMATS) {
+    const hit = assets.find((a) => a.name.endsWith(fmt.ext));
+    if (hit) {
+      rows.push({
+        os: "Server archive",
+        arch: fmt.label,
+        size: formatSize(hit.size),
+        url: hit.browser_download_url,
+      });
+    }
+  }
+  return rows;
+}
+
+/**
+ * Normalize the classic server release into a download surface, resolving its
+ * archives via matchClassicArchives rather than the OS/arch binary rules.
+ */
+export function normalizeClassicRelease(release: RawRelease): DownloadSurface {
+  return {
+    version: release.tag_name.replace(/^v/, ""),
+    releaseUrl: release.html_url,
+    publishedAt: release.published_at,
+    binaries: matchClassicArchives(release.assets),
+  };
+}
+
 /** The newest release of a list by publish date, or null when the list is empty. */
 function newestSurface(releases: RawRelease[]): DownloadSurface | null {
   if (releases.length === 0) return null;
@@ -85,6 +124,8 @@ export function normalizeDownloads(raw: RawDownloads): Downloads {
   return {
     generatedAt: raw.generated_at,
     ocis: newestSurface(raw.ocis),
+    // Classic server: a single tag+archive release, normalized differently.
+    server: raw.server?.length ? normalizeClassicRelease(raw.server[0]) : null,
     client: newestSurface(raw.client),
     android: newestSurface(raw.android),
     ios: newestSurface(raw.ios),

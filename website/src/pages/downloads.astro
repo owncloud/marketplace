@@ -1,0 +1,277 @@
+---
+import Base from "../layouts/Base.astro";
+import { loadDownloads, type DownloadSurface } from "../lib/catalog.ts";
+
+const downloads = await loadDownloads();
+
+// Display order and labels for the surfaces; each maps to a key on Downloads.
+const SURFACES = [
+  { key: "ocis", name: "Infinite Scale", tagline: "ocis — the next-generation ownCloud server", repo: "owncloud/ocis" },
+  { key: "client", name: "Desktop Client", tagline: "Sync files on Windows, macOS and Linux", repo: "owncloud/client" },
+  { key: "android", name: "Android", tagline: "ownCloud for phones and tablets", repo: "owncloud/android" },
+  { key: "ios", name: "iOS", tagline: "ownCloud for iPhone and iPad", repo: "owncloud/ios" },
+] as const;
+
+const surfaces = SURFACES.map((s) => ({
+  ...s,
+  surface: (downloads?.[s.key] ?? null) as DownloadSurface | null,
+}));
+
+// "2026-02-01T…" → "1 Feb 2026"; defensive against a missing/odd value.
+const fmtDate = (iso: string): string => {
+  const d = new Date(iso);
+  return Number.isNaN(d.getTime())
+    ? iso
+    : d.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" });
+};
+
+const generated = downloads ? fmtDate(downloads.generatedAt) : null;
+---
+<Base
+  title="Downloads — ownCloud"
+  description="Download the latest ownCloud Infinite Scale server, desktop client and mobile apps. Direct binaries for Linux, macOS, Windows, Android and iOS."
+>
+  <!-- ===================== HERO ===================== -->
+  <section class="hero">
+    <div class="hero__grid" aria-hidden="true"></div>
+    <div class="hero__glow" aria-hidden="true"></div>
+    <div class="container hero__inner">
+      <p class="eyebrow">Open Source Program Office · Releases</p>
+      <h1 class="hero__title">Download <span class="hero__accent">ownCloud</span>.</h1>
+      <p class="hero__lede">
+        The latest stable release of the Infinite Scale server, desktop client and
+        mobile apps — pulled straight from the official GitHub releases.
+      </p>
+      {generated && <p class="hero__note">Release data refreshed {generated}.</p>}
+    </div>
+  </section>
+
+  <!-- ===================== SURFACES ===================== -->
+  <section class="surfaces container">
+    {
+      surfaces.map(({ key, name, tagline, repo, surface }) => (
+        <article class="surface" id={key}>
+          <header class="surface__head">
+            <div>
+              <h2 class="surface__name">{name}</h2>
+              <p class="surface__tagline">{tagline}</p>
+            </div>
+            {surface && (
+              <div class="surface__release">
+                <a
+                  class="surface__version"
+                  href={surface.releaseUrl}
+                  rel="noopener"
+                >
+                  v{surface.version}
+                </a>
+                <span class="surface__date">{fmtDate(surface.publishedAt)}</span>
+              </div>
+            )}
+          </header>
+
+          {surface && surface.binaries.length > 0 ? (
+            <ul class="downloads">
+              {surface.binaries.map((b) => (
+                <li>
+                  <a class="download" href={b.url} rel="noopener">
+                    <span class="download__os">{b.os}</span>
+                    <span class="download__arch">{b.arch}</span>
+                    <span class="download__size">{b.size}</span>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p class="surface__fallback">
+              No direct binaries listed for this release.{" "}
+              <a href={surface?.releaseUrl ?? `https://github.com/${repo}/releases`} rel="noopener">
+                Browse releases on GitHub →
+              </a>
+            </p>
+          )}
+        </article>
+      ))
+    }
+  </section>
+</Base>
+
+<style>
+  /* ---------- Hero (shared visual language with the home page) ---------- */
+  .hero {
+    position: relative;
+    overflow: hidden;
+    background:
+      radial-gradient(130% 100% at 80% -10%, #1d3a66 0%, var(--oc-brand) 55%, #03152f 100%);
+    color: #fff;
+    isolation: isolate;
+  }
+  .hero__grid {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+    background-size: 48px 48px;
+    mask-image: radial-gradient(120% 80% at 50% 0%, #000 30%, transparent 78%);
+    z-index: -1;
+  }
+  .hero__glow {
+    position: absolute;
+    width: 620px;
+    height: 620px;
+    right: -160px;
+    top: -260px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(74, 118, 172, 0.55), transparent 65%);
+    filter: blur(20px);
+    z-index: -1;
+  }
+  .hero__inner {
+    padding-block: 84px 72px;
+    max-width: 860px;
+  }
+  .eyebrow {
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    font-size: 0.74rem;
+    font-weight: 700;
+    color: #8fb4e3;
+    margin: 0 0 20px;
+  }
+  .hero__title {
+    font-size: clamp(2.4rem, 6vw, 4rem);
+    font-weight: 700;
+    margin: 0 0 22px;
+  }
+  .hero__accent {
+    position: relative;
+    white-space: nowrap;
+  }
+  .hero__accent::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0.08em;
+    height: 0.14em;
+    background: linear-gradient(90deg, #4a76ac, #8fb4e3);
+    border-radius: 2px;
+  }
+  .hero__lede {
+    font-size: clamp(1.05rem, 2vw, 1.25rem);
+    color: rgba(255, 255, 255, 0.82);
+    max-width: 620px;
+    margin: 0 0 18px;
+  }
+  .hero__note {
+    font-size: 0.86rem;
+    color: #8fb4e3;
+    margin: 0;
+  }
+
+  /* ---------- Surfaces ---------- */
+  .surfaces {
+    padding-top: 64px;
+    display: grid;
+    gap: 26px;
+  }
+  .surface {
+    padding: 28px;
+    background: var(--oc-bg);
+    border: 1px solid var(--oc-border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-sm);
+  }
+  .surface__head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px 24px;
+    margin-bottom: 22px;
+  }
+  .surface__name {
+    font-size: 1.5rem;
+    color: var(--oc-brand);
+  }
+  .surface__tagline {
+    margin: 4px 0 0;
+    color: var(--oc-text-muted);
+    font-size: 0.96rem;
+  }
+  .surface__release {
+    text-align: right;
+    flex: none;
+  }
+  .surface__version {
+    display: inline-block;
+    font-family: var(--font-mono);
+    font-weight: 600;
+    font-size: 0.95rem;
+    padding: 4px 12px;
+    border-radius: 999px;
+    background: var(--oc-bg-highlight);
+    color: var(--oc-primary-hover);
+  }
+  .surface__version:hover {
+    text-decoration: none;
+    background: var(--oc-border-input);
+  }
+  .surface__date {
+    display: block;
+    margin-top: 6px;
+    font-size: 0.82rem;
+    color: var(--oc-text-muted);
+  }
+
+  /* ---------- Binary download buttons ---------- */
+  .downloads {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+    gap: 12px;
+  }
+  .download {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    padding: 14px 16px;
+    border: 1px solid var(--oc-border-input);
+    border-radius: var(--radius-sm);
+    background: var(--oc-bg);
+    color: var(--oc-text);
+    transition:
+      transform 0.16s ease,
+      border-color 0.16s ease,
+      box-shadow 0.16s ease;
+  }
+  .download:hover {
+    text-decoration: none;
+    transform: translateY(-2px);
+    border-color: var(--oc-primary);
+    box-shadow: var(--shadow-md);
+  }
+  .download__os {
+    font-weight: 700;
+    color: var(--oc-brand);
+  }
+  .download__arch {
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+    color: var(--oc-text-muted);
+  }
+  .download__size {
+    margin-left: auto;
+    font-size: 0.82rem;
+    color: var(--oc-text-muted);
+  }
+
+  .surface__fallback {
+    margin: 0;
+    color: var(--oc-text-muted);
+    font-size: 0.96rem;
+  }
+</style>

@@ -42,6 +42,42 @@ export async function loadApps(): Promise<CatalogApp[]> {
   ) as CatalogApp[];
 }
 
+export interface DownloadBinary {
+  os: string;
+  arch: string;
+  size: string;
+  url: string;
+}
+export interface DownloadSurface {
+  version: string;
+  releaseUrl: string;
+  publishedAt: string;
+  binaries: DownloadBinary[];
+}
+export interface Downloads {
+  generatedAt: string;
+  ocis: DownloadSurface | null;
+  client: DownloadSurface | null;
+  android: DownloadSurface | null;
+  ios: DownloadSurface | null;
+}
+
+/**
+ * Read the generated downloads.json from the shared _site output, or null when
+ * it is absent — the fetch step produces it, so a build before that step has
+ * ever run legitimately has no downloads data and the page degrades gracefully.
+ */
+export async function loadDownloads(): Promise<Downloads | null> {
+  try {
+    return JSON.parse(
+      await readFile(resolve(apiDir, "downloads.json"), "utf8"),
+    ) as Downloads;
+  } catch (err) {
+    if ((err as NodeJS.ErrnoException).code === "ENOENT") return null;
+    throw err;
+  }
+}
+
 /** Read the generated categories.json, flattening the English translation to a name. */
 export async function loadCategories(): Promise<CatalogCategory[]> {
   const raw = JSON.parse(

@@ -2,6 +2,14 @@ name: Build and deploy
 on:
   push:
     branches: [main]
+  # Manual kick-off of a page regeneration.
+  workflow_dispatch: {}
+  # Rebuild after a data-collection job lands new data on main. Those jobs
+  # commit with the default GITHUB_TOKEN, whose pushes never trigger the
+  # push event above (GitHub's recursion guard) — workflow_run fires anyway.
+  workflow_run:
+    workflows: ["Fetch downloads", "Ingest screenshots"]
+    types: [completed]
 
 permissions:
   contents: read
@@ -18,12 +26,21 @@ env:
 jobs:
   build-deploy:
     runs-on: ubuntu-latest
+    # On workflow_run, only deploy when the data job actually succeeded.
+    # This guard is a no-op for push/workflow_dispatch (no workflow_run context).
+    if: >-
+      github.event_name != 'workflow_run' ||
+      github.event.workflow_run.conclusion == 'success'
     environment:
       name: github-pages
       url: ${{ steps.deploy.outputs.page_url }}
     steps:
       - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
         with:
+          # Pin to main: on workflow_run/workflow_dispatch the default checkout
+          # already resolves to the main tip, but being explicit guarantees we
+          # build the data commit the triggering job just pushed.
+          ref: main
           lfs: true
           fetch-depth: 0
       - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0

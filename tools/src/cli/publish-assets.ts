@@ -1,15 +1,26 @@
 import { execFile } from "node:child_process";
 import { promisify } from "node:util";
 import { pathToFileURL } from "node:url";
+import { copyFile, mkdtemp, rm } from "node:fs/promises";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 import { scanApps, type ReleaseRef } from "../scan.js";
 import { appAssetName } from "../config.js";
 
-const run = promisify(execFile);
+/** Runs a command, resolving with its captured stdout/stderr. */
+export type Runner = (cmd: string, args: string[]) => Promise<{ stdout: string; stderr: string }>;
+
+const defaultRunner: Runner = promisify(execFile);
 
 /**
  * Publish each app's package tarball as a GitHub Release asset so GitHub counts
  * its downloads. One release per app (tag = appId); each version is a distinct
  * asset named `<appId>-<version>.tar.gz`.
+ *
+ * gh derives the asset name from the uploaded file's basename, so each tarball
+ * is copied to a temp file named `<appId>-<version>.tar.gz` before upload — the
+ * on-disk file is always `package.tar.gz`, which would otherwise collide across
+ * versions and break the per-version download URL and download counter.
  *
  * Assets are immutable: an asset that already exists is left untouched so its
  * accumulated download count is never reset. Only newly added versions upload.
@@ -18,7 +29,7 @@ const run = promisify(execFile);
  */
 
 /** Names of assets already attached to the release tagged `appId`, or [] when the release does not exist. */
-async function existingAssets(appId: string): Promise<string[]> {
+async function existingAssets(appId: string, run: Runner): Promise<string[]> {
   try {
     const { stdout } = await run("gh", [
       "release",
@@ -37,7 +48,7 @@ async function existingAssets(appId: string): Promise<string[]> {
 }
 
 /** Ensure a release tagged `appId` exists, creating an empty one if absent. */
-async function ensureRelease(appId: string): Promise<void> {
+async function ensureRelease(appId: string, run: Runner): Promise<void> {
   try {
     await run("gh", ["release", "view", appId, "--json", "id"]);
   } catch {
@@ -53,15 +64,25 @@ async function ensureRelease(appId: string): Promise<void> {
   }
 }
 
-/** Upload one tarball as `<appId>-<version>.tar.gz` on the app's release. */
-async function uploadAsset(ref: ReleaseRef): Promise<void> {
+/**
+ * Upload one tarball as `<appId>-<version>.tar.gz` on the app's release. gh
+ * names the asset after the uploaded file, so the tarball is copied to a
+ * temp file carrying the per-version name (the source under apps/.../releases/
+ * is immutable). The temp file is removed afterwards.
+ */
+async function uploadAsset(ref: ReleaseRef, run: Runner): Promise<void> {
   const assetName = appAssetName(ref.appId, ref.version);
-  // gh names the uploaded asset after the file; use the #display syntax to set
-  // the asset name independently of the on-disk file name.
-  await run("gh", ["release", "upload", ref.appId, `${ref.tarballPath}#${assetName}`]);
+  const tmp = await mkdtemp(join(tmpdir(), "publish-asset-"));
+  try {
+    const named = join(tmp, assetName);
+    await copyFile(ref.tarballPath, named);
+    await run("gh", ["release", "upload", ref.appId, named]);
+  } finally {
+    await rm(tmp, { recursive: true, force: true });
+  }
 }
 
-export async function publishAssets(appsDir: string): Promise<void> {
+export async function publishAssets(appsDir: string, run: Runner = defaultRunner): Promise<void> {
   const refs = await scanApps(appsDir);
   const byApp = new Map<string, ReleaseRef[]>();
   for (const ref of refs) {
@@ -73,14 +94,14 @@ export async function publishAssets(appsDir: string): Promise<void> {
   let uploaded = 0;
   let skipped = 0;
   for (const [appId, appRefs] of byApp) {
-    await ensureRelease(appId);
-    const present = new Set(await existingAssets(appId));
+    await ensureRelease(appId, run);
+    const present = new Set(await existingAssets(appId, run));
     for (const ref of appRefs) {
       if (present.has(appAssetName(appId, ref.version))) {
         skipped++;
         continue;
       }
-      await uploadAsset(ref);
+      await uploadAsset(ref, run);
       uploaded++;
       console.log(`Uploaded ${appAssetName(appId, ref.version)}`);
     }

@@ -1,30 +1,11 @@
 import { execFile } from "node:child_process";
 import { promisify } from "node:util";
 import { pathToFileURL } from "node:url";
-import { join } from "node:path";
-import { validateChangeset, validatePlatformFloor, type ChangedPath } from "../validate.js";
-import { readInfoXmlFromTarball } from "../package-reader.js";
-import { parseInfoXml } from "../info-xml.js";
+import { validateChangeset, type ChangedPath } from "../validate.js";
 import { ValidationError } from "../types.js";
 
 /** A newly-added release package introduced by the changeset. */
 const ADDED_PACKAGE_RE = /^apps\/[^/]+\/releases\/[^/]+\/package\.tar\.gz$/;
-
-/**
- * Enforce the platform floor on every release package newly added by the PR.
- * Only added packages are checked, so historical (immutable) releases that
- * predate the floor are left untouched. Paths are resolved against `repoRoot`
- * (the working tree), where checked-out files live.
- */
-async function enforcePlatformFloorOnAdded(
-  addedPackages: string[],
-  repoRoot: string,
-): Promise<void> {
-  for (const path of addedPackages) {
-    const xml = await readInfoXmlFromTarball(join(repoRoot, path));
-    validatePlatformFloor(parseInfoXml(xml));
-  }
-}
 
 const exec = promisify(execFile);
 
@@ -107,15 +88,6 @@ async function main(): Promise<void> {
   for (const dir of dirs) await existsOnBase(dir);
 
   validateChangeset(changed, (releaseDir) => existsCache.get(releaseDir) ?? false);
-
-  // Immutability/collision passed; now gate newly-added releases on the
-  // platform floor. Resolve the repo root so package paths (relative to it)
-  // are readable regardless of the CLI's working directory.
-  const repoRoot = (await exec("git", ["rev-parse", "--show-toplevel"])).stdout.trim();
-  const addedPackages = changed
-    .filter((c) => c.status === "A" && ADDED_PACKAGE_RE.test(c.path))
-    .map((c) => c.path);
-  await enforcePlatformFloorOnAdded(addedPackages, repoRoot);
 
   console.log("Changeset OK: no immutability or collision violations.");
 }

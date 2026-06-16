@@ -3,13 +3,11 @@ import {
   selectReleases,
   buildRawDownloads,
   buildAppCounts,
-  selectClassicVersion,
-  buildClassicRelease,
+  selectClassicRelease,
   CLASSIC_REPO,
   SURFACE_REPOS,
   type GhRelease,
 } from "../src/cli/fetch-downloads.js";
-import type { RawAsset } from "../src/downloads-types.js";
 
 const gh = (overrides: Partial<GhRelease> = {}): GhRelease => ({
   tag_name: "v1.0.0",
@@ -124,79 +122,42 @@ describe("SURFACE_REPOS", () => {
     });
   });
 
-  it("does not include the classic server (it has no GitHub releases)", () => {
+  it("does not include the classic server (it is surfaced separately)", () => {
     expect(Object.values(SURFACE_REPOS)).not.toContain(CLASSIC_REPO);
   });
 });
 
-describe("selectClassicVersion", () => {
-  const tag = (name: string) => ({ name });
+describe("selectClassicRelease", () => {
+  const classic = (tag_name: string, overrides: Partial<GhRelease> = {}): GhRelease =>
+    gh({ tag_name, ...overrides });
 
-  it("picks the highest stable 10.x version, without the leading v", () => {
-    expect(
-      selectClassicVersion([tag("v10.16.2"), tag("v10.16.3"), tag("v10.15.0")]),
-    ).toBe("10.16.3");
+  it("picks the highest release on a supported 10.15/10.16 line", () => {
+    const picked = selectClassicRelease([
+      classic("v10.16.2"),
+      classic("v10.16.3"),
+      classic("v10.15.3"),
+    ]);
+    expect(picked?.tag_name).toBe("v10.16.3");
   });
 
-  it("compares components numerically rather than lexically", () => {
-    expect(selectClassicVersion([tag("v10.9.0"), tag("v10.10.0")])).toBe("10.10.0");
+  it("compares patch components numerically rather than lexically", () => {
+    const picked = selectClassicRelease([classic("v10.16.9"), classic("v10.16.10")]);
+    expect(picked?.tag_name).toBe("v10.16.10");
   });
 
-  it("ignores prerelease and stray tags", () => {
-    expect(
-      selectClassicVersion([
-        tag("v10.16.2RC1"),
-        tag("v10.16.2-rc1"),
-        tag("vv9.1.4RC1"),
-        tag("v9.1.8"),
-        tag("v10.16.2"),
-      ]),
-    ).toBe("10.16.2");
+  it("ignores drafts, prereleases and out-of-range lines", () => {
+    const picked = selectClassicRelease([
+      classic("v10.16.3", { draft: true }),
+      classic("v10.16.2", { prerelease: true }),
+      classic("v10.14.0"),
+      classic("v11.0.0"),
+      classic("v10.15.3"),
+    ]);
+    expect(picked?.tag_name).toBe("v10.15.3");
   });
 
-  it("returns null when no stable 10.x tag is present", () => {
-    expect(selectClassicVersion([tag("v9.1.8"), tag("v10.16.2RC1")])).toBeNull();
-    expect(selectClassicVersion([])).toBeNull();
-  });
-});
-
-describe("buildClassicRelease", () => {
-  const archives: RawAsset[] = [
-    {
-      name: "owncloud-10.16.3.tar.bz2",
-      browser_download_url: "https://download.owncloud.com/server/stable/owncloud-10.16.3.tar.bz2",
-      size: 58_000_000,
-    },
-    {
-      name: "owncloud-10.16.3.zip",
-      browser_download_url: "https://download.owncloud.com/server/stable/owncloud-10.16.3.zip",
-      size: 72_000_000,
-    },
-  ];
-
-  it("assembles a release with both archives and a git-tag html_url", () => {
-    const rel = buildClassicRelease(
-      "10.16.3",
-      archives,
-      ["2026-05-22T14:24:17.000Z", "2026-05-22T14:24:17.000Z"],
-    );
-    expect(rel.tag_name).toBe("v10.16.3");
-    expect(rel.name).toBe("ownCloud 10.16.3");
-    expect(rel.html_url).toBe("https://github.com/owncloud/core/releases/tag/v10.16.3");
-    expect(rel.assets).toEqual(archives);
-  });
-
-  it("uses the newest archive last-modified as published_at", () => {
-    const rel = buildClassicRelease(
-      "10.16.3",
-      archives,
-      ["2026-05-20T00:00:00.000Z", "2026-05-22T14:24:17.000Z"],
-    );
-    expect(rel.published_at).toBe("2026-05-22T14:24:17.000Z");
-  });
-
-  it("tolerates a missing last-modified date", () => {
-    const rel = buildClassicRelease("10.16.3", archives, ["", "2026-05-22T14:24:17.000Z"]);
-    expect(rel.published_at).toBe("2026-05-22T14:24:17.000Z");
+  it("returns null when no supported release is present", () => {
+    expect(selectClassicRelease([classic("v10.14.0"), classic("v11.0.0")])).toBeNull();
+    expect(selectClassicRelease([])).toBeNull();
   });
 });

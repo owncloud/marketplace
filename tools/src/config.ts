@@ -31,13 +31,18 @@ export function appAssetUrl(appId: string, version: string): string {
 
 /**
  * ownCloud platform versions for which a per-version apps.json is generated.
- * The store supports ownCloud 11+ only, so only the 11.0.0 endpoint is emitted.
- * Extend as newer releases ship.
+ * Covers the supported classic Server lines (every 10.15.x and 10.16.x patch)
+ * plus the forward-looking 11.0.0 endpoint. A client asks for the apps
+ * compatible with its exact running version; extend as newer releases ship.
  */
-export const KNOWN_PLATFORM_VERSIONS = ["11.0.0"];
-
-/**
- * Supported ownCloud platform floor. New releases must declare an owncloud
- * min-version at or above this; enforced on submission (see validatePlatformFloor).
- */
-export const MIN_PLATFORM_VERSION = "11.0.0";
+export const KNOWN_PLATFORM_VERSIONS = [
+  "10.15.0",
+  "10.15.1",
+  "10.15.2",
+  "10.15.3",
+  "10.16.0",
+  "10.16.1",
+  "10.16.2",
+  "10.16.3",
+  "11.0.0",
+];

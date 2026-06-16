@@ -143,7 +143,7 @@ describe("check-changeset CLI (integration, real git repos)", () => {
     });
   });
 
-  it("case 5: a newly-added release below the platform floor is rejected", async () => {
+  it("case 5: a newly-added release targeting a classic 10.x line passes (no floor)", async () => {
     const repo = await newRepo();
     await writeFileEnsuringDir(repo, "README.md", "base\n");
     await gitC(repo, ["add", "."]);
@@ -153,25 +153,9 @@ describe("check-changeset CLI (integration, real git repos)", () => {
     await gitC(repo, ["checkout", "-q", "-b", "feature"]);
     await addReleaseTarball(repo, "1.0.0", "10.0.0");
     await gitC(repo, ["add", "."]);
-    await gitC(repo, ["commit", "-q", "-m", "add sub-11 release"]);
+    await gitC(repo, ["commit", "-q", "-m", "add classic-targeting release"]);
 
-    await expect(runCheck(repo, base)).rejects.toMatchObject({
-      stderr: expect.stringMatching(/min-version.*11/i),
-    });
-  });
-
-  it("case 6: a newly-added release at the platform floor passes", async () => {
-    const repo = await newRepo();
-    await writeFileEnsuringDir(repo, "README.md", "base\n");
-    await gitC(repo, ["add", "."]);
-    await gitC(repo, ["commit", "-q", "-m", "base"]);
-    const base = (await gitC(repo, ["rev-parse", "HEAD"])).stdout.trim();
-
-    await gitC(repo, ["checkout", "-q", "-b", "feature"]);
-    await addReleaseTarball(repo, "1.0.1", "11.0.0");
-    await gitC(repo, ["add", "."]);
-    await gitC(repo, ["commit", "-q", "-m", "add 11 release"]);
-
+    // The platform floor has been dropped so apps may target any ownCloud line.
     const { stdout } = await runCheck(repo, base);
     expect(stdout).toMatch(/Changeset OK/i);
   });

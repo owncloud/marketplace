@@ -1,7 +1,7 @@
 import { mkdir, writeFile } from "node:fs/promises";
 import { dirname } from "node:path";
 import { pathToFileURL } from "node:url";
-import type { RawRelease, RawAsset, RawDownloads, AppDownloadCounts } from "../downloads-types.js";
+import type { RawRelease, RawDownloads, AppDownloadCounts } from "../downloads-types.js";
 import { githubRepo } from "../config.js";
 
 /** A release as returned by the GitHub Releases API (the fields we read). */
@@ -27,14 +27,15 @@ export const SURFACE_REPOS = {
 type Surface = keyof typeof SURFACE_REPOS;
 
 /**
- * Classic ownCloud Server 10.x is fetched differently from the GitHub-release
- * surfaces above: owncloud/core publishes no GitHub releases, so the version
- * comes from its git tags and the archives are served from download.owncloud.com.
+ * Classic ownCloud Server is tracked on owncloud/core, not in SURFACE_REPOS,
+ * because we only surface the supported classic lines (10.15.x and 10.16.x)
+ * rather than its newest release overall. Its archives are distributed as
+ * GitHub release assets (mirrored from download.owncloud.com), so the same
+ * release-based fetch the other surfaces use applies.
  */
 export const CLASSIC_REPO = "owncloud/core";
-export const CLASSIC_BASE = "https://download.owncloud.com/server/stable";
-/** The two archive formats classic is distributed in, in display order. */
-export const CLASSIC_ARCHIVES = ["tar.bz2", "zip"] as const;
+/** The supported classic Server lines: a tag must match to be surfaced. */
+export const CLASSIC_TAG_RE = /^v10\.(15|16)\.(\d+)$/;
 
 /**
  * Map GitHub releases to the trimmed RawRelease shape, dropping drafts and
@@ -94,50 +95,21 @@ export function buildAppCounts(releases: GhRelease[]): AppDownloadCounts {
   return counts;
 }
 
-/** A git tag as returned by the GitHub tags API (the one field we read). */
-export interface GhTag {
-  name: string;
-}
-
 /**
- * Pick the newest stable ownCloud 10.x version from a list of git tags. Keeps
- * only `vMAJOR.MINOR.PATCH` tags with major 10 — dropping prerelease tags
- * (`v10.16.2RC1`, `v10.16.2-rc1`) and stray ones (`vv9.1.4RC1`) — and returns
- * the highest by numeric component compare, without the leading `v`
- * (e.g. "10.16.3"). Returns null when no stable 10.x tag is present.
+ * Pick the newest classic Server release from owncloud/core's releases. Keeps
+ * only stable (non-draft, non-prerelease) releases whose tag matches a supported
+ * classic line (10.15.x / 10.16.x), and returns the highest by numeric version
+ * compare. Returns null when none qualify, so the surface is simply absent
+ * rather than linking a release that does not exist yet.
  */
-export function selectClassicVersion(tags: GhTag[]): string | null {
-  const versions = tags
-    .map((t) => /^v(10)\.(\d+)\.(\d+)$/.exec(t.name))
-    .filter((m): m is RegExpExecArray => m !== null)
-    .map((m) => [Number(m[1]), Number(m[2]), Number(m[3])] as const);
-  if (versions.length === 0) return null;
-  versions.sort((a, b) => b[0] - a[0] || b[1] - a[1] || b[2] - a[2]);
-  return versions[0].join(".");
-}
-
-/**
- * Assemble the classic server's RawRelease from a resolved version and its
- * fetched archive metadata. Modelled as a release with one asset per archive so
- * it reuses the existing raw/normalized download shapes; `published_at` is the
- * newest archive's last-modified date, and `html_url` points at the git tag
- * page (owncloud/core has no GitHub release pages).
- */
-export function buildClassicRelease(
-  version: string,
-  archives: RawAsset[],
-  lastModified: string[],
-): RawRelease {
-  const publishedAt =
-    [...lastModified].filter(Boolean).sort((a, b) => b.localeCompare(a))[0] ?? "";
-  return {
-    tag_name: `v${version}`,
-    name: `ownCloud ${version}`,
-    published_at: publishedAt,
-    html_url: `https://github.com/${CLASSIC_REPO}/releases/tag/v${version}`,
-    body: "",
-    assets: archives,
-  };
+export function selectClassicRelease(releases: GhRelease[]): GhRelease | null {
+  const matched = releases
+    .filter((r) => !r.draft && !r.prerelease)
+    .map((r) => ({ release: r, m: CLASSIC_TAG_RE.exec(r.tag_name) }))
+    .filter((x): x is { release: GhRelease; m: RegExpExecArray } => x.m !== null);
+  if (matched.length === 0) return null;
+  matched.sort((a, b) => Number(b.m[1]) - Number(a.m[1]) || Number(b.m[2]) - Number(a.m[2]));
+  return matched[0].release;
 }
 
 /** Fetch a repo's releases from the GitHub API (first page, newest first). */
@@ -145,15 +117,10 @@ async function fetchReleases(repo: string): Promise<GhRelease[]> {
   return fetchGitHub(`https://api.github.com/repos/${repo}/releases?per_page=100`, repo);
 }
 
-/** Fetch a repo's git tags from the GitHub API (first page). */
-async function fetchTags(repo: string): Promise<GhTag[]> {
-  return fetchGitHub(`https://api.github.com/repos/${repo}/tags?per_page=100`, repo);
-}
-
 /**
  * GET a GitHub API URL with our standard headers/auth, parsing JSON. Retries a
- * few times on transient 5xx responses (the owncloud/core tags endpoint is slow
- * and intermittently 504s at GitHub's edge), backing off between attempts.
+ * few times on transient 5xx responses (some owncloud endpoints are slow and
+ * intermittently 504 at GitHub's edge), backing off between attempts.
  */
 async function fetchGitHub<T>(url: string, repo: string): Promise<T> {
   const headers: Record<string, string> = {
@@ -184,36 +151,30 @@ function sleep(ms: number): Promise<void> {
 }
 
 /**
- * Resolve the classic server surface: read owncloud/core's tags for the newest
- * stable 10.x version, then HEAD each archive on download.owncloud.com for its
- * size and last-modified date. Returns null (and logs) on any failure so a
- * download-server hiccup never fails the four GitHub surfaces.
+ * Resolve the classic server surface from owncloud/core's GitHub releases:
+ * pick the newest release on a supported line (10.15.x / 10.16.x) and keep only
+ * its archive assets (.tar.bz2 / .zip). Returns null (and logs) on any failure,
+ * or when no supported release exists, so the surface is simply absent rather
+ * than failing the four GitHub surfaces.
  */
 export async function fetchClassic(): Promise<RawRelease | null> {
   try {
-    const version = selectClassicVersion(await fetchTags(CLASSIC_REPO));
-    if (!version) {
-      console.warn(`No stable 10.x tag found for ${CLASSIC_REPO}; skipping classic server.`);
+    const release = selectClassicRelease(await fetchReleases(CLASSIC_REPO));
+    if (!release) {
+      console.warn(
+        `No supported 10.15/10.16 release found for ${CLASSIC_REPO}; skipping classic server.`,
+      );
       return null;
     }
-    const probes = await Promise.all(
-      CLASSIC_ARCHIVES.map(async (ext) => {
-        const name = `owncloud-${version}.${ext}`;
-        const url = `${CLASSIC_BASE}/${name}`;
-        const res = await fetch(url, { method: "HEAD" });
-        if (!res.ok) throw new Error(`HEAD ${res.status} for ${url}`);
-        const size = Number(res.headers.get("content-length"));
-        const lastModified = res.headers.get("last-modified");
-        const iso = lastModified ? new Date(lastModified).toISOString() : "";
-        const asset: RawAsset = { name, browser_download_url: url, size };
-        return { asset, iso };
-      }),
+    const [selected] = selectReleases([release]);
+    const assets = selected.assets.filter(
+      (a) => a.name.endsWith(".tar.bz2") || a.name.endsWith(".zip"),
     );
-    return buildClassicRelease(
-      version,
-      probes.map((p) => p.asset),
-      probes.map((p) => p.iso),
-    );
+    if (assets.length === 0) {
+      console.warn(`Classic release ${release.tag_name} has no archive assets; skipping.`);
+      return null;
+    }
+    return { ...selected, assets };
   } catch (err) {
     console.warn(`Could not fetch classic server downloads: ${String(err)}`);
     return null;
@@ -236,7 +197,7 @@ async function main(): Promise<void> {
 
   const surfaces = Object.keys(SURFACE_REPOS) as Surface[];
   // Fetch the GitHub-release surfaces, this repo's own releases (app packages),
-  // and the classic server (tags + download server) all in parallel.
+  // and the classic server (owncloud/core releases) all in parallel.
   const ownRepo = githubRepo();
   const [own, classic, ...fetched] = await Promise.all([
     fetchReleases(ownRepo),

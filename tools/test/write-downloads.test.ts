@@ -44,8 +44,7 @@ const raw: RawDownloads = {
         },
         {
           name: "owncloud-10.16.3.zip",
-          browser_download_url:
-            "https://download.owncloud.com/server/stable/owncloud-10.16.3.zip",
+          browser_download_url: "https://download.owncloud.com/server/stable/owncloud-10.16.3.zip",
           size: 72 * 1024 * 1024,
         },
       ],

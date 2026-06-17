@@ -29,6 +29,21 @@ export function appAssetUrl(appId: string, version: string): string {
   return `https://github.com/${githubRepo()}/releases/download/${appId}/${appAssetName(appId, version)}`;
 }
 
+/** The asset file name for an oCIS web-extension release: `<extId>-<version>.zip`. */
+export function extAssetName(extId: string, version: string): string {
+  return `${extId}-${version}.zip`;
+}
+
+/**
+ * The GitHub Release asset download URL for an oCIS web-extension version. The
+ * extension bundle ZIPs are published as assets on a per-extension release
+ * tagged `<extId>` (mirroring the classic app flow), so advertising this URL
+ * lets GitHub count each download and oCIS can fetch the bundle directly.
+ */
+export function extAssetUrl(extId: string, version: string): string {
+  return `https://github.com/${githubRepo()}/releases/download/${extId}/${extAssetName(extId, version)}`;
+}
+
 /**
  * ownCloud platform versions for which a per-version apps.json is generated.
  * Covers the supported classic Server lines (every 10.15.x and 10.16.x patch)

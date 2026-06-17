@@ -80,16 +80,34 @@ export function buildRawDownloads(
  * Assets not matching the app's own naming (e.g. checksums) are ignored.
  */
 export function buildAppCounts(releases: GhRelease[]): AppDownloadCounts {
+  return buildAssetCounts(releases, ".tar.gz");
+}
+
+/**
+ * Reduce this repo's own releases into per-extension download counts. Extension
+ * bundles are published one release per extension (tag = extId) with assets named
+ * `<extId>-<version>.zip` — the same scheme as app packages, with a .zip suffix.
+ */
+export function buildExtensionCounts(releases: GhRelease[]): AppDownloadCounts {
+  return buildAssetCounts(releases, ".zip");
+}
+
+/**
+ * Shared reducer for per-id download counts: for each release (tag = id), match
+ * assets named `<id>-<version><suffix>`, recover the version by stripping that
+ * exact prefix and suffix (so versions containing hyphens are handled), and sum
+ * the count under id → version. Assets not matching the naming are ignored.
+ */
+function buildAssetCounts(releases: GhRelease[], suffix: string): AppDownloadCounts {
   const counts: AppDownloadCounts = {};
   for (const release of releases) {
-    const appId = release.tag_name;
-    const prefix = `${appId}-`;
-    const suffix = ".tar.gz";
+    const id = release.tag_name;
+    const prefix = `${id}-`;
     for (const asset of release.assets) {
       if (!asset.name.startsWith(prefix) || !asset.name.endsWith(suffix)) continue;
       const version = asset.name.slice(prefix.length, asset.name.length - suffix.length);
       if (!version) continue;
-      (counts[appId] ??= {})[version] = asset.download_count;
+      (counts[id] ??= {})[version] = asset.download_count;
     }
   }
   return counts;
@@ -210,13 +228,17 @@ async function main(): Promise<void> {
 
   const raw = buildRawDownloads(perSurface, now);
   if (classic.length) raw.server = classic;
+  // App packages and extension bundles are both published as this repo's own
+  // Release assets, distinguished by asset suffix (.tar.gz vs .zip).
   raw.apps = buildAppCounts(own);
+  raw.extensions = buildExtensionCounts(own);
   await mkdir(dirname(out), { recursive: true });
   await writeFile(out, JSON.stringify(raw, null, 2) + "\n", "utf8");
 
   const surfaceCounts = surfaces.map((s) => `${s}=${raw[s].length}`).join(" ");
   console.log(
-    `Wrote ${out} (${surfaceCounts} server=${raw.server?.length ?? 0} apps=${Object.keys(raw.apps).length})`,
+    `Wrote ${out} (${surfaceCounts} server=${raw.server?.length ?? 0} ` +
+      `apps=${Object.keys(raw.apps).length} extensions=${Object.keys(raw.extensions).length})`,
   );
 }
 

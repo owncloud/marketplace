@@ -5,7 +5,8 @@ import { copyFile, mkdtemp, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { scanApps, type ReleaseRef } from "../scan.js";
-import { appAssetName } from "../config.js";
+import { scanExtensions, type ExtensionRef } from "../ext/scan-extensions.js";
+import { appAssetName, extAssetName } from "../config.js";
 
 /** Runs a command, resolving with its captured stdout/stderr. */
 export type Runner = (cmd: string, args: string[]) => Promise<{ stdout: string; stderr: string }>;
@@ -82,6 +83,24 @@ async function uploadAsset(ref: ReleaseRef, run: Runner): Promise<void> {
   }
 }
 
+/**
+ * Upload one extension bundle as `<extId>-<version>.zip` on the extension's
+ * release. As with apps, gh names the asset after the uploaded file, so the
+ * bundle (always `bundle.zip` on disk) is copied to a temp file carrying the
+ * per-version name. The temp file is removed afterwards.
+ */
+async function uploadExtAsset(ref: ExtensionRef, run: Runner): Promise<void> {
+  const assetName = extAssetName(ref.extId, ref.version);
+  const tmp = await mkdtemp(join(tmpdir(), "publish-ext-asset-"));
+  try {
+    const named = join(tmp, assetName);
+    await copyFile(ref.bundlePath, named);
+    await run("gh", ["release", "upload", ref.extId, named]);
+  } finally {
+    await rm(tmp, { recursive: true, force: true });
+  }
+}
+
 export async function publishAssets(appsDir: string, run: Runner = defaultRunner): Promise<void> {
   const refs = await scanApps(appsDir);
   const byApp = new Map<string, ReleaseRef[]>();
@@ -109,6 +128,42 @@ export async function publishAssets(appsDir: string, run: Runner = defaultRunner
   console.log(`Done: ${uploaded} uploaded, ${skipped} already present.`);
 }
 
+/**
+ * Publish each oCIS web-extension bundle as a GitHub Release asset, mirroring
+ * publishAssets: one release per extension (tag = extId), each version a
+ * distinct asset named `<extId>-<version>.zip`. Idempotent — existing assets are
+ * left untouched so their download counts are preserved.
+ */
+export async function publishExtensionAssets(
+  extDir: string,
+  run: Runner = defaultRunner,
+): Promise<void> {
+  const refs = await scanExtensions(extDir);
+  const byExt = new Map<string, ExtensionRef[]>();
+  for (const ref of refs) {
+    const list = byExt.get(ref.extId) ?? [];
+    list.push(ref);
+    byExt.set(ref.extId, list);
+  }
+
+  let uploaded = 0;
+  let skipped = 0;
+  for (const [extId, extRefs] of byExt) {
+    await ensureRelease(extId, run);
+    const present = new Set(await existingAssets(extId, run));
+    for (const ref of extRefs) {
+      if (present.has(extAssetName(extId, ref.version))) {
+        skipped++;
+        continue;
+      }
+      await uploadExtAsset(ref, run);
+      uploaded++;
+      console.log(`Uploaded ${extAssetName(extId, ref.version)}`);
+    }
+  }
+  console.log(`Done: ${uploaded} extension asset(s) uploaded, ${skipped} already present.`);
+}
+
 function arg(name: string, fallback: string): string {
   const i = process.argv.indexOf(name);
   return i >= 0 && process.argv[i + 1] ? process.argv[i + 1] : fallback;
@@ -116,7 +171,10 @@ function arg(name: string, fallback: string): string {
 
 // Only run when executed directly as a CLI, not when imported (e.g. by tests).
 if (import.meta.url === pathToFileURL(process.argv[1]).href) {
-  publishAssets(arg("--apps", "apps")).catch((err: unknown) => {
+  (async () => {
+    await publishAssets(arg("--apps", "apps"));
+    await publishExtensionAssets(arg("--extensions", "extensions"));
+  })().catch((err: unknown) => {
     console.error(err);
     process.exit(1);
   });

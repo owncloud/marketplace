@@ -3,6 +3,7 @@ import {
   selectReleases,
   buildRawDownloads,
   buildAppCounts,
+  buildExtensionCounts,
   selectClassicReleases,
   CLASSIC_REPO,
   SURFACE_REPOS,
@@ -121,6 +122,44 @@ describe("buildAppCounts", () => {
 
   it("returns an empty map for no releases", () => {
     expect(buildAppCounts([])).toEqual({});
+  });
+
+  it("ignores extension bundles (.zip) when counting app packages", () => {
+    const counts = buildAppCounts([
+      gh({ tag_name: "draw-io", assets: [asset("draw-io-0.2.0.zip", 8)] }),
+    ]);
+    expect(counts).toEqual({});
+  });
+});
+
+describe("buildExtensionCounts", () => {
+  it("maps each extension's per-version bundle download counts (tag = extId)", () => {
+    const counts = buildExtensionCounts([
+      gh({ tag_name: "draw-io", assets: [asset("draw-io-0.2.0.zip", 8)] }),
+      gh({ tag_name: "json-viewer", assets: [asset("json-viewer-1.0.0.zip", 3)] }),
+    ]);
+    expect(counts).toEqual({
+      "draw-io": { "0.2.0": 8 },
+      "json-viewer": { "1.0.0": 3 },
+    });
+  });
+
+  it("ignores app packages (.tar.gz) and unrelated assets", () => {
+    const counts = buildExtensionCounts([
+      gh({
+        tag_name: "draw-io",
+        assets: [
+          asset("draw-io-0.2.0.zip", 8),
+          asset("draw-io-0.2.0.tar.gz", 99),
+          asset("checksums.txt", 1),
+        ],
+      }),
+    ]);
+    expect(counts).toEqual({ "draw-io": { "0.2.0": 8 } });
+  });
+
+  it("returns an empty map for no releases", () => {
+    expect(buildExtensionCounts([])).toEqual({});
   });
 });
 

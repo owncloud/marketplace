@@ -7,7 +7,11 @@ import { readRawDownloads, writeDownloads } from "../downloads-generate.js";
 import { makeGitCreatedProvider } from "../created.js";
 import { listScreenshots, screenshotsDir } from "../screenshots.js";
 import { BASE_URL, KNOWN_PLATFORM_VERSIONS } from "../config.js";
+import { scanExtensions } from "../ext/scan-extensions.js";
+import { validateExtensionRelease, assertConsistentIds } from "../ext/validate-extension.js";
+import { buildExtension, writeOcisApi } from "../ext/generate-extensions.js";
 import type { AppInfo } from "../types.js";
+import type { ExtensionInfo } from "../ext/types.js";
 
 function arg(name: string, fallback: string): string {
   const i = process.argv.indexOf(name);
@@ -20,6 +24,7 @@ function arg(name: string, fallback: string): string {
  */
 async function main(): Promise<void> {
   const appsDir = arg("--apps", "apps");
+  const extDir = arg("--extensions", "extensions");
   const outDir = arg("--out", "_site");
   const downloadsData = arg("--downloads", "data/downloads.json");
 
@@ -83,6 +88,60 @@ async function main(): Promise<void> {
   }
 
   console.log(`Generated API for ${apps.length} app(s) into ${outDir}/api/v1/`);
+
+  // ---- oCIS web extensions (parallel catalog, parallel API namespace) ----
+  // Mirrors the classic pipeline above: scan extensions/, re-validate, build the
+  // oCIS-compatible feed, and copy ingested screenshots into the served tree.
+  const extRefs = await scanExtensions(extDir);
+  const byExt = new Map<string, ExtensionInfo[]>();
+  for (const ref of extRefs) {
+    const info = await validateExtensionRelease(ref);
+    const list = byExt.get(ref.extId) ?? [];
+    list.push(info);
+    byExt.set(ref.extId, list);
+  }
+  for (const [extId, infos] of byExt) assertConsistentIds(extId, infos);
+
+  const extCreated = await makeGitCreatedProvider(
+    extRefs.map((r) => ({ appId: r.extId, version: r.version, dir: r.dir })),
+    "1970-01-01T00:00:00+00:00",
+  );
+
+  const extShotsByRelease = new Map<string, string[]>();
+  for (const ref of extRefs) {
+    extShotsByRelease.set(`${ref.extId}@${ref.version}`, await listScreenshots(ref.dir));
+  }
+  const extShots = (extId: string, version: string): string[] =>
+    extShotsByRelease.get(`${extId}@${version}`) ?? [];
+
+  // Extension Release asset download counts share the raw downloads file, keyed
+  // by extId under `extensions` (apps live under `apps`); 0 before first fetch.
+  const extCounts = rawDownloads?.extensions ?? {};
+
+  const exts = [...byExt.entries()]
+    .map(([extId, infos]) =>
+      buildExtension(extId, infos, extCreated, extShots, BASE_URL, extCounts[extId] ?? {}),
+    )
+    .sort((a, b) => a.id.localeCompare(b.id));
+
+  await writeOcisApi(outDir, exts);
+
+  // Copy each extension release's ingested screenshots into the served tree so
+  // the absolute URLs resolve same-origin:
+  //   _site/extensions/{id}/releases/{version}/screenshots/*
+  // Bundle ZIPs are NOT copied: they are distributed as GitHub Release assets
+  // (so GitHub counts downloads); see buildExtension's version url.
+  for (const ref of extRefs) {
+    const files = extShotsByRelease.get(`${ref.extId}@${ref.version}`) ?? [];
+    if (files.length === 0) continue;
+    const shotsDest = join(outDir, "extensions", ref.extId, "releases", ref.version, "screenshots");
+    await mkdir(shotsDest, { recursive: true });
+    for (const file of files) {
+      await cp(join(screenshotsDir(ref.dir), file), join(shotsDest, file));
+    }
+  }
+
+  console.log(`Generated oCIS API for ${exts.length} extension(s) into ${outDir}/api/ocis/v1/`);
 }
 
 main().catch((err: unknown) => {

@@ -11,6 +11,7 @@ on:
     branches: [main]
     paths:
       - "apps/**"
+      - "extensions/**"
 
 permissions:
   contents: write
@@ -39,4 +40,4 @@ jobs:
         # GH_TOKEN authenticates the gh CLI used to create releases and upload assets.
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: npx tsx src/cli/publish-assets.ts --apps ../apps
+        run: npx tsx src/cli/publish-assets.ts --apps ../apps --extensions ../extensions

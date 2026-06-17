@@ -1,7 +1,7 @@
 name: Validate submissions
 on:
   pull_request:
-    paths: ["apps/**"]
+    paths: ["apps/**", "extensions/**"]
 
 jobs:
   validate:
@@ -24,7 +24,7 @@ jobs:
           npx tsx src/cli/check-changeset.ts "origin/${{ github.base_ref }}"
       - name: Validate all releases
         working-directory: tools
-        run: npx tsx src/cli/validate.ts ../apps
+        run: npx tsx src/cli/validate.ts ../apps ../extensions
       - name: Validate screenshots on new releases
         working-directory: tools
         run: npx tsx src/cli/validate-screenshots.ts "origin/${{ github.base_ref }}"

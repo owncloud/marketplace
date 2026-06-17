@@ -2,3 +2,7 @@ apps/**/*.tar.gz filter=lfs diff=lfs merge=lfs -text
 apps/**/*.png filter=lfs diff=lfs merge=lfs -text
 apps/**/*.jpg filter=lfs diff=lfs merge=lfs -text
 apps/**/*.webp filter=lfs diff=lfs merge=lfs -text
+extensions/**/*.zip filter=lfs diff=lfs merge=lfs -text
+extensions/**/*.png filter=lfs diff=lfs merge=lfs -text
+extensions/**/*.jpg filter=lfs diff=lfs merge=lfs -text
+extensions/**/*.webp filter=lfs diff=lfs merge=lfs -text

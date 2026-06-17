@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
-import { appAssetName, appAssetUrl, githubRepo } from "../src/config.js";
+import { appAssetName, appAssetUrl, extAssetName, extAssetUrl, githubRepo } from "../src/config.js";
 
 let savedRepo: string | undefined;
 beforeEach(() => {
@@ -31,6 +31,19 @@ describe("appAssetName / appAssetUrl", () => {
     process.env.GITHUB_REPOSITORY = "owner/repo";
     expect(appAssetUrl("calendar", "1.0.0")).toBe(
       "https://github.com/owner/repo/releases/download/calendar/calendar-1.0.0.tar.gz",
+    );
+  });
+});
+
+describe("extAssetName / extAssetUrl", () => {
+  it("names the asset <extId>-<version>.zip", () => {
+    expect(extAssetName("draw-io", "0.2.0")).toBe("draw-io-0.2.0.zip");
+  });
+
+  it("builds the Release asset URL on the extension's tag, honoring GITHUB_REPOSITORY", () => {
+    process.env.GITHUB_REPOSITORY = "owner/repo";
+    expect(extAssetUrl("draw-io", "0.2.0")).toBe(
+      "https://github.com/owner/repo/releases/download/draw-io/draw-io-0.2.0.zip",
     );
   });
 });

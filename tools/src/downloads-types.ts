@@ -20,6 +20,9 @@ export interface RawRelease {
  * Per-app download counts, keyed appId → version → count, sourced from this
  * repo's own GitHub Release assets. Optional: absent before the fetch step has
  * ever recorded any, and apps with no published assets simply have no entry.
+ *
+ * The same shape is reused for oCIS web-extension counts, keyed extId → version
+ * → count (see RawDownloads.extensions).
  */
 export type AppDownloadCounts = Record<string, Record<string, number>>;
 
@@ -39,6 +42,8 @@ export interface RawDownloads {
   server?: RawRelease[];
   /** App package download counts from this repo's Release assets. */
   apps?: AppDownloadCounts;
+  /** Extension bundle download counts from this repo's Release assets (extId → version → count). */
+  extensions?: AppDownloadCounts;
 }
 
 /** A single resolved binary download row in the normalized API. */

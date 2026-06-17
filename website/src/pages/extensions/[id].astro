@@ -1,0 +1,467 @@
+---
+import Base from "../../layouts/Base.astro";
+import { withBase } from "../../lib/catalog.ts";
+import { loadExtensions } from "../../lib/extensions.ts";
+
+export async function getStaticPaths() {
+  const extensions = await loadExtensions();
+  return extensions.map((ext) => ({ params: { id: ext.id }, props: { ext } }));
+}
+
+const { ext } = Astro.props;
+const base = import.meta.env.BASE_URL;
+
+const latest = ext.versions[0];
+const initial = ext.name.trim().charAt(0).toUpperCase() || "?";
+const totalDownloads = ext.downloads ?? 0;
+const author = ext.authors[0];
+
+const fmtDate = (iso?: string) => {
+  if (!iso) return "";
+  const d = new Date(iso);
+  return Number.isNaN(d.getTime())
+    ? iso
+    : d.toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" });
+};
+
+const fmtCount = (n: number) => n.toLocaleString("en-US");
+const fmtDownloads = (n: number) => `${fmtCount(n)} download${n === 1 ? "" : "s"}`;
+const ocisReq = (v?: string) => (v ? `Requires oCIS ${v} or newer` : "Any oCIS version");
+---
+<Base title={`${ext.name} — ownCloud Marketplace`} description={ext.subtitle}>
+  <nav class="breadcrumb container" aria-label="Breadcrumb">
+    <a href={withBase(base, "")}>Marketplace</a>
+    <span aria-hidden="true">/</span>
+    <a href={withBase(base, "extensions")}>Web Extensions</a>
+    <span aria-hidden="true">/</span>
+    <span aria-current="page">{ext.name}</span>
+  </nav>
+
+  <header class="app-hero">
+    <div class="container app-hero__inner">
+      <span class="app-hero__avatar" aria-hidden="true">{initial}</span>
+      <div class="app-hero__body">
+        <div class="app-hero__cats">
+          {ext.tags.map((t) => <span class="tag">{t}</span>)}
+        </div>
+        <h1>{ext.name}</h1>
+        <p class="app-hero__desc">{ext.description ?? ext.subtitle}</p>
+        <div class="app-hero__by">
+          {
+            author?.url ? (
+              <a href={author.url}>{author.name}</a>
+            ) : (
+              <span>{author?.name}</span>
+            )
+          }
+          {latest && <span class="dot" aria-hidden="true">·</span>}
+          {latest && <span>Latest v{latest.version}</span>}
+          <span class="dot" aria-hidden="true">·</span>
+          <span>{fmtDownloads(totalDownloads)}</span>
+        </div>
+        {
+          latest && (
+            <a class="btn-download" href={latest.url} rel="nofollow">
+              <svg
+                viewBox="0 0 24 24"
+                width="18"
+                height="18"
+                aria-hidden="true"
+              >
+                <path
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M12 3v12m0 0 4-4m-4 4-4-4M4 17v2a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-2"
+                />
+              </svg>
+              Download v{latest.version}
+            </a>
+          )
+        }
+      </div>
+    </div>
+  </header>
+
+  <div class="app-layout container">
+    <div class="app-main">
+      <section class="panel callout">
+        <h2>Add to ownCloud Infinite Scale</h2>
+        <p>
+          This extension is distributed through the marketplace's oCIS app-store
+          repository. Add the repository feed to your oCIS Web configuration to
+          install it from the in-product App Store, then restart the web service.
+        </p>
+        <a class="callout__link" href={withBase(base, "extensions#use-in-ocis")}>
+          How to use the repository in oCIS →
+        </a>
+      </section>
+
+      {
+        ext.screenshots && ext.screenshots.length > 0 && (
+          <section class="panel">
+            <h2>Screenshots</h2>
+            <div class="shots">
+              {ext.screenshots.map((s, i) => (
+                <img
+                  src={s.url}
+                  alt={s.caption ?? `${ext.name} screenshot ${i + 1}`}
+                  loading="lazy"
+                  decoding="async"
+                />
+              ))}
+            </div>
+          </section>
+        )
+      }
+
+      <section class="panel">
+        <h2>Releases</h2>
+        <ul class="releases">
+          {
+            ext.versions.map((v, i) => (
+              <li class="release">
+                <div class="release__head">
+                  <span class="release__version">v{v.version}</span>
+                  {i === 0 && <span class="release__badge">Latest</span>}
+                  <span class="release__date">{fmtDate(v.created)}</span>
+                </div>
+                <div class="release__facts">
+                  <span>{ocisReq(v.minOCIS)}</span>
+                  <span class="dot" aria-hidden="true">·</span>
+                  <span>{ext.license}</span>
+                  <span class="dot" aria-hidden="true">·</span>
+                  <span>{fmtDownloads(v.downloads ?? 0)}</span>
+                </div>
+                <a class="release__dl" href={v.url} rel="nofollow">
+                  Download bundle
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </section>
+    </div>
+
+    <aside class="app-side">
+      <div class="panel info">
+        <h2>Information</h2>
+        <dl>
+          <div>
+            <dt>Author</dt>
+            <dd>{author?.name}</dd>
+          </div>
+          <div>
+            <dt>License</dt>
+            <dd>{ext.license}</dd>
+          </div>
+          {
+            latest && (
+              <div>
+                <dt>Compatibility</dt>
+                <dd>{ocisReq(latest.minOCIS)}</dd>
+              </div>
+            )
+          }
+          <div>
+            <dt>Releases</dt>
+            <dd>{ext.versions.length}</dd>
+          </div>
+          <div>
+            <dt>Downloads</dt>
+            <dd>{fmtCount(totalDownloads)}</dd>
+          </div>
+          <div>
+            <dt>Tags</dt>
+            <dd class="info__cats">
+              {ext.tags.map((t) => <span class="tag">{t}</span>)}
+            </dd>
+          </div>
+          {
+            ext.resources && ext.resources.length > 0 && (
+              <div>
+                <dt>Resources</dt>
+                <dd class="info__links">
+                  {ext.resources.map((r) => (
+                    <a href={r.url} rel="noopener">
+                      {r.label}
+                    </a>
+                  ))}
+                </dd>
+              </div>
+            )
+          }
+        </dl>
+      </div>
+    </aside>
+  </div>
+</Base>
+
+<style>
+  .breadcrumb {
+    display: flex;
+    gap: 9px;
+    align-items: center;
+    flex-wrap: wrap;
+    padding-top: 28px;
+    font-size: 0.88rem;
+    color: var(--oc-text-muted);
+  }
+  .breadcrumb a {
+    color: var(--oc-text-muted);
+  }
+  .breadcrumb a:hover {
+    color: var(--oc-primary-hover);
+  }
+  .breadcrumb [aria-current] {
+    color: var(--oc-brand);
+    font-weight: 600;
+  }
+
+  .app-hero {
+    margin-top: 24px;
+    background: linear-gradient(180deg, var(--oc-bg-highlight), var(--oc-bg));
+    border-block: 1px solid var(--oc-border);
+  }
+  .app-hero__inner {
+    display: flex;
+    gap: 28px;
+    padding-block: 44px;
+    align-items: flex-start;
+  }
+  .app-hero__avatar {
+    flex: none;
+    width: 84px;
+    height: 84px;
+    display: grid;
+    place-items: center;
+    border-radius: 18px;
+    font-weight: 700;
+    font-size: 2.3rem;
+    color: #fff;
+    background: linear-gradient(135deg, var(--oc-primary), var(--oc-brand));
+    box-shadow: var(--shadow-md);
+  }
+  .app-hero__body {
+    min-width: 0;
+  }
+  .app-hero__cats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 12px;
+  }
+  .app-hero h1 {
+    font-size: clamp(2rem, 4vw, 2.9rem);
+    font-weight: 700;
+    color: var(--oc-brand);
+    margin-bottom: 10px;
+  }
+  .app-hero__desc {
+    font-size: 1.12rem;
+    color: var(--oc-text-muted);
+    max-width: 60ch;
+    margin: 0 0 16px;
+  }
+  .app-hero__by {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    font-size: 0.95rem;
+    color: var(--oc-text-muted);
+    margin-bottom: 24px;
+  }
+  .app-hero__by a {
+    color: var(--oc-primary-hover);
+    font-weight: 600;
+  }
+  .dot {
+    color: var(--oc-border-input);
+  }
+
+  .btn-download {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    font-weight: 600;
+    padding: 13px 26px;
+    border-radius: 999px;
+    background: var(--oc-brand);
+    color: #fff;
+    box-shadow: var(--shadow-md);
+    transition:
+      background 0.18s ease,
+      transform 0.18s ease;
+  }
+  .btn-download:hover {
+    background: var(--oc-brand-hover);
+    text-decoration: none;
+    transform: translateY(-2px);
+  }
+
+  .app-layout {
+    display: grid;
+    grid-template-columns: 1fr 320px;
+    gap: 32px;
+    padding-top: 44px;
+    align-items: start;
+  }
+  @media (max-width: 880px) {
+    .app-layout {
+      grid-template-columns: 1fr;
+    }
+    .app-hero__inner {
+      flex-direction: column;
+      gap: 20px;
+    }
+  }
+
+  .app-main {
+    display: grid;
+    gap: 28px;
+    min-width: 0;
+  }
+  .panel {
+    background: var(--oc-bg);
+    border: 1px solid var(--oc-border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-sm);
+    padding: 28px;
+  }
+  .panel h2 {
+    font-size: 1.25rem;
+    color: var(--oc-brand);
+    margin-bottom: 20px;
+  }
+  .callout {
+    background: var(--oc-bg-highlight);
+    border-color: var(--oc-border-input);
+  }
+  .callout p {
+    margin: 0 0 14px;
+    color: var(--oc-text-muted);
+  }
+  .callout__link {
+    font-weight: 600;
+    font-size: 0.92rem;
+  }
+
+  .shots {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 16px;
+  }
+  .shots img {
+    width: 100%;
+    height: auto;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--oc-border);
+    background: var(--oc-bg-muted);
+    display: block;
+  }
+
+  .releases {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 14px;
+  }
+  .release {
+    border: 1px solid var(--oc-border);
+    border-radius: var(--radius-sm);
+    padding: 18px 20px;
+    transition: border-color 0.18s ease;
+  }
+  .release:hover {
+    border-color: var(--oc-border-input);
+  }
+  .release__head {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 8px;
+  }
+  .release__version {
+    font-family: var(--font-mono);
+    font-weight: 500;
+    font-size: 1.05rem;
+    color: var(--oc-brand);
+  }
+  .release__badge {
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding: 2px 9px;
+    border-radius: 999px;
+    background: var(--oc-success);
+    color: #fff;
+  }
+  .release__date {
+    margin-left: auto;
+    font-size: 0.86rem;
+    color: var(--oc-text-muted);
+  }
+  .release__facts {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.9rem;
+    color: var(--oc-text-muted);
+    margin-bottom: 12px;
+  }
+  .release__dl {
+    font-weight: 600;
+    font-size: 0.92rem;
+  }
+
+  .info dl {
+    margin: 0;
+    display: grid;
+    gap: 16px;
+  }
+  .info dt {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--oc-text-muted);
+    margin-bottom: 3px;
+  }
+  .info dd {
+    margin: 0;
+    color: var(--oc-text);
+    font-weight: 600;
+  }
+  .info__cats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .info__links {
+    display: grid;
+    gap: 6px;
+    font-weight: 600;
+  }
+  .app-side {
+    position: sticky;
+    top: 88px;
+  }
+  @media (max-width: 880px) {
+    .app-side {
+      position: static;
+    }
+  }
+
+  .tag {
+    font-size: 0.74rem;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 999px;
+    background: var(--oc-bg-highlight);
+    color: var(--oc-primary-hover);
+  }
+</style>

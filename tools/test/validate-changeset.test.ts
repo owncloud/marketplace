@@ -45,4 +45,34 @@ describe("validateChangeset", () => {
       ),
     ).toThrow(/already.*publish|collision|exists/i);
   });
+
+  // The same immutability/collision rules apply to the oCIS extensions catalog.
+  const extOnMaster = (p: string) => p === "extensions/draw-io/releases/0.1.0";
+
+  it("accepts adding a brand-new extension release folder", () => {
+    expect(() =>
+      validateChangeset(
+        [{ path: "extensions/draw-io/releases/0.2.0/bundle.zip", status: "A" }],
+        extOnMaster,
+      ),
+    ).not.toThrow();
+  });
+
+  it("rejects modifying a file inside an existing extension release", () => {
+    expect(() =>
+      validateChangeset(
+        [{ path: "extensions/draw-io/releases/0.1.0/extension.yaml", status: "M" }],
+        extOnMaster,
+      ),
+    ).toThrow(/immutable|modify/i);
+  });
+
+  it("rejects adding an extension release that already exists on master", () => {
+    expect(() =>
+      validateChangeset(
+        [{ path: "extensions/draw-io/releases/0.1.0/bundle.zip", status: "A" }],
+        extOnMaster,
+      ),
+    ).toThrow(/already.*publish|collision|exists/i);
+  });
 });

@@ -2,7 +2,7 @@ import { describe, it, expect, afterEach } from "vitest";
 import { mkdtemp, mkdir, writeFile, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join, basename } from "node:path";
-import { publishAssets, type Runner } from "../src/cli/publish-assets.js";
+import { publishAssets, publishExtensionAssets, type Runner } from "../src/cli/publish-assets.js";
 
 const cleanups: Array<() => Promise<void>> = [];
 afterEach(async () => {
@@ -74,5 +74,49 @@ describe("publishAssets", () => {
       .filter((c) => c[0] === "gh" && c[2] === "upload")
       .map((c) => basename(c[c.length - 1]));
     expect(uploads).toEqual(["example-app-1.0.1.tar.gz"]);
+  });
+});
+
+/** A fixture extensions dir with one release per (extId, version) listed. */
+async function fixtureExtensions(releases: Array<[string, string]>): Promise<string> {
+  const root = await mkdtemp(join(tmpdir(), "publish-ext-"));
+  cleanups.push(() => rm(root, { recursive: true, force: true }));
+  for (const [extId, version] of releases) {
+    const dir = join(root, extId, "releases", version);
+    await mkdir(dir, { recursive: true });
+    await writeFile(join(dir, "bundle.zip"), `bundle ${extId} ${version}`);
+  }
+  return root;
+}
+
+describe("publishExtensionAssets", () => {
+  it("uploads each bundle under a file basename of <extId>-<version>.zip", async () => {
+    const ext = await fixtureExtensions([["draw-io", "0.2.0"]]);
+    const { runner, calls } = fakeRunner();
+
+    await publishExtensionAssets(ext, runner);
+
+    const upload = calls.find((c) => c[0] === "gh" && c[2] === "upload");
+    expect(upload).toBeDefined();
+    const fileArg = upload![upload!.length - 1];
+    expect(fileArg).not.toContain("#");
+    expect(basename(fileArg)).toBe("draw-io-0.2.0.zip");
+  });
+
+  it("skips versions whose per-version asset already exists", async () => {
+    const ext = await fixtureExtensions([
+      ["draw-io", "0.1.0"],
+      ["draw-io", "0.2.0"],
+    ]);
+    const { runner, calls } = fakeRunner({
+      "draw-io": ["draw-io-0.1.0.zip"],
+    });
+
+    await publishExtensionAssets(ext, runner);
+
+    const uploads = calls
+      .filter((c) => c[0] === "gh" && c[2] === "upload")
+      .map((c) => basename(c[c.length - 1]));
+    expect(uploads).toEqual(["draw-io-0.2.0.zip"]);
   });
 });

@@ -42,11 +42,14 @@ export interface ChangedPath {
   status: "A" | "M" | "D" | "R";
 }
 
-const RELEASE_FILE_RE = /^apps\/([^/]+)\/releases\/([^/]+)\/.+/;
+// Both catalogs are immutable once published: classic apps under apps/ and oCIS
+// web extensions under extensions/. The leading segment is captured so the
+// release dir is reconstructed under whichever root the file lives in.
+const RELEASE_FILE_RE = /^(apps|extensions)\/([^/]+)\/releases\/([^/]+)\/.+/;
 
 function releaseDirOf(path: string): string | null {
   const m = RELEASE_FILE_RE.exec(path);
-  return m ? `apps/${m[1]}/releases/${m[2]}` : null;
+  return m ? `${m[1]}/${m[2]}/releases/${m[3]}` : null;
 }
 
 /**

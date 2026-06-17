@@ -61,14 +61,16 @@ async function main(): Promise<void> {
   const { stdout } = await exec("git", ["diff", "--name-status", `${baseRef}...HEAD`]);
   const changed: ChangedPath[] = parseNameStatus(stdout);
 
-  // A release exists on the base ref iff its package blob is present there.
+  // A release exists on the base ref iff its package blob is present there: a
+  // classic app is marked by package.tar.gz, an extension by bundle.zip.
   const existsCache = new Map<string, boolean>();
   async function existsOnBase(releaseDir: string): Promise<boolean> {
     const cached = existsCache.get(releaseDir);
     if (cached !== undefined) return cached;
+    const marker = releaseDir.startsWith("extensions/") ? "bundle.zip" : "package.tar.gz";
     let exists = false;
     try {
-      await exec("git", ["cat-file", "-e", `${baseRef}:${releaseDir}/package.tar.gz`]);
+      await exec("git", ["cat-file", "-e", `${baseRef}:${releaseDir}/${marker}`]);
       exists = true;
     } catch {
       exists = false;
@@ -78,12 +80,13 @@ async function main(): Promise<void> {
   }
 
   // Pre-resolve existence for every release dir touched by the changeset, so the
-  // synchronous validateChangeset predicate can read from the cache.
-  const RELEASE_RE = /^apps\/([^/]+)\/releases\/([^/]+)\/.+/;
+  // synchronous validateChangeset predicate can read from the cache. Covers both
+  // the classic apps/ catalog and the oCIS extensions/ catalog.
+  const RELEASE_RE = /^(apps|extensions)\/([^/]+)\/releases\/([^/]+)\/.+/;
   const dirs = new Set<string>();
   for (const c of changed) {
     const m = RELEASE_RE.exec(c.path);
-    if (m) dirs.add(`apps/${m[1]}/releases/${m[2]}`);
+    if (m) dirs.add(`${m[1]}/${m[2]}/releases/${m[3]}`);
   }
   for (const dir of dirs) await existsOnBase(dir);
 

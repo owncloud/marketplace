@@ -41,9 +41,13 @@ npm run build
 
 ### Repository Structure
 
-- **apps/** — the catalog and source of truth (one folder per app/release):
-  `apps/<app-id>/releases/<version>/package.tar.gz`. Metadata is read from the
-  `appinfo/info.xml` inside each tarball.
+- **apps/** — the classic ownCloud Server catalog and source of truth (one
+  folder per app/release): `apps/<app-id>/releases/<version>/package.tar.gz`.
+  Metadata is read from the `appinfo/info.xml` inside each tarball.
+- **extensions/** — the ownCloud Infinite Scale (oCIS) web-extension catalog
+  (one folder per extension/release):
+  `extensions/<ext-id>/releases/<version>/bundle.zip` plus an `extension.yaml`.
+  See [Contributing](CONTRIBUTING.md#publishing-an-ocis-web-extension).
 - **tools/** — TypeScript validator and API generator (run with `tsx`, tested
   with Vitest). See [`tools/README.md`](tools/README.md).
 - **website/** — Astro static site that renders the catalog.
@@ -67,11 +71,18 @@ See the pull request template for the full checklist.
 
 Served as static JSON from GitHub Pages:
 
+Classic ownCloud Server (`market` app):
+
 - `GET /api/v1/categories.json`
 - `GET /api/v1/apps.json` — full catalog
 - `GET /api/v1/platform/{ocVersion}/apps.json` — back-compat with the `market` app
 - `GET /api/v1/bundles.json`
 - `GET /api/v1/downloads.json` — latest server, desktop and mobile release downloads
+
+ownCloud Infinite Scale (oCIS) web extensions:
+
+- `GET /api/ocis/v1/apps.json` — a drop-in oCIS app-store repository feed.
+  Add this URL to the oCIS `web` app's app-store `repositories` configuration.
 
 ## Documentation
 

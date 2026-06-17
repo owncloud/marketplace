@@ -5,6 +5,7 @@ import type {
   RawRelease,
   RawDownloads,
   DownloadBinary,
+  DownloadRelease,
   DownloadSurface,
   Downloads,
 } from "./downloads-types.js";
@@ -57,16 +58,27 @@ export function matchBinaries(assets: RawAsset[]): DownloadBinary[] {
   return rows;
 }
 
+/** Sum every asset's download count for a release (0 when none are recorded). */
+export function releaseDownloads(release: RawRelease): number {
+  return release.assets.reduce((sum, a) => sum + (a.download_count ?? 0), 0);
+}
+
+/** Resolves a release's assets into binary rows (matchBinaries or matchClassicArchives). */
+type AssetMatcher = (assets: RawAsset[]) => DownloadBinary[];
+
 /**
- * Normalize one raw GitHub release into a download surface: trim a leading "v"
- * from the tag for display and resolve its assets into typed binary rows.
+ * Normalize one raw release into a historical release entry: trim a leading "v"
+ * from the tag for display, total its asset downloads, and resolve its assets
+ * into typed binary rows via the given matcher (matchBinaries for the GitHub
+ * surfaces, matchClassicArchives for the classic server).
  */
-export function normalizeRelease(release: RawRelease): DownloadSurface {
+export function normalizeFullRelease(release: RawRelease, matcher: AssetMatcher): DownloadRelease {
   return {
     version: release.tag_name.replace(/^v/, ""),
     releaseUrl: release.html_url,
     publishedAt: release.published_at,
-    binaries: matchBinaries(release.assets),
+    downloads: releaseDownloads(release),
+    binaries: matcher(release.assets),
   };
 }
 
@@ -97,38 +109,45 @@ export function matchClassicArchives(assets: RawAsset[]): DownloadBinary[] {
 }
 
 /**
- * Normalize the classic server release into a download surface, resolving its
- * archives via matchClassicArchives rather than the OS/arch binary rules.
+ * Build a surface from its raw releases: normalize each into the full history
+ * (newest-first), promote the newest release's fields to the surface headline
+ * (what the landing page shows), and total downloads across every release.
+ * Returns null when the list is empty. The classic server passes
+ * matchClassicArchives; the GitHub surfaces use the default matchBinaries.
  */
-export function normalizeClassicRelease(release: RawRelease): DownloadSurface {
+export function buildSurface(
+  releases: RawRelease[],
+  matcher: AssetMatcher = matchBinaries,
+): DownloadSurface | null {
+  if (releases.length === 0) return null;
+  const history = [...releases]
+    .sort((a, b) => b.published_at.localeCompare(a.published_at))
+    .map((r) => normalizeFullRelease(r, matcher));
+  const newest = history[0];
   return {
-    version: release.tag_name.replace(/^v/, ""),
-    releaseUrl: release.html_url,
-    publishedAt: release.published_at,
-    binaries: matchClassicArchives(release.assets),
+    version: newest.version,
+    releaseUrl: newest.releaseUrl,
+    publishedAt: newest.publishedAt,
+    binaries: newest.binaries,
+    downloads: history.reduce((sum, r) => sum + r.downloads, 0),
+    releases: history,
   };
 }
 
-/** The newest release of a list by publish date, or null when the list is empty. */
-function newestSurface(releases: RawRelease[]): DownloadSurface | null {
-  if (releases.length === 0) return null;
-  const newest = [...releases].sort((a, b) => b.published_at.localeCompare(a.published_at))[0];
-  return normalizeRelease(newest);
-}
-
 /**
- * Normalize the raw, committed downloads data into the published shape: the
- * newest release per surface (or null), carrying the generation timestamp.
+ * Normalize the raw, committed downloads data into the published shape: each
+ * surface's full release history (newest-first) with its all-time download
+ * total, or null when a surface has no releases, carrying the generation
+ * timestamp. The classic server resolves its archives via matchClassicArchives.
  */
 export function normalizeDownloads(raw: RawDownloads): Downloads {
   return {
     generatedAt: raw.generated_at,
-    ocis: newestSurface(raw.ocis),
-    // Classic server: a single tag+archive release, normalized differently.
-    server: raw.server?.length ? normalizeClassicRelease(raw.server[0]) : null,
-    client: newestSurface(raw.client),
-    android: newestSurface(raw.android),
-    ios: newestSurface(raw.ios),
+    ocis: buildSurface(raw.ocis),
+    server: buildSurface(raw.server ?? [], matchClassicArchives),
+    client: buildSurface(raw.client),
+    android: buildSurface(raw.android),
+    ios: buildSurface(raw.ios),
   };
 }
 

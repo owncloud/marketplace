@@ -50,11 +50,20 @@ export interface DownloadBinary {
   size: string;
   url: string;
 }
+export interface DownloadRelease {
+  version: string;
+  releaseUrl: string;
+  publishedAt: string;
+  downloads: number;
+  binaries: DownloadBinary[];
+}
 export interface DownloadSurface {
   version: string;
   releaseUrl: string;
   publishedAt: string;
   binaries: DownloadBinary[];
+  downloads: number;
+  releases: DownloadRelease[];
 }
 export interface Downloads {
   generatedAt: string;

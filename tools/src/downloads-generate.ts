@@ -85,8 +85,10 @@ export function normalizeFullRelease(release: RawRelease, matcher: AssetMatcher)
 /**
  * Resolve the classic server's archives into download rows. Classic ships a
  * single PHP source archive per format rather than per-OS binaries, so the
- * OS/arch RULES do not apply: the format is shown as the "arch" and the row's
- * "os" label is the same for both. Returns rows in `.tar.bz2`, `.zip` order.
+ * OS/arch RULES do not apply: the archive format leads the row (as the "os"
+ * field the button renders prominently) and "arch" is left empty — repeating a
+ * generic "Server archive" label on every row carries no information. Returns
+ * rows in `.tar.bz2`, `.zip` order.
  */
 export function matchClassicArchives(assets: RawAsset[]): DownloadBinary[] {
   const FORMATS: { ext: string; label: string }[] = [
@@ -98,8 +100,8 @@ export function matchClassicArchives(assets: RawAsset[]): DownloadBinary[] {
     const hit = assets.find((a) => a.name.endsWith(fmt.ext));
     if (hit) {
       rows.push({
-        os: "Server archive",
-        arch: fmt.label,
+        os: fmt.label,
+        arch: "",
         size: formatSize(hit.size),
         url: hit.browser_download_url,
       });

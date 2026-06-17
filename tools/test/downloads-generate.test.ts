@@ -187,6 +187,8 @@ describe("normalizeDownloads", () => {
       ],
     });
     expect(out.server?.releases.map((r) => r.version)).toEqual(["10.16.3", "10.15.5"]);
-    expect(out.server?.releases[0].binaries[0].arch).toBe("tar.bz2");
+    // Classic archives lead with the format (in `os`) and leave `arch` empty.
+    expect(out.server?.releases[0].binaries[0].os).toBe("tar.bz2");
+    expect(out.server?.releases[0].binaries[0].arch).toBe("");
   });
 });

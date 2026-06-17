@@ -76,7 +76,7 @@ const generated = downloads ? fmtDate(downloads.generatedAt) : null;
                 <li>
                   <a class="download" href={b.url} rel="noopener">
                     <span class="download__os">{b.os}</span>
-                    <span class="download__arch">{b.arch}</span>
+                    {b.arch && <span class="download__arch">{b.arch}</span>}
                     <span class="download__size">{b.size}</span>
                   </a>
                 </li>
@@ -252,7 +252,7 @@ const generated = downloads ? fmtDate(downloads.generatedAt) : null;
   }
   .download {
     display: flex;
-    align-items: baseline;
+    align-items: center;
     gap: 8px;
     padding: 14px 16px;
     border: 1px solid var(--oc-border-input);
@@ -273,16 +273,20 @@ const generated = downloads ? fmtDate(downloads.generatedAt) : null;
   .download__os {
     font-weight: 700;
     color: var(--oc-brand);
+    white-space: nowrap;
   }
   .download__arch {
     font-family: var(--font-mono);
     font-size: 0.82rem;
     color: var(--oc-text-muted);
+    white-space: nowrap;
   }
   .download__size {
     margin-left: auto;
+    padding-left: 8px;
     font-size: 0.82rem;
     color: var(--oc-text-muted);
+    white-space: nowrap;
   }
 
   .surface__fallback {

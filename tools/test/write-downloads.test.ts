@@ -18,12 +18,12 @@ const raw: RawDownloads = {
       name: "ocis 7.1.0",
       published_at: "2026-02-01T00:00:00Z",
       html_url: "https://github.com/owncloud/ocis/releases/tag/v7.1.0",
-      body: "notes",
       assets: [
         {
           name: "ocis-7.1.0-linux-amd64",
           browser_download_url: "https://example.com/ocis-7.1.0-linux-amd64",
           size: 2 * 1024 * 1024,
+          download_count: 40,
         },
       ],
     },
@@ -34,18 +34,34 @@ const raw: RawDownloads = {
       name: "ownCloud 10.16.3",
       published_at: "2026-05-22T14:24:17.000Z",
       html_url: "https://github.com/owncloud/core/releases/tag/v10.16.3",
-      body: "",
       assets: [
         {
           name: "owncloud-10.16.3.tar.bz2",
           browser_download_url:
             "https://download.owncloud.com/server/stable/owncloud-10.16.3.tar.bz2",
           size: 58 * 1024 * 1024,
+          download_count: 0,
         },
         {
           name: "owncloud-10.16.3.zip",
           browser_download_url: "https://download.owncloud.com/server/stable/owncloud-10.16.3.zip",
           size: 72 * 1024 * 1024,
+          download_count: 0,
+        },
+      ],
+    },
+    {
+      tag_name: "v10.15.5",
+      name: "ownCloud 10.15.5",
+      published_at: "2026-01-10T09:00:00.000Z",
+      html_url: "https://github.com/owncloud/core/releases/tag/v10.15.5",
+      assets: [
+        {
+          name: "owncloud-10.15.5.tar.bz2",
+          browser_download_url:
+            "https://download.owncloud.com/server/stable/owncloud-10.15.5.tar.bz2",
+          size: 57 * 1024 * 1024,
+          download_count: 0,
         },
       ],
     },
@@ -69,6 +85,10 @@ describe("writeDownloads", () => {
       size: "2.0 MB",
       url: "https://example.com/ocis-7.1.0-linux-amd64",
     });
+    expect(written.ocis.downloads).toBe(40);
+    expect(written.ocis.releases).toHaveLength(1);
+    expect(written.ocis.releases[0].version).toBe("7.1.0");
+    expect(written.ocis.releases[0].downloads).toBe(40);
     expect(written.client).toBeNull();
   });
 
@@ -81,6 +101,11 @@ describe("writeDownloads", () => {
     expect(written.server.releaseUrl).toBe(
       "https://github.com/owncloud/core/releases/tag/v10.16.3",
     );
+    // The full supported history is kept, newest-first.
+    expect(written.server.releases.map((r: { version: string }) => r.version)).toEqual([
+      "10.16.3",
+      "10.15.5",
+    ]);
     expect(written.server.binaries).toEqual([
       {
         os: "Server archive",

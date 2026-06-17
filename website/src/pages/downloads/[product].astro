@@ -1,0 +1,290 @@
+---
+import Base from "../../layouts/Base.astro";
+import { loadDownloads, withBase, type DownloadSurface } from "../../lib/catalog.ts";
+import { SURFACES, type SurfaceMeta } from "../../lib/downloads.ts";
+
+export async function getStaticPaths() {
+  const downloads = await loadDownloads();
+  // One page per surface, even when its data is absent — the page renders a
+  // graceful "no data" fallback, mirroring the landing page's behaviour.
+  return SURFACES.map((meta) => ({
+    params: { product: meta.key },
+    props: { meta, surface: (downloads?.[meta.key] ?? null) as DownloadSurface | null },
+  }));
+}
+
+const { meta, surface } = Astro.props as { meta: SurfaceMeta; surface: DownloadSurface | null };
+const base = import.meta.env.BASE_URL;
+
+// "2026-02-01T…" → "1 Feb 2026"; matches the downloads landing page's date style.
+const fmtDate = (iso: string): string => {
+  const d = new Date(iso);
+  return Number.isNaN(d.getTime())
+    ? iso
+    : d.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" });
+};
+
+const fmtCount = (n: number) => n.toLocaleString("en-US");
+const fmtDownloads = (n: number) => `${fmtCount(n)} download${n === 1 ? "" : "s"}`;
+---
+<Base
+  title={`${meta.name} releases — ownCloud`}
+  description={`All ${meta.name} releases with direct download links: ${meta.tagline}`}
+>
+  <nav class="breadcrumb container" aria-label="Breadcrumb">
+    <a href={withBase(base, "")}>Marketplace</a>
+    <span aria-hidden="true">/</span>
+    <a href={withBase(base, "downloads")}>Downloads</a>
+    <span aria-hidden="true">/</span>
+    <span aria-current="page">{meta.name}</span>
+  </nav>
+
+  <header class="product-hero">
+    <div class="container product-hero__inner">
+      <h1>{meta.name}</h1>
+      <p class="product-hero__tagline">{meta.tagline}</p>
+      {surface && (
+        <p class="product-hero__by">
+          <span>Latest v{surface.version}</span>
+          <span class="dot" aria-hidden="true">·</span>
+          <span>{fmtDate(surface.publishedAt)}</span>
+          {surface.downloads > 0 && (
+            <>
+              <span class="dot" aria-hidden="true">·</span>
+              <span>{fmtDownloads(surface.downloads)}</span>
+            </>
+          )}
+        </p>
+      )}
+    </div>
+  </header>
+
+  <div class="container product-body">
+    {surface ? (
+      <section class="panel">
+        <h2>Release history</h2>
+        <ul class="releases">
+          {surface.releases.map((r, i) => (
+            <li class="release">
+              <div class="release__head">
+                <a class="release__version" href={r.releaseUrl} rel="noopener">
+                  v{r.version}
+                </a>
+                {i === 0 && <span class="release__badge">Latest</span>}
+                <span class="release__date">{fmtDate(r.publishedAt)}</span>
+              </div>
+              {r.downloads > 0 && (
+                <div class="release__facts">
+                  <span>{fmtDownloads(r.downloads)}</span>
+                </div>
+              )}
+              {r.binaries.length > 0 ? (
+                <ul class="downloads">
+                  {r.binaries.map((b) => (
+                    <li>
+                      <a class="download" href={b.url} rel="noopener">
+                        <span class="download__os">{b.os}</span>
+                        <span class="download__arch">{b.arch}</span>
+                        <span class="download__size">{b.size}</span>
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p class="release__fallback">
+                  No direct binaries listed.{" "}
+                  <a href={r.releaseUrl} rel="noopener">Browse this release on GitHub →</a>
+                </p>
+              )}
+            </li>
+          ))}
+        </ul>
+      </section>
+    ) : (
+      <section class="panel">
+        <h2>Release history</h2>
+        <p class="release__fallback">
+          No release data is available yet.{" "}
+          <a href={`https://github.com/${meta.repo}/releases`} rel="noopener">
+            Browse releases on GitHub →
+          </a>
+        </p>
+      </section>
+    )}
+  </div>
+</Base>
+
+<style>
+  /* ---------- Breadcrumb (shared with app pages) ---------- */
+  .breadcrumb {
+    display: flex;
+    gap: 9px;
+    align-items: center;
+    flex-wrap: wrap;
+    padding-top: 28px;
+    font-size: 0.88rem;
+    color: var(--oc-text-muted);
+  }
+  .breadcrumb a {
+    color: var(--oc-text-muted);
+  }
+  .breadcrumb a:hover {
+    color: var(--oc-primary-hover);
+  }
+  .breadcrumb [aria-current] {
+    color: var(--oc-brand);
+    font-weight: 600;
+  }
+
+  /* ---------- Product hero ---------- */
+  .product-hero {
+    margin-top: 24px;
+    background: linear-gradient(180deg, var(--oc-bg-highlight), var(--oc-bg));
+    border-block: 1px solid var(--oc-border);
+  }
+  .product-hero__inner {
+    padding-block: 44px;
+  }
+  .product-hero h1 {
+    font-size: clamp(2rem, 4vw, 2.9rem);
+    font-weight: 700;
+    color: var(--oc-brand);
+    margin-bottom: 10px;
+  }
+  .product-hero__tagline {
+    font-size: 1.12rem;
+    color: var(--oc-text-muted);
+    max-width: 60ch;
+    margin: 0 0 16px;
+  }
+  .product-hero__by {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 9px;
+    font-size: 0.95rem;
+    color: var(--oc-text-muted);
+    margin: 0;
+  }
+  .dot {
+    color: var(--oc-border-input);
+  }
+
+  /* ---------- Release history (panel + release rows shared with app pages) ---------- */
+  .product-body {
+    padding-top: 44px;
+  }
+  .panel {
+    background: var(--oc-bg);
+    border: 1px solid var(--oc-border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-sm);
+    padding: 28px;
+  }
+  .panel h2 {
+    font-size: 1.25rem;
+    color: var(--oc-brand);
+    margin-bottom: 20px;
+  }
+  .releases {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 14px;
+  }
+  .release {
+    border: 1px solid var(--oc-border);
+    border-radius: var(--radius-sm);
+    padding: 18px 20px;
+    transition: border-color 0.18s ease;
+  }
+  .release:hover {
+    border-color: var(--oc-border-input);
+  }
+  .release__head {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 8px;
+  }
+  .release__version {
+    font-family: var(--font-mono);
+    font-weight: 500;
+    font-size: 1.05rem;
+    color: var(--oc-brand);
+  }
+  .release__badge {
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding: 2px 9px;
+    border-radius: 999px;
+    background: var(--oc-success);
+    color: #fff;
+  }
+  .release__date {
+    margin-left: auto;
+    font-size: 0.86rem;
+    color: var(--oc-text-muted);
+  }
+  .release__facts {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.9rem;
+    color: var(--oc-text-muted);
+    margin-bottom: 12px;
+  }
+  .release__fallback {
+    margin: 0;
+    color: var(--oc-text-muted);
+    font-size: 0.96rem;
+  }
+
+  /* ---------- Binary download buttons (shared with downloads landing) ---------- */
+  .downloads {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+    gap: 12px;
+  }
+  .download {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    padding: 14px 16px;
+    border: 1px solid var(--oc-border-input);
+    border-radius: var(--radius-sm);
+    background: var(--oc-bg);
+    color: var(--oc-text);
+    transition:
+      transform 0.16s ease,
+      border-color 0.16s ease,
+      box-shadow 0.16s ease;
+  }
+  .download:hover {
+    text-decoration: none;
+    transform: translateY(-2px);
+    border-color: var(--oc-primary);
+    box-shadow: var(--shadow-md);
+  }
+  .download__os {
+    font-weight: 700;
+    color: var(--oc-brand);
+  }
+  .download__arch {
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+    color: var(--oc-text-muted);
+  }
+  .download__size {
+    margin-left: auto;
+    font-size: 0.82rem;
+    color: var(--oc-text-muted);
+  }
+</style>

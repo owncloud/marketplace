@@ -1,17 +1,10 @@
 ---
 import Base from "../layouts/Base.astro";
-import { loadDownloads, type DownloadSurface } from "../lib/catalog.ts";
+import { loadDownloads, withBase, type DownloadSurface } from "../lib/catalog.ts";
+import { SURFACES } from "../lib/downloads.ts";
 
 const downloads = await loadDownloads();
-
-// Display order and labels for the surfaces; each maps to a key on Downloads.
-const SURFACES = [
-  { key: "ocis", name: "Infinite Scale", tagline: "ocis — the next-generation ownCloud server", repo: "owncloud/ocis" },
-  { key: "server", name: "ownCloud Server", tagline: "Classic ownCloud 10 — the PHP server", repo: "owncloud/core" },
-  { key: "client", name: "Desktop Client", tagline: "Sync files on Windows, macOS and Linux", repo: "owncloud/client" },
-  { key: "android", name: "Android", tagline: "ownCloud for phones and tablets", repo: "owncloud/android" },
-  { key: "ios", name: "iOS", tagline: "ownCloud for iPhone and iPad", repo: "owncloud/ios-app" },
-] as const;
+const base = import.meta.env.BASE_URL;
 
 const surfaces = SURFACES.map((s) => ({
   ...s,
@@ -25,6 +18,9 @@ const fmtDate = (iso: string): string => {
     ? iso
     : d.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" });
 };
+
+const fmtCount = (n: number) => n.toLocaleString("en-US");
+const fmtDownloads = (n: number) => `${fmtCount(n)} download${n === 1 ? "" : "s"}`;
 
 const generated = downloads ? fmtDate(downloads.generatedAt) : null;
 ---
@@ -67,6 +63,9 @@ const generated = downloads ? fmtDate(downloads.generatedAt) : null;
                   v{surface.version}
                 </a>
                 <span class="surface__date">{fmtDate(surface.publishedAt)}</span>
+                {surface.downloads > 0 && (
+                  <span class="surface__downloads">{fmtDownloads(surface.downloads)}</span>
+                )}
               </div>
             )}
           </header>
@@ -91,6 +90,10 @@ const generated = downloads ? fmtDate(downloads.generatedAt) : null;
               </a>
             </p>
           )}
+
+          <a class="surface__history" href={withBase(base, `downloads/${key}`)}>
+            View all releases →
+          </a>
         </article>
       ))
     }
@@ -224,6 +227,18 @@ const generated = downloads ? fmtDate(downloads.generatedAt) : null;
     margin-top: 6px;
     font-size: 0.82rem;
     color: var(--oc-text-muted);
+  }
+  .surface__downloads {
+    display: block;
+    margin-top: 4px;
+    font-size: 0.82rem;
+    color: var(--oc-text-muted);
+  }
+  .surface__history {
+    display: inline-block;
+    margin-top: 18px;
+    font-weight: 600;
+    font-size: 0.92rem;
   }
 
   /* ---------- Binary download buttons ---------- */

@@ -3,6 +3,8 @@ export interface RawAsset {
   name: string;
   browser_download_url: string;
   size: number;
+  /** Total times this asset has been downloaded, per the GitHub API. */
+  download_count: number;
 }
 
 /** One release as returned by the GitHub Releases API (fields we use). */
@@ -11,7 +13,6 @@ export interface RawRelease {
   name: string;
   published_at: string;
   html_url: string;
-  body: string;
   assets: RawAsset[];
 }
 
@@ -48,12 +49,30 @@ export interface DownloadBinary {
   url: string;
 }
 
-/** A normalized per-surface entry in the published downloads.json. */
+/** A single historical release in a surface's full release history. */
+export interface DownloadRelease {
+  version: string;
+  releaseUrl: string;
+  publishedAt: string;
+  /** Sum of asset download counts for this release (0 when none recorded). */
+  downloads: number;
+  binaries: DownloadBinary[];
+}
+
+/**
+ * A normalized per-surface entry in the published downloads.json. The top-level
+ * version/releaseUrl/publishedAt/binaries fields describe the newest release
+ * (what the downloads landing page shows); `releases` carries the full history
+ * (newest-first) for the per-product release-history subpage, and `downloads`
+ * is the all-time total across every release of the surface.
+ */
 export interface DownloadSurface {
   version: string;
   releaseUrl: string;
   publishedAt: string;
   binaries: DownloadBinary[];
+  downloads: number;
+  releases: DownloadRelease[];
 }
 
 /** The normalized, published _site/api/v1/downloads.json. */

@@ -2,16 +2,19 @@ import { describe, it, expect } from "vitest";
 import {
   formatSize,
   matchBinaries,
-  normalizeRelease,
+  releaseDownloads,
+  normalizeFullRelease,
+  buildSurface,
   normalizeDownloads,
 } from "../src/downloads-generate.js";
 import type { RawAsset, RawRelease, RawDownloads } from "../src/downloads-types.js";
 
 // Default size is 2 MiB so matched rows render as "2.0 MB" deterministically.
-const asset = (name: string, size = 2 * 1024 * 1024): RawAsset => ({
+const asset = (name: string, size = 2 * 1024 * 1024, download_count = 0): RawAsset => ({
   name,
   browser_download_url: `https://example.com/${name}`,
   size,
+  download_count,
 });
 
 // A minimal raw release; tag drives version, the rest is fixed for assertions.
@@ -23,7 +26,6 @@ const release = (
   name: `ocis ${tag}`,
   published_at: "2026-01-02T03:04:05Z",
   html_url: `https://github.com/owncloud/ocis/releases/tag/${tag}`,
-  body: "notes",
   assets,
 });
 
@@ -71,26 +73,68 @@ describe("matchBinaries", () => {
   });
 });
 
-describe("normalizeRelease", () => {
-  it("maps a raw release to a surface, stripping the leading v from the version", () => {
-    const surface = normalizeRelease(release("v7.1.0"));
-    expect(surface).toEqual({
+describe("releaseDownloads", () => {
+  it("sums every asset's download count, including non-binary assets", () => {
+    const r = release("v7.1.0", [
+      asset("ocis-7.1.0-linux-amd64", 2 * 1024 * 1024, 30),
+      asset("ocis-7.1.0-linux-amd64.sha256", 1024, 12),
+    ]);
+    expect(releaseDownloads(r)).toBe(42);
+  });
+
+  it("is 0 when no assets carry a count", () => {
+    expect(releaseDownloads(release("v7.1.0"))).toBe(0);
+  });
+});
+
+describe("normalizeFullRelease", () => {
+  it("maps a raw release to a history entry, stripping the leading v and totalling downloads", () => {
+    const entry = normalizeFullRelease(
+      release("v7.1.0", [asset("ocis-7.1.0-linux-amd64", 2 * 1024 * 1024, 9)]),
+      matchBinaries,
+    );
+    expect(entry).toEqual({
       version: "7.1.0",
       releaseUrl: "https://github.com/owncloud/ocis/releases/tag/v7.1.0",
       publishedAt: "2026-01-02T03:04:05Z",
+      downloads: 9,
       binaries: [
         {
           os: "Linux",
           arch: "amd64",
           size: "2.0 MB",
-          url: "https://example.com/ocis-v7.1.0-linux-amd64",
+          url: "https://example.com/ocis-7.1.0-linux-amd64",
         },
       ],
     });
   });
 
   it("keeps a version that has no leading v", () => {
-    expect(normalizeRelease(release("7.1.0")).version).toBe("7.1.0");
+    expect(normalizeFullRelease(release("7.1.0"), matchBinaries).version).toBe("7.1.0");
+  });
+});
+
+describe("buildSurface", () => {
+  it("returns null for an empty release list", () => {
+    expect(buildSurface([])).toBeNull();
+  });
+
+  it("orders history newest-first and promotes the newest to the headline", () => {
+    const surface = buildSurface([
+      { ...release("v7.0.0"), published_at: "2026-01-01T00:00:00Z" },
+      { ...release("v7.1.0"), published_at: "2026-02-01T00:00:00Z" },
+    ])!;
+    expect(surface.version).toBe("7.1.0");
+    expect(surface.releases.map((r) => r.version)).toEqual(["7.1.0", "7.0.0"]);
+    expect(surface.binaries).toEqual(surface.releases[0].binaries);
+  });
+
+  it("totals downloads across every release", () => {
+    const surface = buildSurface([
+      { ...release("v7.0.0", [asset("ocis-7.0.0-linux-amd64", 2 * 1024 * 1024, 10)]) },
+      { ...release("v7.1.0", [asset("ocis-7.1.0-linux-amd64", 2 * 1024 * 1024, 32)]) },
+    ])!;
+    expect(surface.downloads).toBe(42);
   });
 });
 
@@ -98,17 +142,25 @@ describe("normalizeDownloads", () => {
   const raw: RawDownloads = {
     generated_at: "2026-06-14T00:00:00Z",
     ocis: [
-      { ...release("v7.0.0"), published_at: "2026-01-01T00:00:00Z" },
-      { ...release("v7.1.0"), published_at: "2026-02-01T00:00:00Z" },
+      {
+        ...release("v7.0.0", [asset("ocis-7.0.0-linux-amd64", 2 * 1024 * 1024, 5)]),
+        published_at: "2026-01-01T00:00:00Z",
+      },
+      {
+        ...release("v7.1.0", [asset("ocis-7.1.0-linux-amd64", 2 * 1024 * 1024, 7)]),
+        published_at: "2026-02-01T00:00:00Z",
+      },
     ],
     client: [release("v5.0.0")],
     android: [],
     ios: [],
   };
 
-  it("picks the most recently published release per surface", () => {
+  it("keeps the full history per surface, newest-first, with its all-time total", () => {
     const out = normalizeDownloads(raw);
     expect(out.ocis?.version).toBe("7.1.0");
+    expect(out.ocis?.releases.length).toBe(2);
+    expect(out.ocis?.downloads).toBe(12);
     expect(out.client?.version).toBe("5.0.0");
     expect(out.generatedAt).toBe("2026-06-14T00:00:00Z");
   });
@@ -117,5 +169,24 @@ describe("normalizeDownloads", () => {
     const out = normalizeDownloads(raw);
     expect(out.android).toBeNull();
     expect(out.ios).toBeNull();
+    expect(out.server).toBeNull();
+  });
+
+  it("keeps all classic server releases, resolving them via the archive matcher", () => {
+    const out = normalizeDownloads({
+      ...raw,
+      server: [
+        {
+          ...release("v10.16.3", [asset("owncloud-10.16.3.tar.bz2")]),
+          published_at: "2026-03-01T00:00:00Z",
+        },
+        {
+          ...release("v10.15.5", [asset("owncloud-10.15.5.tar.bz2")]),
+          published_at: "2026-02-01T00:00:00Z",
+        },
+      ],
+    });
+    expect(out.server?.releases.map((r) => r.version)).toEqual(["10.16.3", "10.15.5"]);
+    expect(out.server?.releases[0].binaries[0].arch).toBe("tar.bz2");
   });
 });

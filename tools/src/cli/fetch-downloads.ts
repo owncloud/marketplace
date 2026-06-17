@@ -49,11 +49,11 @@ export function selectReleases(releases: GhRelease[]): RawRelease[] {
       name: r.name,
       published_at: r.published_at,
       html_url: r.html_url,
-      body: r.body,
       assets: r.assets.map((a) => ({
         name: a.name,
         browser_download_url: a.browser_download_url,
         size: a.size,
+        download_count: a.download_count ?? 0,
       })),
     }));
 }
@@ -96,20 +96,20 @@ export function buildAppCounts(releases: GhRelease[]): AppDownloadCounts {
 }
 
 /**
- * Pick the newest classic Server release from owncloud/core's releases. Keeps
- * only stable (non-draft, non-prerelease) releases whose tag matches a supported
- * classic line (10.15.x / 10.16.x), and returns the highest by numeric version
- * compare. Returns null when none qualify, so the surface is simply absent
- * rather than linking a release that does not exist yet.
+ * Select all classic Server releases from owncloud/core's releases, newest-first.
+ * Keeps only stable (non-draft, non-prerelease) releases whose tag matches a
+ * supported classic line (10.15.x / 10.16.x), sorted by numeric version compare.
+ * Returns [] when none qualify, so the surface is simply absent rather than
+ * linking a release that does not exist yet. The full list (not just the newest)
+ * is kept so the release-history subpage can show every supported version.
  */
-export function selectClassicRelease(releases: GhRelease[]): GhRelease | null {
-  const matched = releases
+export function selectClassicReleases(releases: GhRelease[]): GhRelease[] {
+  return releases
     .filter((r) => !r.draft && !r.prerelease)
     .map((r) => ({ release: r, m: CLASSIC_TAG_RE.exec(r.tag_name) }))
-    .filter((x): x is { release: GhRelease; m: RegExpExecArray } => x.m !== null);
-  if (matched.length === 0) return null;
-  matched.sort((a, b) => Number(b.m[1]) - Number(a.m[1]) || Number(b.m[2]) - Number(a.m[2]));
-  return matched[0].release;
+    .filter((x): x is { release: GhRelease; m: RegExpExecArray } => x.m !== null)
+    .sort((a, b) => Number(b.m[1]) - Number(a.m[1]) || Number(b.m[2]) - Number(a.m[2]))
+    .map((x) => x.release);
 }
 
 /** Fetch a repo's releases from the GitHub API (first page, newest first). */
@@ -151,33 +151,32 @@ function sleep(ms: number): Promise<void> {
 }
 
 /**
- * Resolve the classic server surface from owncloud/core's GitHub releases:
- * pick the newest release on a supported line (10.15.x / 10.16.x) and keep only
- * its archive assets (.tar.bz2 / .zip). Returns null (and logs) on any failure,
- * or when no supported release exists, so the surface is simply absent rather
- * than failing the four GitHub surfaces.
+ * Resolve the classic server surface from owncloud/core's GitHub releases: keep
+ * every supported release (10.15.x / 10.16.x), newest-first, retaining only the
+ * archive assets (.tar.bz2 / .zip) of each. Releases left with no archive assets
+ * are dropped. Returns [] (and logs) on any failure or when none qualify, so the
+ * surface is simply absent rather than failing the four GitHub surfaces.
  */
-export async function fetchClassic(): Promise<RawRelease | null> {
+export async function fetchClassic(): Promise<RawRelease[]> {
   try {
-    const release = selectClassicRelease(await fetchReleases(CLASSIC_REPO));
-    if (!release) {
+    const releases = selectClassicReleases(await fetchReleases(CLASSIC_REPO));
+    if (releases.length === 0) {
       console.warn(
         `No supported 10.15/10.16 release found for ${CLASSIC_REPO}; skipping classic server.`,
       );
-      return null;
+      return [];
     }
-    const [selected] = selectReleases([release]);
-    const assets = selected.assets.filter(
-      (a) => a.name.endsWith(".tar.bz2") || a.name.endsWith(".zip"),
-    );
-    if (assets.length === 0) {
-      console.warn(`Classic release ${release.tag_name} has no archive assets; skipping.`);
-      return null;
-    }
-    return { ...selected, assets };
+    return selectReleases(releases)
+      .map((selected) => ({
+        ...selected,
+        assets: selected.assets.filter(
+          (a) => a.name.endsWith(".tar.bz2") || a.name.endsWith(".zip"),
+        ),
+      }))
+      .filter((r) => r.assets.length > 0);
   } catch (err) {
     console.warn(`Could not fetch classic server downloads: ${String(err)}`);
-    return null;
+    return [];
   }
 }
 
@@ -210,7 +209,7 @@ async function main(): Promise<void> {
   >;
 
   const raw = buildRawDownloads(perSurface, now);
-  if (classic) raw.server = [classic];
+  if (classic.length) raw.server = classic;
   raw.apps = buildAppCounts(own);
   await mkdir(dirname(out), { recursive: true });
   await writeFile(out, JSON.stringify(raw, null, 2) + "\n", "utf8");

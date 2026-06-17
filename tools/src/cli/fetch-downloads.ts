@@ -21,7 +21,7 @@ export const SURFACE_REPOS = {
   ocis: "owncloud/ocis",
   client: "owncloud/client",
   android: "owncloud/android",
-  ios: "owncloud/ios",
+  ios: "owncloud/ios-app",
 } as const;
 
 type Surface = keyof typeof SURFACE_REPOS;

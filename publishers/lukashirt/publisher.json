@@ -1,0 +1,10 @@
+{
+  "slug": "lukashirt",
+  "name": "Lukas Hirt",
+  "enabled": true,
+  "website": "https://github.com/LukasHirt",
+  "description": "Developer of the Excalidraw web extension for ownCloud.",
+  "extensions": [
+    "excalidraw"
+  ]
+}

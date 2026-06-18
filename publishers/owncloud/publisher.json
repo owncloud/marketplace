@@ -9,6 +9,14 @@
     "example-app"
   ],
   "extensions": [
-    "example-extension"
+    "example-extension",
+    "ai-doc-summary",
+    "draw-io",
+    "external-sites",
+    "json-viewer",
+    "progress-bars",
+    "unzip",
+    "web-app-dicom-viewer",
+    "web-app-skeleton"
   ]
 }

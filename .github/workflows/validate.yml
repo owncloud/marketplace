@@ -20,7 +20,12 @@ jobs:
       - name: Enforce immutability/collision over changed paths
         working-directory: tools
         run: |
-          git fetch origin "${{ github.base_ref }}" --depth=1
+          # Fetch full base history (not --depth=1): check-changeset and
+          # validate-screenshots diff with origin/<base>...HEAD, which needs a
+          # merge base. A shallow base tip has no ancestors, so once main moves
+          # past a PR's branch point the three-dot diff fails with "no merge
+          # base". checkout already used fetch-depth: 0, so this stays unshallow.
+          git fetch origin "${{ github.base_ref }}"
           npx tsx src/cli/check-changeset.ts "origin/${{ github.base_ref }}"
       - name: Validate all releases
         working-directory: tools

@@ -1,0 +1,21 @@
+id: com.github.owncloud.web-app-skeleton
+name: Development boilerplate
+subtitle: Get started with app development for ownCloud Infinite Scale.
+license: Apache-2.0
+version: 0.2.0
+authors:
+  - name: ownCloud
+    url: https://owncloud.com
+tags:
+  - development
+  - example
+  - extension-system
+description: Download the `skeleton` package and extract it. Open it in your
+  favorite IDE. Read the README.md to get started developing your own app.
+  Everything is set up for you, just start building.
+minOCIS: 6.4.0
+resources:
+  - label: GitHub
+    icon: github
+    url: https://github.com/owncloud/web-app-skeleton
+cover: true

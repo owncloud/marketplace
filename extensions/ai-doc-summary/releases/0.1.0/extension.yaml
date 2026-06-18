@@ -1,0 +1,33 @@
+id: com.github.owncloud.web-extensions.ai-doc-summary
+name: AI Document Summary
+subtitle: Add a Summary sidebar panel and Summarize action for PDF, TXT and MD files.
+description: |
+  Adds a Summary sidebar panel and a Summarize context-menu action for supported
+  document types (PDF, TXT, MD). On demand it downloads the file, extracts its
+  text, and sends it to an admin-configured, OpenAI-compatible LLM endpoint to
+  produce a short overview and a list of key points.
+
+  No LLM provider is bundled and no API keys are embedded in the browser — the
+  endpoint is fully operator-controlled (BYO-LLM). Requests flow through an
+  ai-llm-proxy sidecar that validates the user's oCIS bearer token and injects
+  the LLM API key server-side so it never reaches the browser.
+license: Apache-2.0
+version: 0.1.0
+authors:
+  - name: ownCloud GmbH
+    url: https://owncloud.com
+tags:
+  - ai
+  - document
+  - pdf
+  - sidebar
+minOCIS: 8.0.4
+cover: true
+resources:
+  - label: GitHub
+    icon: github
+    url: https://github.com/owncloud/web-extensions/tree/main/packages/web-app-ai-doc-summary
+screenshotCaptions:
+  - ownCloud Web user interface showing a file list with 'quarterly-report.txt' selected and its context menu open, highlighting the 'Summarize' action at the bottom.
+  - ownCloud Web interface showing a 'Summarizing document...' modal overlay with a loading animation as the AI processes the selected text file.
+  - ownCloud Web interface displaying a right-hand sidebar panel titled 'Summary' that shows an AI-generated bulleted overview of 'project-phoenix-notes.md' with a 'Regenerate' option at the bottom.

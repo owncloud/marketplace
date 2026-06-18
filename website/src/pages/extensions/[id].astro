@@ -2,14 +2,27 @@
 import Base from "../../layouts/Base.astro";
 import { withBase } from "../../lib/catalog.ts";
 import { loadExtensions } from "../../lib/extensions.ts";
+import { loadPublishers, extensionIdToPublisher } from "../../lib/publishers.ts";
 
 export async function getStaticPaths() {
   const extensions = await loadExtensions();
-  return extensions.map((ext) => ({ params: { id: ext.id }, props: { ext } }));
+  // Reverse-map owned extension ids to their (enabled) publisher, so the sidebar
+  // Author can link to its on-site publisher page. Unclaimed extensions get no link.
+  const ownerById = extensionIdToPublisher(await loadPublishers());
+  return extensions.map((ext) => ({
+    params: { id: ext.id },
+    props: { ext, publisherSlug: ownerById.get(ext.id)?.slug ?? null },
+  }));
 }
 
-const { ext } = Astro.props;
+const { ext, publisherSlug } = Astro.props;
 const base = import.meta.env.BASE_URL;
+// On-site publisher page for the sidebar Author link, when a publisher claims
+// this extension; null leaves the author rendered as plain text. The header
+// byline keeps its external author.url link untouched.
+const publisherHref = publisherSlug
+  ? withBase(base, `publishers/${publisherSlug}`)
+  : null;
 
 const latest = ext.versions[0];
 const initial = ext.name.trim().charAt(0).toUpperCase() || "?";
@@ -151,7 +164,15 @@ const ocisReq = (v?: string) => (v ? `Requires oCIS ${v} or newer` : "Any oCIS v
         <dl>
           <div>
             <dt>Author</dt>
-            <dd>{author?.name}</dd>
+            <dd>
+              {
+                publisherHref ? (
+                  <a href={publisherHref}>{author?.name}</a>
+                ) : (
+                  author?.name
+                )
+              }
+            </dd>
           </div>
           <div>
             <dt>License</dt>

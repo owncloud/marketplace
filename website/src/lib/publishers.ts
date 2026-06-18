@@ -56,3 +56,17 @@ export function appIdToPublisher(publishers: Publisher[]): Map<string, Publisher
   }
   return map;
 }
+
+/**
+ * Map each owned extension catalog id (the reverse-DNS oCIS feed id) to its
+ * publisher, for reverse lookup on extension detail pages. Built from the enabled
+ * publishers in publishers.json; an extension no publisher claims is simply absent
+ * from the map.
+ */
+export function extensionIdToPublisher(publishers: Publisher[]): Map<string, Publisher> {
+  const map = new Map<string, Publisher>();
+  for (const pub of publishers) {
+    for (const extId of pub.extensions) map.set(extId, pub);
+  }
+  return map;
+}

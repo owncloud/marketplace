@@ -1,0 +1,32 @@
+id: com.github.owncloud.web-app-dicom-viewer
+name: DICOM Viewer
+subtitle: Preview DICOM files (.dcm) – both the medical images and their
+  corresponding metadata.
+license: AGPL-3.0
+version: 1.0.0
+authors:
+  - name: ownCloud
+    url: https://owncloud.com
+tags:
+  - viewer
+  - dicom
+  - medical images
+  - metadata
+description: "Blob sources (`child-src: 'blob:'`), data and url connections
+  (`connect-src: 'data:'
+  'https://unpkg.com/detect-gpu@5.0.38/dist/benchmarks/d-intel.json'`) and
+  unsafe dynamic code evaluation (`script-src: '''unsafe-eval'''`) must all be
+  allowed in CSP."
+minOCIS: 6.2.0
+resources:
+  - label: GitHub
+    icon: github
+    url: https://github.com/owncloud/web-app-dicom-viewer
+cover: true
+screenshotCaptions:
+  - Preview a DICOM image and it's most important meta data.
+  - The extension allows to zoom, rotate and flip the preview of the DICOM image.
+  - Inverting the colors of the preview of the DICOM image is also supported.
+  - Display all corresponding metadata in sidebar.
+  - Preview a DICOM image and it's most important meta data on a mobile device.
+  - Display all corresponding metadata on a mobile device.

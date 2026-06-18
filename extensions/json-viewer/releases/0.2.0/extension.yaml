@@ -1,0 +1,18 @@
+id: com.github.owncloud.web-extensions.json-viewer
+name: JSON Viewer
+subtitle: View JSON files (.json) with syntax highlighting and collapsible nodes.
+license: AGPL-3.0
+version: 0.2.0
+authors:
+  - name: ownCloud
+    url: https://owncloud.com
+tags:
+  - viewer
+minOCIS: 6.2.0
+resources:
+  - label: GitHub
+    icon: github
+    url: https://github.com/owncloud/web-extensions/tree/main/packages/web-app-json-viewer
+cover: true
+screenshotCaptions:
+  - View JSON files in your ownCloud

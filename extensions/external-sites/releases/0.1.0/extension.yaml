@@ -1,0 +1,19 @@
+id: com.github.owncloud.web-extensions.external-sites
+name: External Sites
+subtitle: Add links to the app switcher (embedded or external).
+license: AGPL-3.0
+version: 0.1.0
+authors:
+  - name: ownCloud
+    url: https://owncloud.com
+tags:
+  - navigation
+  - app-switcher
+minOCIS: 6.2.0
+resources:
+  - label: GitHub
+    icon: github
+    url: https://github.com/owncloud/web-extensions/tree/main/packages/web-app-external-sites
+cover: true
+screenshotCaptions:
+  - Wikipedia embedded into your ownCloud

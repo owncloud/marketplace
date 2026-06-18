@@ -1,15 +1,27 @@
 ---
 import Base from "../../layouts/Base.astro";
 import { loadApps, loadCategories, withBase } from "../../lib/catalog.ts";
+import { loadPublishers, appIdToPublisher } from "../../lib/publishers.ts";
 
 export async function getStaticPaths() {
   const apps = await loadApps();
   const categories = await loadCategories();
-  return apps.map((app) => ({ params: { id: app.id }, props: { app, categories } }));
+  // Reverse-map owned app ids to their (enabled) publisher, so we can link the
+  // publisher name to its page. Apps no publisher claims get no link.
+  const ownerBySlug = appIdToPublisher(await loadPublishers());
+  return apps.map((app) => ({
+    params: { id: app.id },
+    props: { app, categories, publisherSlug: ownerBySlug.get(app.id)?.slug ?? null },
+  }));
 }
 
-const { app, categories } = Astro.props;
+const { app, categories, publisherSlug } = Astro.props;
 const base = import.meta.env.BASE_URL;
+// Prefer the on-site publisher page when one exists; otherwise fall back to the
+// app's publisher.url (also filled from the publisher website) or plain text.
+const publisherHref = publisherSlug
+  ? withBase(base, `publishers/${publisherSlug}`)
+  : app.publisher.url || null;
 
 const categoryName = (id: string) =>
   categories.find((c) => c.id === id)?.name ?? id;
@@ -47,8 +59,8 @@ const fmtDownloads = (n: number) => `${fmtCount(n)} download${n === 1 ? "" : "s"
         <p class="app-hero__desc">{app.description}</p>
         <div class="app-hero__by">
           {
-            app.publisher.url ? (
-              <a href={app.publisher.url}>{app.publisher.name}</a>
+            publisherHref ? (
+              <a href={publisherHref}>{app.publisher.name}</a>
             ) : (
               <span>{app.publisher.name}</span>
             )
@@ -140,7 +152,15 @@ const fmtDownloads = (n: number) => `${fmtCount(n)} download${n === 1 ? "" : "s"
         <dl>
           <div>
             <dt>Publisher</dt>
-            <dd>{app.publisher.name}</dd>
+            <dd>
+              {
+                publisherHref ? (
+                  <a href={publisherHref}>{app.publisher.name}</a>
+                ) : (
+                  app.publisher.name
+                )
+              }
+            </dd>
           </div>
           {
             latest && (

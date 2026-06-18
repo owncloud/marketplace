@@ -39,6 +39,10 @@ export type DownloadCounts = Record<string, number>;
  * (version → count); missing versions count as 0. The app-level `downloads` is
  * their sum. Each release's `download` points at the GitHub Release asset (not
  * the Pages copy) so GitHub counts the download.
+ *
+ * `publisherUrl` fills `publisher.url` when an enabled publisher owning this app
+ * declares a website; it defaults to "" (info.xml has no publisher URL), keeping
+ * the field's client-shape compatibility when no publisher claims the app.
  */
 export function buildApp(
   appId: string,
@@ -47,6 +51,7 @@ export function buildApp(
   screenshots: ScreenshotsProvider,
   baseUrl: string,
   counts: DownloadCounts = {},
+  publisherUrl = "",
 ): ApiApp {
   const sorted = [...infos].sort((a, b) => byVersionDesc(a.version, b.version));
   const newest = sorted[0];
@@ -79,7 +84,7 @@ export function buildApp(
     downloads: releases.reduce((sum, r) => sum + r.downloads, 0),
     rating: { "1": 0, "2": 0, "3": 0, "4": 0, "5": 0, mean: 0 },
     downloadable: true,
-    publisher: { name: newest.author, url: "" },
+    publisher: { name: newest.author, url: publisherUrl },
     releases,
   };
 }

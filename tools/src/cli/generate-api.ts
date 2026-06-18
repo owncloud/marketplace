@@ -1,5 +1,5 @@
 import { cp, mkdir } from "node:fs/promises";
-import { join } from "node:path";
+import { dirname, join } from "node:path";
 import { scanApps } from "../scan.js";
 import { validateRelease } from "../validate.js";
 import { buildApp, writeApi } from "../generate.js";
@@ -10,8 +10,12 @@ import { BASE_URL, KNOWN_PLATFORM_VERSIONS } from "../config.js";
 import { scanExtensions } from "../ext/scan-extensions.js";
 import { validateExtensionRelease, assertConsistentIds } from "../ext/validate-extension.js";
 import { buildExtension, writeOcisApi } from "../ext/generate-extensions.js";
+import { scanPublishers } from "../publishers/scan-publishers.js";
+import { validatePublisher, assertOwnershipIntegrity } from "../publishers/validate-publisher.js";
+import { buildPublisher, writePublishers } from "../publishers/generate-publishers.js";
 import type { AppInfo } from "../types.js";
-import type { ExtensionInfo } from "../ext/types.js";
+import type { ExtensionInfo, OcisApp } from "../ext/types.js";
+import type { PublisherInfo } from "../publishers/types.js";
 
 function arg(name: string, fallback: string): string {
   const i = process.argv.indexOf(name);
@@ -25,8 +29,21 @@ function arg(name: string, fallback: string): string {
 async function main(): Promise<void> {
   const appsDir = arg("--apps", "apps");
   const extDir = arg("--extensions", "extensions");
+  const publishersDir = arg("--publishers", "publishers");
   const outDir = arg("--out", "_site");
   const downloadsData = arg("--downloads", "data/downloads.json");
+
+  // Scan + validate publishers up front so we can map each owned app to its
+  // publisher's website (filling publisher.url in buildApp). Ownership integrity
+  // is asserted later, once all catalog ids are known.
+  const publisherRefs = await scanPublishers(publishersDir);
+  const publisherInfos: PublisherInfo[] = [];
+  for (const ref of publisherRefs) publisherInfos.push(await validatePublisher(ref));
+  const appWebsite = new Map<string, string>();
+  for (const pub of publisherInfos) {
+    if (!pub.enabled || !pub.website) continue;
+    for (const appId of pub.apps) appWebsite.set(appId, pub.website);
+  }
 
   const refs = await scanApps(appsDir);
   const byApp = new Map<string, AppInfo[]>();
@@ -59,7 +76,15 @@ async function main(): Promise<void> {
 
   const apps = [...byApp.entries()]
     .map(([appId, infos]) =>
-      buildApp(appId, infos, created, screenshots, BASE_URL, appCounts[appId] ?? {}),
+      buildApp(
+        appId,
+        infos,
+        created,
+        screenshots,
+        BASE_URL,
+        appCounts[appId] ?? {},
+        appWebsite.get(appId) ?? "",
+      ),
     )
     .sort((a, b) => a.id.localeCompare(b.id));
 
@@ -142,6 +167,44 @@ async function main(): Promise<void> {
   }
 
   console.log(`Generated oCIS API for ${exts.length} extension(s) into ${outDir}/api/ocis/v1/`);
+
+  // ---- Publishers (opt-in pages over the two catalogs above) ----
+  // Now that every app and extension id is known, assert ownership integrity
+  // (no unknown or doubly-claimed ids), then emit a feed of only the *enabled*
+  // publishers — presence in publishers.json means the page exists.
+  const appById = new Map(apps.map((a) => [a.id, a]));
+  const extBySlug = new Map(extRefs.map((r) => [r.extId, r] as const));
+  const ocisBySlug = new Map<string, OcisApp>();
+  for (const [extId, infos] of byExt) {
+    ocisBySlug.set(extId, exts.find((e) => e.id === infos[0].id)!);
+  }
+  assertOwnershipIntegrity(publisherInfos, new Set(appById.keys()), new Set(extBySlug.keys()));
+
+  const publishers = publisherInfos
+    .filter((p) => p.enabled)
+    .map((p) =>
+      buildPublisher(
+        p,
+        p.apps.map((id) => appById.get(id)!),
+        p.extensions.map((id) => ocisBySlug.get(id)!),
+        BASE_URL,
+      ),
+    )
+    .sort((a, b) => a.slug.localeCompare(b.slug));
+
+  await writePublishers(outDir, publishers);
+
+  // Copy each enabled publisher's logo into the served tree so the same-origin
+  // logo URL resolves: _site/publishers/{slug}/{logo}
+  for (const p of publisherInfos) {
+    if (!p.enabled || !p.logo) continue;
+    const ref = publisherRefs.find((r) => r.slug === p.slug)!;
+    const dest = join(outDir, "publishers", p.slug, p.logo);
+    await mkdir(dirname(dest), { recursive: true });
+    await cp(join(ref.dir, p.logo), dest);
+  }
+
+  console.log(`Generated ${publishers.length} publisher page(s) into ${outDir}/api/v1/`);
 }
 
 main().catch((err: unknown) => {

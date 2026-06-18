@@ -59,6 +59,24 @@ describe("buildApp", () => {
     });
   });
 
+  it("fills publisher.url from the publisher website when supplied", () => {
+    const app = buildApp(
+      "calendar",
+      [base],
+      created,
+      noScreenshots,
+      "https://site",
+      {},
+      "https://owncloud.com",
+    );
+    expect(app.publisher).toEqual({ name: "ownCloud GmbH", url: "https://owncloud.com" });
+  });
+
+  it("leaves publisher.url empty when no website is supplied", () => {
+    const app = buildApp("calendar", [base], created, noScreenshots, "https://site");
+    expect(app.publisher.url).toBe("");
+  });
+
   it("populates per-release downloads from counts and sums them as the app total", () => {
     const v2: AppInfo = { ...base, version: "2.0.0" };
     const app = buildApp("calendar", [base, v2], created, noScreenshots, "https://site", {

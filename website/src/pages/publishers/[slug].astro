@@ -1,0 +1,402 @@
+---
+import Base from "../../layouts/Base.astro";
+import { loadApps, loadCategories, withBase } from "../../lib/catalog.ts";
+import { loadExtensions } from "../../lib/extensions.ts";
+import { loadPublishers } from "../../lib/publishers.ts";
+
+export async function getStaticPaths() {
+  // Only enabled publishers are written to publishers.json, so every entry here
+  // gets a page; a disabled or absent publisher yields no path (a 404).
+  const [publishers, apps, extensions, categories] = await Promise.all([
+    loadPublishers(),
+    loadApps(),
+    loadExtensions(),
+    loadCategories(),
+  ]);
+  const appById = new Map(apps.map((a) => [a.id, a]));
+  const extById = new Map(extensions.map((e) => [e.id, e]));
+
+  return publishers.map((publisher) => ({
+    params: { slug: publisher.slug },
+    props: {
+      publisher,
+      categories,
+      // Resolve owned ids to full catalog objects, dropping any that no longer
+      // exist (validation already guarantees they do, so this is defensive only).
+      apps: publisher.apps.map((id) => appById.get(id)).filter(Boolean),
+      extensions: publisher.extensions.map((id) => extById.get(id)).filter(Boolean),
+    },
+  }));
+}
+
+const { publisher, apps, extensions, categories } = Astro.props;
+const base = import.meta.env.BASE_URL;
+
+const categoryName = (id: string) =>
+  categories.find((c) => c.id === id)?.name ?? id;
+
+const initial = publisher.name.trim().charAt(0).toUpperCase() || "?";
+const fmtCount = (n: number) => n.toLocaleString("en-US");
+---
+<Base
+  title={`${publisher.name} — ownCloud Marketplace`}
+  description={publisher.description ?? `Apps and extensions published by ${publisher.name}.`}
+>
+  <nav class="breadcrumb container" aria-label="Breadcrumb">
+    <a href={withBase(base, "")}>Marketplace</a>
+    <span aria-hidden="true">/</span>
+    <span aria-current="page">{publisher.name}</span>
+  </nav>
+
+  <header class="pub-hero">
+    <div class="container pub-hero__inner">
+      {
+        publisher.logo ? (
+          <img class="pub-hero__logo" src={publisher.logo} alt={`${publisher.name} logo`} />
+        ) : (
+          <span class="pub-hero__avatar" aria-hidden="true">{initial}</span>
+        )
+      }
+      <div class="pub-hero__body">
+        <h1>{publisher.name}</h1>
+        {publisher.description && <p class="pub-hero__desc">{publisher.description}</p>}
+        <div class="pub-hero__meta">
+          {
+            publisher.website && (
+              <a class="pub-hero__site" href={publisher.website} rel="nofollow noopener">
+                {publisher.website.replace(/^https?:\/\//, "").replace(/\/$/, "")}
+              </a>
+            )
+          }
+        </div>
+        <dl class="pub-stats">
+          <div>
+            <dt>Apps</dt>
+            <dd>{publisher.stats.apps}</dd>
+          </div>
+          <div>
+            <dt>Extensions</dt>
+            <dd>{publisher.stats.extensions}</dd>
+          </div>
+          <div>
+            <dt>Downloads</dt>
+            <dd>{fmtCount(publisher.stats.downloads)}</dd>
+          </div>
+        </dl>
+      </div>
+    </div>
+  </header>
+
+  <div class="container pub-body">
+    {
+      apps.length > 0 && (
+        <section class="pub-section">
+          <h2>Apps</h2>
+          <ul class="grid">
+            {apps.map((app) => (
+              <li class="card-item">
+                <a class="card" href={withBase(base, `apps/${app.id}`)}>
+                  <div class="card__top">
+                    <span class="card__avatar" aria-hidden="true">
+                      {app.name.trim().charAt(0).toUpperCase() || "?"}
+                    </span>
+                    <div class="card__heading">
+                      <h3 class="card__title">{app.name}</h3>
+                      <span class="card__publisher">{publisher.name}</span>
+                    </div>
+                  </div>
+                  <p class="card__desc">{app.description}</p>
+                  <div class="card__meta">
+                    <div class="card__cats">
+                      {app.categories.map((c) => (
+                        <span class="tag">{categoryName(c)}</span>
+                      ))}
+                    </div>
+                    {app.releases[0] && (
+                      <span class="card__version">v{app.releases[0].version}</span>
+                    )}
+                  </div>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )
+    }
+
+    {
+      extensions.length > 0 && (
+        <section class="pub-section">
+          <h2>Web Extensions</h2>
+          <ul class="grid">
+            {extensions.map((ext) => (
+              <li class="card-item">
+                <a class="card" href={withBase(base, `extensions/${ext.id}`)}>
+                  <div class="card__top">
+                    <span class="card__avatar" aria-hidden="true">
+                      {ext.name.trim().charAt(0).toUpperCase() || "?"}
+                    </span>
+                    <div class="card__heading">
+                      <h3 class="card__title">{ext.name}</h3>
+                      <span class="card__publisher">{ext.authors[0]?.name}</span>
+                    </div>
+                  </div>
+                  <p class="card__desc">{ext.subtitle}</p>
+                  <div class="card__meta">
+                    <div class="card__cats">
+                      {ext.tags.map((t) => (
+                        <span class="tag">{t}</span>
+                      ))}
+                    </div>
+                    {ext.versions[0] && (
+                      <span class="card__version">v{ext.versions[0].version}</span>
+                    )}
+                  </div>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )
+    }
+
+    {
+      apps.length === 0 && extensions.length === 0 && (
+        <p class="empty">This publisher has no published apps or extensions yet.</p>
+      )
+    }
+  </div>
+</Base>
+
+<style>
+  .breadcrumb {
+    display: flex;
+    gap: 9px;
+    align-items: center;
+    flex-wrap: wrap;
+    padding-top: 28px;
+    font-size: 0.88rem;
+    color: var(--oc-text-muted);
+  }
+  .breadcrumb a {
+    color: var(--oc-text-muted);
+  }
+  .breadcrumb a:hover {
+    color: var(--oc-primary-hover);
+  }
+  .breadcrumb [aria-current] {
+    color: var(--oc-brand);
+    font-weight: 600;
+  }
+
+  .pub-hero {
+    margin-top: 24px;
+    background: linear-gradient(180deg, var(--oc-bg-highlight), var(--oc-bg));
+    border-block: 1px solid var(--oc-border);
+  }
+  .pub-hero__inner {
+    display: flex;
+    gap: 28px;
+    padding-block: 44px;
+    align-items: flex-start;
+  }
+  .pub-hero__avatar,
+  .pub-hero__logo {
+    flex: none;
+    width: 96px;
+    height: 96px;
+    border-radius: 20px;
+    box-shadow: var(--shadow-md);
+  }
+  .pub-hero__avatar {
+    display: grid;
+    place-items: center;
+    font-weight: 700;
+    font-size: 2.6rem;
+    color: #fff;
+    background: linear-gradient(135deg, var(--oc-primary), var(--oc-brand));
+  }
+  .pub-hero__logo {
+    object-fit: contain;
+    background: var(--oc-bg);
+    border: 1px solid var(--oc-border);
+    padding: 8px;
+  }
+  .pub-hero__body {
+    min-width: 0;
+  }
+  .pub-hero h1 {
+    font-size: clamp(2rem, 4vw, 2.9rem);
+    font-weight: 700;
+    color: var(--oc-brand);
+    margin-bottom: 10px;
+  }
+  .pub-hero__desc {
+    font-size: 1.12rem;
+    color: var(--oc-text-muted);
+    max-width: 60ch;
+    margin: 0 0 14px;
+  }
+  .pub-hero__meta {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    margin-bottom: 20px;
+  }
+  .pub-hero__site {
+    font-weight: 600;
+    color: var(--oc-primary-hover);
+  }
+  .pub-stats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1px;
+    margin: 0;
+    background: var(--oc-border);
+    border: 1px solid var(--oc-border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    max-width: 460px;
+  }
+  .pub-stats > div {
+    background: var(--oc-bg);
+    padding: 14px 24px;
+    flex: 1;
+  }
+  .pub-stats dt {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--oc-text-muted);
+  }
+  .pub-stats dd {
+    margin: 4px 0 0;
+    font-size: 1.7rem;
+    font-weight: 700;
+    line-height: 1;
+    color: var(--oc-brand);
+  }
+  @media (max-width: 880px) {
+    .pub-hero__inner {
+      flex-direction: column;
+      gap: 20px;
+    }
+  }
+
+  .pub-body {
+    padding-top: 44px;
+  }
+  .pub-section {
+    margin-bottom: 48px;
+  }
+  .pub-section h2 {
+    font-size: 1.5rem;
+    color: var(--oc-brand);
+    margin-bottom: 22px;
+  }
+
+  .grid {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 22px;
+  }
+  .card {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    padding: 24px;
+    background: var(--oc-bg);
+    border: 1px solid var(--oc-border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-sm);
+    color: inherit;
+    transition:
+      transform 0.2s ease,
+      box-shadow 0.2s ease,
+      border-color 0.2s ease;
+  }
+  .card:hover {
+    text-decoration: none;
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-md);
+    border-color: var(--oc-border-input);
+  }
+  .card__top {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 16px;
+  }
+  .card__avatar {
+    flex: none;
+    width: 46px;
+    height: 46px;
+    display: grid;
+    place-items: center;
+    border-radius: 11px;
+    font-weight: 700;
+    font-size: 1.25rem;
+    color: #fff;
+    background: linear-gradient(135deg, var(--oc-primary), var(--oc-brand));
+  }
+  .card__heading {
+    min-width: 0;
+  }
+  .card__title {
+    font-size: 1.16rem;
+    font-weight: 700;
+    color: var(--oc-brand);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .card__publisher {
+    font-size: 0.85rem;
+    color: var(--oc-text-muted);
+  }
+  .card__desc {
+    margin: 0 0 20px;
+    color: var(--oc-text-muted);
+    font-size: 0.96rem;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .card__meta {
+    margin-top: auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  .card__cats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .tag {
+    font-size: 0.74rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    padding: 3px 10px;
+    border-radius: 999px;
+    background: var(--oc-bg-highlight);
+    color: var(--oc-primary-hover);
+  }
+  .card__version {
+    flex: none;
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    color: var(--oc-text-muted);
+  }
+  .empty {
+    text-align: center;
+    color: var(--oc-text-muted);
+    padding: 48px 0;
+    font-size: 1.05rem;
+  }
+</style>

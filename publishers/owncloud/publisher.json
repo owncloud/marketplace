@@ -1,0 +1,14 @@
+{
+  "slug": "owncloud",
+  "name": "ownCloud GmbH",
+  "enabled": true,
+  "website": "https://owncloud.com",
+  "description": "The company behind ownCloud \u2014 open-source content collaboration and file sync & share.",
+  "logo": "logo.png",
+  "apps": [
+    "example-app"
+  ],
+  "extensions": [
+    "example-extension"
+  ]
+}

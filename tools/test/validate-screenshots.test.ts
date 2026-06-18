@@ -116,6 +116,44 @@ describe("validateAddedScreenshots", () => {
     await expect(validateAddedScreenshots(base, repo)).rejects.toThrow(/image/i);
   });
 
+  it("validates committed local screenshots in place without fetching info.xml URLs", async () => {
+    const repo = await newRepo();
+    await writeFile(join(repo, "README.md"), "base\n");
+    await gitC(repo, ["add", "."]);
+    await gitC(repo, ["commit", "-q", "-m", "base"]);
+    const base = (await gitC(repo, ["rev-parse", "HEAD"])).stdout.trim();
+
+    await gitC(repo, ["checkout", "-q", "-b", "feature"]);
+    // info.xml points at a dead URL — committed local screenshots must be
+    // validated instead of (and without) fetching it.
+    await addReleaseTarball(repo, "1.0.0", url("/dead.png"));
+    const shotsDir = join(repo, "apps", "foo", "releases", "1.0.0", "screenshots");
+    await mkdir(shotsDir, { recursive: true });
+    await writeFile(join(shotsDir, "01.png"), PNG);
+    await gitC(repo, ["add", "."]);
+    await gitC(repo, ["commit", "-q", "-m", "add release with local screenshots"]);
+
+    await expect(validateAddedScreenshots(base, repo)).resolves.toBe(1);
+  });
+
+  it("rejects a committed local screenshot that is not a valid image", async () => {
+    const repo = await newRepo();
+    await writeFile(join(repo, "README.md"), "base\n");
+    await gitC(repo, ["add", "."]);
+    await gitC(repo, ["commit", "-q", "-m", "base"]);
+    const base = (await gitC(repo, ["rev-parse", "HEAD"])).stdout.trim();
+
+    await gitC(repo, ["checkout", "-q", "-b", "feature"]);
+    await addReleaseTarball(repo, "1.0.0", url("/good.png"));
+    const shotsDir = join(repo, "apps", "foo", "releases", "1.0.0", "screenshots");
+    await mkdir(shotsDir, { recursive: true });
+    await writeFile(join(shotsDir, "01.png"), Buffer.from("not an image"));
+    await gitC(repo, ["add", "."]);
+    await gitC(repo, ["commit", "-q", "-m", "add release with bad local screenshot"]);
+
+    await expect(validateAddedScreenshots(base, repo)).rejects.toThrow(/image/i);
+  });
+
   it("does not fetch screenshots of already-published (unchanged) releases", async () => {
     const repo = await newRepo();
     // Publish 1.0.0 whose screenshot URL is a dead path — it must never be fetched.

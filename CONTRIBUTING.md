@@ -25,6 +25,19 @@ that carries attributes such as `small-thumbnail`, and `<category>` values
 outside the supported set — unsupported categories are dropped, and a release is
 rejected only when *none* of its categories are supported.
 
+Screenshots are served from committed copies, not the `info.xml` URLs (which are
+only an ingestion source). A release may ship its screenshots directly:
+
+```
+apps/<app-id>/releases/<version>/screenshots/01.png   # 02.png, … (Git LFS)
+```
+
+When a release ships local screenshots, CI validates those files in place and
+does **not** fetch the `info.xml` URLs — so an app whose screenshots are hosted
+behind a CDN/WAF that blocks CI (e.g. returns HTTP 415 to datacenter IPs) can
+commit a local copy (or a placeholder) instead. A release with no local
+screenshots falls back to fetching and validating its `info.xml` URLs.
+
 ### Importing legacy releases (download counts & dates)
 
 Two optional, committed data files preserve history for apps mirrored from the

@@ -1,3 +1,4 @@
+import { readFile } from "node:fs/promises";
 import { imageSize } from "image-size";
 import { ValidationError } from "./types.js";
 
@@ -143,6 +144,30 @@ export async function fetchAndValidateImage(
   } finally {
     clearTimeout(timeout);
   }
+}
+
+/**
+ * Validate an already-committed screenshot file on disk: sniff its format,
+ * measure it, and enforce the size/dimension limits — the same checks as
+ * fetchAndValidateImage but reading local bytes rather than the network. Used
+ * for releases that ship their screenshots in the repo (the served copy), so
+ * validation never depends on a reachable external URL. Throws ValidationError
+ * naming the path on any failure.
+ */
+export async function validateImageFile(
+  path: string,
+  limits: Partial<ImageLimits> = {},
+): Promise<ImageMeta> {
+  const lim: ImageLimits = { ...DEFAULT_IMAGE_LIMITS, ...limits };
+  const bytes = await readFile(path);
+  let meta: ImageMeta;
+  try {
+    meta = sniffAndMeasure(bytes);
+  } catch (err) {
+    throw new ValidationError(`${errMessage(err)}: "${path}"`);
+  }
+  enforceImageLimits(meta, lim);
+  return meta;
 }
 
 /** Pull a stream into a Buffer, aborting as soon as it would exceed maxBytes. */

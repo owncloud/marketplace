@@ -1,29 +1,42 @@
 import { execFile } from "node:child_process";
 import { promisify } from "node:util";
 import { pathToFileURL } from "node:url";
-import { join } from "node:path";
+import { dirname, join } from "node:path";
 import { addedPackagePaths } from "./check-changeset.js";
 import { readInfoXmlFromTarball } from "../package-reader.js";
 import { parseInfoXml } from "../info-xml.js";
-import { fetchAndValidateImage } from "../image-validate.js";
+import { fetchAndValidateImage, validateImageFile } from "../image-validate.js";
+import { listScreenshots, screenshotsDir } from "../screenshots.js";
 import { ValidationError } from "../types.js";
 
 const exec = promisify(execFile);
 
 /**
- * Validate every screenshot of each release **newly added** by the PR: each
- * <screenshot> URL must resolve to a reachable image within the supported
- * formats and size/dimension limits (see image-validate). Strict — the first
- * bad screenshot throws. Already-published releases are not re-checked, so a
- * screenshot URL that has rotted on an existing entry never fails an unrelated
- * PR. Network access is required (this fetches the images).
+ * Validate the screenshots of each release **newly added** by the PR, each
+ * within the supported formats and size/dimension limits (see image-validate).
+ * A release that ships committed screenshots (screenshots/NN.ext beside its
+ * package) is validated from those local files — the bytes the catalog actually
+ * serves — without any network access. Only a release that ships no local files
+ * falls back to fetching its info.xml <screenshot> URLs. This keeps the gate off
+ * external hosts that block CI (e.g. a WAF returning 415 to datacenter IPs)
+ * while still validating exactly what is published. Strict — the first bad
+ * screenshot throws. Already-published releases are not re-checked.
  */
 export async function validateAddedScreenshots(baseRef: string, repoRoot: string): Promise<number> {
   const added = await addedPackagePaths(baseRef, repoRoot);
   let count = 0;
   for (const path of added) {
-    const xml = await readInfoXmlFromTarball(join(repoRoot, path));
-    const info = parseInfoXml(xml);
+    const releaseDir = join(repoRoot, dirname(path));
+    const localFiles = await listScreenshots(releaseDir);
+    if (localFiles.length > 0) {
+      const dir = screenshotsDir(releaseDir);
+      for (const file of localFiles) {
+        await validateImageFile(join(dir, file));
+        count++;
+      }
+      continue;
+    }
+    const info = parseInfoXml(await readInfoXmlFromTarball(join(repoRoot, path)));
     for (const url of info.screenshots) {
       await fetchAndValidateImage(url);
       count++;

@@ -22,11 +22,26 @@ const fmtDate = (iso: string): string => {
 const fmtCount = (n: number) => n.toLocaleString("en-US");
 const fmtDownloads = (n: number) => `${fmtCount(n)} download${n === 1 ? "" : "s"}`;
 
+// The store button label per mobile surface; other surfaces have no store link.
+const STORE_LABEL: Partial<Record<string, string>> = {
+  android: "Get it on Google Play",
+  ios: "Download on the App Store",
+};
+
+// "★ 4.5 · 345 ratings" from a store's rating/ratingCount, when present.
+const fmtRating = (rating?: number, count?: number): string | null => {
+  if (rating === undefined) return null;
+  const stars = `★ ${rating.toFixed(1)}`;
+  return count === undefined
+    ? stars
+    : `${stars} · ${fmtCount(count)} rating${count === 1 ? "" : "s"}`;
+};
+
 const generated = downloads ? fmtDate(downloads.generatedAt) : null;
 ---
 <Base
   title="Downloads — ownCloud"
-  description="Download the latest ownCloud Infinite Scale server, desktop client and mobile apps. Direct binaries for Linux, macOS, Windows, Android and iOS."
+  description="Download the latest ownCloud Infinite Scale, ownCloud Classic 10, the desktop client and the Android and iOS apps. Direct binaries for Linux, macOS and Windows, plus the official mobile app stores."
 >
   <!-- ===================== HERO ===================== -->
   <section class="hero">
@@ -36,8 +51,9 @@ const generated = downloads ? fmtDate(downloads.generatedAt) : null;
       <p class="eyebrow">Open Source Program Office · Releases</p>
       <h1 class="hero__title">Download <span class="hero__accent">ownCloud</span>.</h1>
       <p class="hero__lede">
-        The latest stable release of the Infinite Scale server, desktop client and
-        mobile apps — pulled straight from the official GitHub releases.
+        The latest stable releases of Infinite Scale, ownCloud Classic 10, the
+        desktop client and the Android &amp; iOS apps — pulled straight from the
+        official sources.
       </p>
       {generated && <p class="hero__note">Release data refreshed {generated}.</p>}
     </div>
@@ -63,32 +79,51 @@ const generated = downloads ? fmtDate(downloads.generatedAt) : null;
                   v{surface.version}
                 </a>
                 <span class="surface__date">{fmtDate(surface.publishedAt)}</span>
-                {surface.downloads > 0 && (
+                {surface.store?.installs && (
+                  <span class="surface__downloads">{surface.store.installs} installs</span>
+                )}
+                {fmtRating(surface.store?.rating, surface.store?.ratingCount) && (
+                  <span class="surface__rating">
+                    {fmtRating(surface.store?.rating, surface.store?.ratingCount)}
+                  </span>
+                )}
+                {!surface.store && surface.downloads > 0 && (
                   <span class="surface__downloads">{fmtDownloads(surface.downloads)}</span>
                 )}
               </div>
             )}
           </header>
 
+          {surface?.store && (
+            <a class="store-cta" href={surface.store.url} rel="noopener">
+              {STORE_LABEL[key] ?? "View in store"}
+            </a>
+          )}
+
           {surface && surface.binaries.length > 0 ? (
-            <ul class="downloads">
-              {surface.binaries.map((b) => (
-                <li>
-                  <a class="download" href={b.url} rel="noopener">
-                    <span class="download__os">{b.os}</span>
-                    {b.arch && <span class="download__arch">{b.arch}</span>}
-                    <span class="download__size">{b.size}</span>
-                  </a>
-                </li>
-              ))}
-            </ul>
+            <>
+              {surface.store && <p class="downloads__label">Direct download</p>}
+              <ul class={surface.store ? "downloads downloads--secondary" : "downloads"}>
+                {surface.binaries.map((b) => (
+                  <li>
+                    <a class="download" href={b.url} rel="noopener">
+                      <span class="download__os">{b.os}</span>
+                      {b.arch && <span class="download__arch">{b.arch}</span>}
+                      <span class="download__size">{b.size}</span>
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </>
           ) : (
-            <p class="surface__fallback">
-              No direct binaries listed for this release.{" "}
-              <a href={surface?.releaseUrl ?? `https://github.com/${repo}/releases`} rel="noopener">
-                Browse releases on GitHub →
-              </a>
-            </p>
+            !surface?.store && (
+              <p class="surface__fallback">
+                No direct binaries listed for this release.{" "}
+                <a href={surface?.releaseUrl ?? `https://github.com/${repo}/releases`} rel="noopener">
+                  Browse releases on GitHub →
+                </a>
+              </p>
+            )
           )}
 
           <a class="surface__history" href={withBase(base, `downloads/${key}`)}>
@@ -234,6 +269,46 @@ const generated = downloads ? fmtDate(downloads.generatedAt) : null;
     font-size: 0.82rem;
     color: var(--oc-text-muted);
   }
+  .surface__rating {
+    display: block;
+    margin-top: 4px;
+    font-size: 0.82rem;
+    color: var(--oc-text-muted);
+  }
+
+  /* ---------- Primary app-store call to action (mobile surfaces) ---------- */
+  .store-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 22px;
+    border-radius: var(--radius-sm);
+    background: var(--oc-brand);
+    color: #fff;
+    font-weight: 700;
+    font-size: 0.98rem;
+    transition:
+      transform 0.16s ease,
+      box-shadow 0.16s ease;
+  }
+  .store-cta:hover {
+    text-decoration: none;
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+  }
+  .downloads__label {
+    margin: 22px 0 10px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--oc-text-muted);
+  }
+  .downloads--secondary .download {
+    padding: 10px 14px;
+    font-size: 0.92rem;
+  }
+
   .surface__history {
     display: inline-block;
     margin-top: 18px;

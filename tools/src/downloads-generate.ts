@@ -9,6 +9,7 @@ import type {
   DownloadRelease,
   DownloadSurface,
   Downloads,
+  StoreStats,
 } from "./downloads-types.js";
 
 /**
@@ -161,9 +162,22 @@ export function normalizeDownloads(raw: RawDownloads): Downloads {
     ocis: buildSurface(raw.ocis),
     server: buildSurface(raw.server ?? [], matchClassicArchives),
     client: buildSurface(raw.client),
-    android: buildSurface(raw.android),
-    ios: buildSurface(raw.ios),
+    android: withStore(buildSurface(raw.android), raw.stores?.android),
+    ios: withStore(buildSurface(raw.ios), raw.stores?.ios),
   };
+}
+
+/**
+ * Attach app-store stats to a surface, when both the surface and the stats are
+ * present. Pure: returns a new surface (or the unchanged input / null). Lets a
+ * mobile surface carry its store listing alongside its GitHub releases.
+ */
+export function withStore(
+  surface: DownloadSurface | null,
+  store: StoreStats | undefined,
+): DownloadSurface | null {
+  if (!surface || !store) return surface;
+  return { ...surface, store };
 }
 
 /**

@@ -1,8 +1,14 @@
 import { mkdir, writeFile } from "node:fs/promises";
 import { dirname } from "node:path";
 import { pathToFileURL } from "node:url";
-import type { RawRelease, RawDownloads, AppDownloadCounts } from "../downloads-types.js";
+import type {
+  RawRelease,
+  RawDownloads,
+  AppDownloadCounts,
+  StoreStats,
+} from "../downloads-types.js";
 import { githubRepo } from "../config.js";
+import { fetchAppleStats, fetchPlayStats } from "../stores.js";
 
 /** A release as returned by the GitHub Releases API (the fields we read). */
 export interface GhRelease {
@@ -214,11 +220,15 @@ async function main(): Promise<void> {
 
   const surfaces = Object.keys(SURFACE_REPOS) as Surface[];
   // Fetch the GitHub-release surfaces, this repo's own releases (app packages),
-  // and the classic server (owncloud/core releases) all in parallel.
+  // the classic server (owncloud/core releases), and the mobile app-store stats
+  // all in parallel. The store fetchers swallow their own failures (returning
+  // null), so a store outage never fails the GitHub fetch.
   const ownRepo = githubRepo();
-  const [own, classic, ...fetched] = await Promise.all([
+  const [own, classic, apple, play, ...fetched] = await Promise.all([
     fetchReleases(ownRepo),
     fetchClassic(),
+    fetchAppleStats(),
+    fetchPlayStats(),
     ...surfaces.map((s) => fetchReleases(SURFACE_REPOS[s])),
   ]);
   const perSurface = Object.fromEntries(surfaces.map((s, i) => [s, fetched[i]])) as Record<
@@ -232,13 +242,20 @@ async function main(): Promise<void> {
   // Release assets, distinguished by asset suffix (.tar.gz vs .zip).
   raw.apps = buildAppCounts(own);
   raw.extensions = buildExtensionCounts(own);
+  // Attach mobile app-store stats, keeping only the stores that resolved.
+  const stores: { android?: StoreStats; ios?: StoreStats } = {};
+  if (play) stores.android = play;
+  if (apple) stores.ios = apple;
+  if (play || apple) raw.stores = stores;
   await mkdir(dirname(out), { recursive: true });
   await writeFile(out, JSON.stringify(raw, null, 2) + "\n", "utf8");
 
   const surfaceCounts = surfaces.map((s) => `${s}=${raw[s].length}`).join(" ");
+  const storeNames = Object.keys(raw.stores ?? {}).join(",") || "none";
   console.log(
     `Wrote ${out} (${surfaceCounts} server=${raw.server?.length ?? 0} ` +
-      `apps=${Object.keys(raw.apps).length} extensions=${Object.keys(raw.extensions).length})`,
+      `apps=${Object.keys(raw.apps).length} extensions=${Object.keys(raw.extensions).length} ` +
+      `stores=${storeNames})`,
   );
 }
 

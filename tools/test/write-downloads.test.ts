@@ -142,6 +142,75 @@ describe("writeDownloads", () => {
   });
 });
 
+describe("writeDownloads — app-store stats", () => {
+  // A raw payload with a mobile release on each surface, plus store stats.
+  const mobile: RawDownloads = {
+    generated_at: "2026-06-14T00:00:00Z",
+    ocis: [],
+    client: [],
+    android: [
+      {
+        tag_name: "4.5.0",
+        name: "Android 4.5.0",
+        published_at: "2026-03-01T00:00:00Z",
+        html_url: "https://github.com/owncloud/android/releases/tag/4.5.0",
+        assets: [],
+      },
+    ],
+    ios: [
+      {
+        tag_name: "2.0.0",
+        name: "iOS 2.0.0",
+        published_at: "2026-03-01T00:00:00Z",
+        html_url: "https://github.com/owncloud/ios-app/releases/tag/2.0.0",
+        assets: [],
+      },
+    ],
+    stores: {
+      android: {
+        url: "https://play.google.com/store/apps/details?id=com.owncloud.android",
+        rating: 4.3,
+        ratingCount: 12000,
+        installs: "1,000,000+",
+      },
+      ios: {
+        url: "https://apps.apple.com/app/id1359583808",
+        rating: 4.5,
+        ratingCount: 345,
+      },
+    },
+  };
+
+  it("attaches store stats to the android and ios surfaces", async () => {
+    out = await mkdtemp(join(tmpdir(), "dl-"));
+    await writeDownloads(out, mobile);
+
+    const written = JSON.parse(await readFile(join(out, "api/v1/downloads.json"), "utf8"));
+    expect(written.android.store).toEqual(mobile.stores!.android);
+    expect(written.ios.store).toEqual(mobile.stores!.ios);
+  });
+
+  it("omits store when raw.stores is absent (backward compat)", async () => {
+    out = await mkdtemp(join(tmpdir(), "dl-"));
+    const { stores, ...withoutStores } = mobile;
+    void stores;
+    await writeDownloads(out, withoutStores);
+
+    const written = JSON.parse(await readFile(join(out, "api/v1/downloads.json"), "utf8"));
+    expect(written.android.store).toBeUndefined();
+    expect(written.ios.store).toBeUndefined();
+  });
+
+  it("leaves a null surface null even when stores names it", async () => {
+    out = await mkdtemp(join(tmpdir(), "dl-"));
+    // android has no releases → null surface; store stats must not resurrect it.
+    await writeDownloads(out, { ...mobile, android: [] });
+
+    const written = JSON.parse(await readFile(join(out, "api/v1/downloads.json"), "utf8"));
+    expect(written.android).toBeNull();
+  });
+});
+
 describe("readRawDownloads", () => {
   it("reads and parses an existing raw downloads file", async () => {
     out = await mkdtemp(join(tmpdir(), "dl-"));

@@ -75,6 +75,24 @@ describe("parseInfoXml", () => {
     const xml = VALID.replace("https://example.com/1.png", "not a url");
     expect(() => parseInfoXml(xml)).toThrow(/screenshot.*not a valid URL/i);
   });
+
+  it("extracts the url from a <screenshot> that carries attributes", () => {
+    const xml = VALID.replace(
+      "<screenshot>https://example.com/1.png</screenshot>",
+      '<screenshot small-thumbnail="https://example.com/thumb.png">https://example.com/1.png</screenshot>',
+    );
+    const info = parseInfoXml(xml);
+    expect(info.screenshots).toEqual(["https://example.com/1.png"]);
+  });
+
+  it("keeps the first <author> when several are listed", () => {
+    const xml = VALID.replace(
+      "<author>ownCloud GmbH</author>",
+      "<author>Pauli Järvinen (current author)</author>\n  <author>Morris Jobke (original author)</author>",
+    );
+    const info = parseInfoXml(xml);
+    expect(info.author).toBe("Pauli Järvinen (current author)");
+  });
 });
 
 describe("parseInfoXml localized text fields", () => {

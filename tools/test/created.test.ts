@@ -1,5 +1,12 @@
 import { describe, it, expect } from "vitest";
-import { makeStaticCreatedProvider } from "../src/created.js";
+import { mkdtemp, writeFile, rm } from "node:fs/promises";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
+import {
+  makeStaticCreatedProvider,
+  withCreatedOverrides,
+  readCreatedOverrides,
+} from "../src/created.js";
 
 describe("makeStaticCreatedProvider", () => {
   it("returns the mapped ISO timestamp for a known appId/version", () => {
@@ -12,5 +19,38 @@ describe("makeStaticCreatedProvider", () => {
   it("falls back to the provided default for unknown keys", () => {
     const provider = makeStaticCreatedProvider({}, "1970-01-01T00:00:00+00:00");
     expect(provider("x", "9.9.9")).toBe("1970-01-01T00:00:00+00:00");
+  });
+});
+
+describe("withCreatedOverrides", () => {
+  const base = makeStaticCreatedProvider({ "calendar@1.0.0": "2020-01-01T00:00:00+00:00" });
+
+  it("returns the override when one is present", () => {
+    const provider = withCreatedOverrides(base, { "calendar@1.0.0": "2026-05-10T00:00:00+00:00" });
+    expect(provider("calendar", "1.0.0")).toBe("2026-05-10T00:00:00+00:00");
+  });
+
+  it("delegates to the base provider when no override matches", () => {
+    const provider = withCreatedOverrides(base, { "music@2.5.2": "2026-05-10T00:00:00+00:00" });
+    expect(provider("calendar", "1.0.0")).toBe("2020-01-01T00:00:00+00:00");
+  });
+});
+
+describe("readCreatedOverrides", () => {
+  it("parses a committed overrides file", async () => {
+    const dir = await mkdtemp(join(tmpdir(), "created-"));
+    const path = join(dir, "created.json");
+    await writeFile(path, JSON.stringify({ "music@2.5.2": "2026-05-10T00:00:00+00:00" }));
+    try {
+      expect(await readCreatedOverrides(path)).toEqual({
+        "music@2.5.2": "2026-05-10T00:00:00+00:00",
+      });
+    } finally {
+      await rm(dir, { recursive: true, force: true });
+    }
+  });
+
+  it("returns {} when the file is absent", async () => {
+    expect(await readCreatedOverrides(join(tmpdir(), "does-not-exist-created.json"))).toEqual({});
   });
 });

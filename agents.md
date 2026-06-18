@@ -74,7 +74,10 @@ npm run typecheck      # astro check
 - **Immutable releases:** never modify or delete an already-published
   `package.tar.gz`. Publish a new version instead.
 - **Metadata source:** app metadata comes exclusively from `appinfo/info.xml`
-  inside the tarball — not from files in the PR outside the tarball.
+  inside the tarball — not from files in the PR outside the tarball. The two
+  exceptions are historical stats for imported legacy releases:
+  `data/downloads-baseline.json` (download totals added on top of live GitHub
+  counts) and `data/created.json` (`<id>@<version>` → release date override).
 - **Git LFS:** tarballs are LFS-tracked; CI checks out with `lfs: true`.
 
 ## OSPO Policy Constraints

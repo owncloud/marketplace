@@ -18,6 +18,23 @@ All metadata is read from the `appinfo/info.xml` inside the tarball. See the
 [pull request template](.github/pull_request_template.md) for the
 full checklist.
 
+Because the `info.xml` inside a published tarball is immutable (and may be
+signed), the parser tolerates the variety found in real classic apps: several
+`<author>` elements (the first is taken as the display author), a `<screenshot>`
+that carries attributes such as `small-thumbnail`, and `<category>` values
+outside the supported set — unsupported categories are dropped, and a release is
+rejected only when *none* of its categories are supported.
+
+### Importing legacy releases (download counts & dates)
+
+Two optional, committed data files preserve history for apps mirrored from the
+old marketplace. Normal new submissions need neither.
+
+| File                          | Shape                                  | Purpose                                                                                          |
+| ----------------------------- | -------------------------------------- | ------------------------------------------------------------------------------------------------ |
+| `data/downloads-baseline.json`| `{ apps: { <id>: { <version>: count } } }` (also `extensions`) | Historical download totals, **added on top of** the live GitHub asset counts at generate time. Unlike `data/downloads.json`, it is never rewritten by the download fetch step. |
+| `data/created.json`           | `{ "<id>@<version>": "<ISO date>" }`   | Real historical release date; overrides the git-history date (which would otherwise be the import date). |
+
 ## Publishing an oCIS web extension
 
 This catalog also serves a drop-in [ownCloud Infinite Scale (oCIS)](https://owncloud.dev)

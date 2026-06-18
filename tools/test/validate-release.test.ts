@@ -10,11 +10,19 @@ afterEach(async () => {
   while (cleanups.length) await cleanups.pop()!();
 });
 
-function infoXml(id: string, version: string, category = "tools", minVersion = "10.0.0"): string {
+function infoXml(
+  id: string,
+  version: string,
+  category: string | string[] = "tools",
+  minVersion = "10.0.0",
+): string {
+  const categories = (Array.isArray(category) ? category : [category])
+    .map((c) => `<category>${c}</category>`)
+    .join("");
   return `<?xml version="1.0"?><info>
     <id>${id}</id><name>App</name><description>d</description>
     <licence>AGPL</licence><author>me</author><version>${version}</version>
-    <category>${category}</category>
+    ${categories}
     <dependencies><owncloud min-version="${minVersion}" max-version="11.99.99"/></dependencies>
   </info>`;
 }
@@ -48,9 +56,21 @@ describe("validateRelease", () => {
     await expect(validateRelease(ref)).rejects.toThrow(/version/i);
   });
 
-  it("rejects an unknown category", async () => {
+  it("rejects when no category is supported", async () => {
     const ref = await release("calendar", "2.1.0", infoXml("calendar", "2.1.0", "nonsense"));
-    await expect(validateRelease(ref)).rejects.toThrow(/category.*nonsense/i);
+    await expect(validateRelease(ref)).rejects.toThrow(/no supported category.*nonsense/i);
+  });
+
+  it("drops unsupported categories but keeps the supported ones", async () => {
+    // Classic apps carry legacy categories (e.g. "office") alongside valid ones;
+    // the release stays valid with only the supported categories surfaced.
+    const ref = await release(
+      "richdocuments",
+      "4.2.3",
+      infoXml("richdocuments", "4.2.3", ["office", "integration"]),
+    );
+    const info = await validateRelease(ref);
+    expect(info.categories).toEqual(["integration"]);
   });
 
   it("does NOT apply the platform floor (historical sub-11 releases stay valid)", async () => {

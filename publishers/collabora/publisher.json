@@ -1,0 +1,10 @@
+{
+  "slug": "collabora",
+  "name": "Collabora Productivity Ltd.",
+  "enabled": true,
+  "website": "https://www.collaboraonline.com",
+  "description": "The company behind Collabora Online, an enterprise-ready edition of LibreOffice Online for editing documents in ownCloud.",
+  "apps": [
+    "richdocuments"
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "slug": "pauli-jarvinen",
+  "name": "Pauli Järvinen",
+  "enabled": true,
+  "website": "https://github.com/owncloud/music",
+  "description": "Author and maintainer of the Music app — an audio player and server for ownCloud.",
+  "apps": [
+    "music"
+  ]
+}

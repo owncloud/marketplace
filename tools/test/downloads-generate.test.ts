@@ -1,4 +1,7 @@
 import { describe, it, expect } from "vitest";
+import { mkdtemp, writeFile, rm } from "node:fs/promises";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 import {
   formatSize,
   matchBinaries,
@@ -6,6 +9,8 @@ import {
   normalizeFullRelease,
   buildSurface,
   normalizeDownloads,
+  mergeAppCounts,
+  readDownloadsBaseline,
 } from "../src/downloads-generate.js";
 import type { RawAsset, RawRelease, RawDownloads } from "../src/downloads-types.js";
 
@@ -190,5 +195,47 @@ describe("normalizeDownloads", () => {
     // Classic archives lead with the format (in `os`) and leave `arch` empty.
     expect(out.server?.releases[0].binaries[0].os).toBe("tar.bz2");
     expect(out.server?.releases[0].binaries[0].arch).toBe("");
+  });
+});
+
+describe("mergeAppCounts", () => {
+  it("sums counts when a version is present in both maps", () => {
+    const merged = mergeAppCounts({ music: { "2.5.2": 5 } }, { music: { "2.5.2": 102780 } });
+    expect(merged.music["2.5.2"]).toBe(102785);
+  });
+
+  it("keeps versions present only in live or only in baseline", () => {
+    const merged = mergeAppCounts({ onlyoffice: { "9.12.1": 3 } }, { music: { "2.5.2": 100 } });
+    expect(merged).toEqual({ onlyoffice: { "9.12.1": 3 }, music: { "2.5.2": 100 } });
+  });
+
+  it("does not mutate its inputs", () => {
+    const live = { music: { "2.5.2": 5 } };
+    const baseline = { music: { "2.5.2": 100 } };
+    mergeAppCounts(live, baseline);
+    expect(live).toEqual({ music: { "2.5.2": 5 } });
+    expect(baseline).toEqual({ music: { "2.5.2": 100 } });
+  });
+
+  it("handles empty maps", () => {
+    expect(mergeAppCounts({}, {})).toEqual({});
+  });
+});
+
+describe("readDownloadsBaseline", () => {
+  it("parses a committed baseline file", async () => {
+    const dir = await mkdtemp(join(tmpdir(), "baseline-"));
+    const path = join(dir, "downloads-baseline.json");
+    await writeFile(path, JSON.stringify({ apps: { music: { "2.5.2": 102780 } } }));
+    try {
+      const baseline = await readDownloadsBaseline(path);
+      expect(baseline?.apps?.music["2.5.2"]).toBe(102780);
+    } finally {
+      await rm(dir, { recursive: true, force: true });
+    }
+  });
+
+  it("returns null when the file is absent", async () => {
+    expect(await readDownloadsBaseline(join(tmpdir(), "no-such-baseline.json"))).toBeNull();
   });
 });

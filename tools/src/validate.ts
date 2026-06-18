@@ -6,8 +6,11 @@ import type { ReleaseRef } from "./scan.js";
 
 /**
  * Validate one release: the tarball parses, its info.xml is schema-valid, the
- * folder appId/version match info.xml, and every category is supported.
- * Returns the parsed AppInfo on success; throws ValidationError otherwise.
+ * folder appId/version match info.xml, and at least one supported category
+ * remains. Returns the parsed AppInfo on success; throws ValidationError
+ * otherwise. Categories outside the supported set are dropped (classic apps
+ * carry legacy categories such as "office") rather than rejecting the release —
+ * the info.xml inside a published tarball is immutable and cannot be amended.
  */
 export async function validateRelease(ref: ReleaseRef): Promise<AppInfo> {
   const xml = await readInfoXmlFromTarball(ref.tarballPath);
@@ -26,14 +29,13 @@ export async function validateRelease(ref: ReleaseRef): Promise<AppInfo> {
   if (info.categories.length === 0) {
     throw new ValidationError(`app "${info.id}" declares no <category> in info.xml`);
   }
-  for (const cat of info.categories) {
-    if (!isValidCategory(cat)) {
-      throw new ValidationError(
-        `app "${info.id}" uses unknown category "${cat}" (not a supported marketplace category)`,
-      );
-    }
+  const supported = info.categories.filter(isValidCategory);
+  if (supported.length === 0) {
+    throw new ValidationError(
+      `app "${info.id}" declares no supported category (saw: ${info.categories.join(", ")})`,
+    );
   }
-  return info;
+  return { ...info, categories: supported };
 }
 
 export interface ChangedPath {

@@ -1,4 +1,5 @@
 import { execFile } from "node:child_process";
+import { readFile } from "node:fs/promises";
 import { promisify } from "node:util";
 import type { CreatedProvider } from "./generate.js";
 
@@ -10,6 +11,32 @@ export function makeStaticCreatedProvider(
   fallback = "1970-01-01T00:00:00+00:00",
 ): CreatedProvider {
   return (appId, version) => map[`${appId}@${version}`] ?? fallback;
+}
+
+/**
+ * Wrap a base CreatedProvider so an explicit appId@version → ISO override wins;
+ * any release without an override delegates to the base (git history). Used to
+ * carry the real historical release date of imported legacy releases, which the
+ * git provider would otherwise date as the day they were committed here.
+ */
+export function withCreatedOverrides(
+  base: CreatedProvider,
+  overrides: Record<string, string>,
+): CreatedProvider {
+  return (appId, version) => overrides[`${appId}@${version}`] ?? base(appId, version);
+}
+
+/**
+ * Read the committed created-date overrides (appId@version → ISO), or {} when
+ * the file is absent — so the build degrades to pure git history.
+ */
+export async function readCreatedOverrides(path: string): Promise<Record<string, string>> {
+  try {
+    return JSON.parse(await readFile(path, "utf8")) as Record<string, string>;
+  } catch (err) {
+    if ((err as NodeJS.ErrnoException).code === "ENOENT") return {};
+    throw err;
+  }
 }
 
 /**

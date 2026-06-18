@@ -1,0 +1,10 @@
+{
+  "slug": "onlyoffice",
+  "name": "ONLYOFFICE",
+  "enabled": true,
+  "website": "https://www.onlyoffice.com",
+  "description": "Open-source office suite for documents, spreadsheets and presentations, integrated with ownCloud.",
+  "apps": [
+    "onlyoffice"
+  ]
+}

@@ -4,11 +4,24 @@ import type {
   RawAsset,
   RawRelease,
   RawDownloads,
+  AppDownloadCounts,
   DownloadBinary,
   DownloadRelease,
   DownloadSurface,
   Downloads,
 } from "./downloads-types.js";
+
+/**
+ * A committed baseline of historical download counts (apps[id][version] →
+ * count, and the same for extensions), preserved for releases imported from the
+ * legacy marketplace. It is kept separate from data/downloads.json because the
+ * fetch step rewrites that file's `apps`/`extensions` blocks wholesale from live
+ * GitHub asset counts; the baseline is merged on top at generate time instead.
+ */
+export interface DownloadsBaseline {
+  apps?: AppDownloadCounts;
+  extensions?: AppDownloadCounts;
+}
 
 /** Format a byte count: >= 1 MB → "N.N MB", otherwise "N KB" (rounded). */
 export function formatSize(bytes: number): string {
@@ -167,6 +180,45 @@ export async function readRawDownloads(path: string): Promise<RawDownloads | nul
     throw err;
   }
   return JSON.parse(text) as RawDownloads;
+}
+
+/**
+ * Read and parse the committed download-count baseline, or null when it is
+ * absent. Mirrors readRawDownloads' ENOENT-degrades-gracefully behaviour so the
+ * build works with no baseline at all.
+ */
+export async function readDownloadsBaseline(path: string): Promise<DownloadsBaseline | null> {
+  let text: string;
+  try {
+    text = await readFile(path, "utf8");
+  } catch (err) {
+    if ((err as NodeJS.ErrnoException).code === "ENOENT") return null;
+    throw err;
+  }
+  return JSON.parse(text) as DownloadsBaseline;
+}
+
+/**
+ * Add baseline counts on top of live counts, per id → version. The result holds
+ * every id/version present in either map; where both have a value they are
+ * summed. Pure: neither input is mutated. Imported releases carry their
+ * historical total as the baseline while live GitHub counts (0 until the asset
+ * is published) accumulate on top.
+ */
+export function mergeAppCounts(
+  live: AppDownloadCounts,
+  baseline: AppDownloadCounts,
+): AppDownloadCounts {
+  const merged: AppDownloadCounts = {};
+  for (const source of [live, baseline]) {
+    for (const [id, versions] of Object.entries(source)) {
+      const target = (merged[id] ??= {});
+      for (const [version, count] of Object.entries(versions)) {
+        target[version] = (target[version] ?? 0) + count;
+      }
+    }
+  }
+  return merged;
 }
 
 /**

@@ -3,8 +3,13 @@ import { dirname, join } from "node:path";
 import { scanApps } from "../scan.js";
 import { validateRelease } from "../validate.js";
 import { buildApp, writeApi } from "../generate.js";
-import { readRawDownloads, writeDownloads } from "../downloads-generate.js";
-import { makeGitCreatedProvider } from "../created.js";
+import {
+  readRawDownloads,
+  readDownloadsBaseline,
+  mergeAppCounts,
+  writeDownloads,
+} from "../downloads-generate.js";
+import { makeGitCreatedProvider, withCreatedOverrides, readCreatedOverrides } from "../created.js";
 import { listScreenshots, screenshotsDir, findCover } from "../screenshots.js";
 import { BASE_URL, KNOWN_PLATFORM_VERSIONS } from "../config.js";
 import { scanExtensions } from "../ext/scan-extensions.js";
@@ -32,6 +37,8 @@ async function main(): Promise<void> {
   const publishersDir = arg("--publishers", "publishers");
   const outDir = arg("--out", "_site");
   const downloadsData = arg("--downloads", "data/downloads.json");
+  const baselineData = arg("--downloads-baseline", "data/downloads-baseline.json");
+  const createdData = arg("--created", "data/created.json");
 
   // Scan + validate publishers up front so we can map each owned app to its
   // publisher's website (filling publisher.url in buildApp). Ownership integrity
@@ -54,10 +61,15 @@ async function main(): Promise<void> {
     byApp.set(ref.appId, list);
   }
 
-  const created = await makeGitCreatedProvider(
+  // Release dates come from git history (first commit that added the dir), but
+  // an explicit data/created.json entry (appId@version → ISO) wins — it carries
+  // the real historical date for releases imported from the legacy marketplace,
+  // which git would otherwise date as "imported today".
+  const gitCreated = await makeGitCreatedProvider(
     refs.map((r) => ({ appId: r.appId, version: r.version, dir: r.dir })),
     "1970-01-01T00:00:00+00:00",
   );
+  const created = withCreatedOverrides(gitCreated, await readCreatedOverrides(createdData));
 
   // Map each release to its ingested screenshot files on disk; buildApp turns
   // these into same-origin URLs. Keyed by appId/version, read once up front.
@@ -71,8 +83,11 @@ async function main(): Promise<void> {
   // Per-app download counts from this repo's Release assets, when fetched.
   // The fetch step produces data/downloads.json; before it has ever run the
   // build degrades to zero counts rather than failing.
+  // Historical totals for imported releases live in a committed baseline that
+  // fetch-downloads never rewrites; add them on top of the live GitHub counts.
   const rawDownloads = await readRawDownloads(downloadsData);
-  const appCounts = rawDownloads?.apps ?? {};
+  const baseline = await readDownloadsBaseline(baselineData);
+  const appCounts = mergeAppCounts(rawDownloads?.apps ?? {}, baseline?.apps ?? {});
 
   const apps = [...byApp.entries()]
     .map(([appId, infos]) =>
@@ -145,7 +160,8 @@ async function main(): Promise<void> {
 
   // Extension Release asset download counts share the raw downloads file, keyed
   // by extId under `extensions` (apps live under `apps`); 0 before first fetch.
-  const extCounts = rawDownloads?.extensions ?? {};
+  // Baseline historical totals (when present) are added the same way as apps.
+  const extCounts = mergeAppCounts(rawDownloads?.extensions ?? {}, baseline?.extensions ?? {});
 
   const exts = [...byExt.entries()]
     .map(([extId, infos]) =>

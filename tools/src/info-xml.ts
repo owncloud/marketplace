@@ -35,6 +35,16 @@ function requireHttpsUrl(value: string): string {
 }
 
 /**
+ * Resolve a <screenshot> to its https URL. A `<screenshot>` may carry
+ * attributes (e.g. `small-thumbnail`), in which case the parser yields
+ * `{ "#text": url, "@_small-thumbnail": … }` rather than a bare string;
+ * `localizedText` unwraps the `#text` either way.
+ */
+function screenshotUrl(value: unknown): string {
+  return requireHttpsUrl(requireString(localizedText(value), "screenshot"));
+}
+
+/**
  * Extract a plain string from a text-bearing field that may be localized.
  * Handles: plain string/number, a localized object `{ "#text", "@_lang" }`,
  * and an array of those (preferring `@_lang === "en"`, then an untagged entry,
@@ -94,10 +104,12 @@ export function parseInfoXml(xml: string): AppInfo {
     summary: localizedText(info.summary) ?? "",
     description: requireString(localizedText(info.description), "description"),
     license: requireString(info.licence ?? info.license, "licence"),
-    author: requireString(info.author, "author"),
+    // An app may list several <author> elements (current/original/design);
+    // the first is the primary author surfaced as the app's display author.
+    author: requireString(localizedText(toArray(info.author)[0]), "author"),
     version: requireString(info.version, "version"),
     categories: toArray(info.category).map((c) => String(c).trim()),
-    screenshots: toArray(info.screenshot).map((s) => requireHttpsUrl(String(s).trim())),
+    screenshots: toArray(info.screenshot).map(screenshotUrl),
     platformMin: String(platformMin).trim(),
     platformMax: String(platformMax).trim(),
   };

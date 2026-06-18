@@ -1,0 +1,21 @@
+id: com.github.sawjan.3dviewer
+name: 3D Model Viewer
+subtitle: View 3D models directly from your ownCloud
+license: AGPL-3.0
+version: 0.1.0
+authors:
+  - name: Sajan Gurung
+    url: https://sajang.com.np
+tags:
+  - 3d
+  - viewer
+minOCIS: 6.4.0
+resources:
+  - label: GitHub
+    icon: github
+    url: https://github.com/saw-jan/web-app-3dmodel-viewer
+cover: true
+screenshotCaptions:
+  - Open in 3D Viewer in your ownCloud
+  - Side view of 3D ship model
+  - Top view of 3D ship model

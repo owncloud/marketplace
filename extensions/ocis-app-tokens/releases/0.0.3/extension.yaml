@@ -1,0 +1,25 @@
+id: com.github.mschlachter.ocis-app-tokens
+name: App Tokens
+subtitle: Enable UI to create and manage app tokens, which enable third-party
+  apps to connect to Infinite Scale.
+license: Apache-2.0
+version: 0.0.3
+authors:
+  - name: Matthew Schlachter
+    url: https://www.schlachter.xyz
+tags:
+  - authentication
+  - app-tokens
+description: The [Auth App
+  Service](https://doc.owncloud.com/ocis/next/deployment/services/s-list/auth-app.html)
+  must be enabled and configured to use this plugin.
+minOCIS: 6.2.0
+resources:
+  - label: GitHub
+    icon: github
+    url: https://github.com/mschlachter/ocis-app-tokens
+cover: true
+screenshotCaptions:
+  - View existing App Tokens and available WebDAV endpoints.
+  - Create new App Tokens.
+  - Manage and Delete App Tokens.

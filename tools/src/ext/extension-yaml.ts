@@ -3,12 +3,13 @@ import { ValidationError } from "../types.js";
 import type { ExtensionInfo, OcisAuthor, OcisResource } from "./types.js";
 
 /**
- * A reverse-DNS-ish extension id: dot-separated lowercase segments, each starting
- * with a letter, e.g. `com.github.owncloud.web-extensions.draw-io`. oCIS uses such
- * ids to namespace extensions; requiring the form keeps ids globally unique and
- * collision-resistant across publishers.
+ * A reverse-DNS-ish extension id: dot-separated lowercase segments,
+ * e.g. `com.github.owncloud.web-extensions.draw-io`. oCIS uses such ids to
+ * namespace extensions; requiring the form keeps ids globally unique and
+ * collision-resistant across publishers. A segment may start with a digit
+ * (e.g. `com.github.sawjan.3dviewer`), as upstream catalogs do.
  */
-const EXT_ID_RE = /^[a-z][a-z0-9-]*(\.[a-z][a-z0-9-]*)+$/;
+export const EXT_ID_RE = /^[a-z0-9][a-z0-9-]*(\.[a-z0-9][a-z0-9-]*)+$/;
 
 function requireString(value: unknown, field: string): string {
   if (typeof value === "number") return String(value);
@@ -53,6 +54,24 @@ function parseTags(value: unknown): string[] {
       throw new ValidationError('extension.yaml "tags" entries must be non-empty strings');
     }
     return t.trim();
+  });
+}
+
+/**
+ * Parse an optional list of non-empty strings (e.g. `screenshotCaptions`).
+ * Unlike `tags`, the list itself is optional: undefined/null yields undefined,
+ * but a present list must contain only non-empty strings.
+ */
+function parseStringList(value: unknown, field: string): string[] | undefined {
+  if (value === undefined || value === null) return undefined;
+  if (!Array.isArray(value)) {
+    throw new ValidationError(`extension.yaml "${field}" must be a list`);
+  }
+  return value.map((entry) => {
+    if (typeof entry !== "string" || entry.trim() === "") {
+      throw new ValidationError(`extension.yaml "${field}" entries must be non-empty strings`);
+    }
+    return entry.trim();
   });
 }
 
@@ -113,6 +132,24 @@ export function parseExtensionYaml(text: string): ExtensionInfo {
   if (minOCIS) info.minOCIS = minOCIS;
   const resources = parseResources(obj.resources);
   if (resources) info.resources = resources;
+
+  if (obj.cover !== undefined) {
+    if (typeof obj.cover !== "boolean") {
+      throw new ValidationError('extension.yaml "cover" must be a boolean');
+    }
+    info.cover = obj.cover;
+  }
+  const coverCaption = optionalString(obj.coverCaption);
+  if (coverCaption) {
+    if (!info.cover) {
+      throw new ValidationError(
+        'extension.yaml "coverCaption" requires "cover: true" (a caption with no cover image)',
+      );
+    }
+    info.coverCaption = coverCaption;
+  }
+  const screenshotCaptions = parseStringList(obj.screenshotCaptions, "screenshotCaptions");
+  if (screenshotCaptions) info.screenshotCaptions = screenshotCaptions;
 
   return info;
 }

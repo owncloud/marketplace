@@ -5,7 +5,7 @@ import { validateRelease } from "../validate.js";
 import { buildApp, writeApi } from "../generate.js";
 import { readRawDownloads, writeDownloads } from "../downloads-generate.js";
 import { makeGitCreatedProvider } from "../created.js";
-import { listScreenshots, screenshotsDir } from "../screenshots.js";
+import { listScreenshots, screenshotsDir, findCover } from "../screenshots.js";
 import { BASE_URL, KNOWN_PLATFORM_VERSIONS } from "../config.js";
 import { scanExtensions } from "../ext/scan-extensions.js";
 import { validateExtensionRelease, assertConsistentIds } from "../ext/validate-extension.js";
@@ -133,11 +133,15 @@ async function main(): Promise<void> {
   );
 
   const extShotsByRelease = new Map<string, string[]>();
+  const extCoverByRelease = new Map<string, string | undefined>();
   for (const ref of extRefs) {
     extShotsByRelease.set(`${ref.extId}@${ref.version}`, await listScreenshots(ref.dir));
+    extCoverByRelease.set(`${ref.extId}@${ref.version}`, await findCover(ref.dir));
   }
   const extShots = (extId: string, version: string): string[] =>
     extShotsByRelease.get(`${extId}@${version}`) ?? [];
+  const extCover = (extId: string, version: string): string | undefined =>
+    extCoverByRelease.get(`${extId}@${version}`);
 
   // Extension Release asset download counts share the raw downloads file, keyed
   // by extId under `extensions` (apps live under `apps`); 0 before first fetch.
@@ -145,7 +149,7 @@ async function main(): Promise<void> {
 
   const exts = [...byExt.entries()]
     .map(([extId, infos]) =>
-      buildExtension(extId, infos, extCreated, extShots, BASE_URL, extCounts[extId] ?? {}),
+      buildExtension(extId, infos, extCreated, extShots, extCover, BASE_URL, extCounts[extId] ?? {}),
     )
     .sort((a, b) => a.id.localeCompare(b.id));
 
@@ -157,12 +161,20 @@ async function main(): Promise<void> {
   // Bundle ZIPs are NOT copied: they are distributed as GitHub Release assets
   // (so GitHub counts downloads); see buildExtension's version url.
   for (const ref of extRefs) {
+    const releaseDest = join(outDir, "extensions", ref.extId, "releases", ref.version);
     const files = extShotsByRelease.get(`${ref.extId}@${ref.version}`) ?? [];
-    if (files.length === 0) continue;
-    const shotsDest = join(outDir, "extensions", ref.extId, "releases", ref.version, "screenshots");
-    await mkdir(shotsDest, { recursive: true });
-    for (const file of files) {
-      await cp(join(screenshotsDir(ref.dir), file), join(shotsDest, file));
+    if (files.length > 0) {
+      const shotsDest = join(releaseDest, "screenshots");
+      await mkdir(shotsDest, { recursive: true });
+      for (const file of files) {
+        await cp(join(screenshotsDir(ref.dir), file), join(shotsDest, file));
+      }
+    }
+    // Copy the distinct cover image (when present) so its same-origin URL resolves.
+    const coverFile = extCoverByRelease.get(`${ref.extId}@${ref.version}`);
+    if (coverFile) {
+      await mkdir(releaseDest, { recursive: true });
+      await cp(join(ref.dir, coverFile), join(releaseDest, coverFile));
     }
   }
 

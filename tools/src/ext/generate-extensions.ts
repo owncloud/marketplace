@@ -3,7 +3,14 @@ import { mkdir, writeFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { extAssetUrl } from "../config.js";
 import type { CreatedProvider, ScreenshotsProvider, DownloadCounts } from "../generate.js";
-import type { ExtensionInfo, OcisApp, OcisVersion } from "./types.js";
+import type { ExtensionInfo, OcisApp, OcisImage, OcisVersion } from "./types.js";
+
+/**
+ * Resolves an extension release's distinct cover image file name (e.g.
+ * "cover.png"), or undefined when none ships. Parallels ScreenshotsProvider so
+ * buildExtension stays pure and testable.
+ */
+export type CoverProvider = (extId: string, version: string) => string | undefined;
 
 function coerce(v: string): semver.SemVer {
   const c = semver.coerce(v);
@@ -35,6 +42,7 @@ export function buildExtension(
   infos: ExtensionInfo[],
   created: CreatedProvider,
   screenshots: ScreenshotsProvider,
+  cover: CoverProvider,
   baseUrl: string,
   counts: DownloadCounts = {},
 ): OcisApp {
@@ -54,11 +62,17 @@ export function buildExtension(
 
   // Screenshots are served same-origin from the ingested files on disk (mirroring
   // the classic-app flow); empty until the release is ingested, which the website
-  // handles gracefully.
+  // handles gracefully. Captions, when authored, pair positionally to the sorted
+  // files (screenshotCaptions[i] ↔ the i-th file).
   const screenshotFiles = screenshots(extId, newest.version);
-  const screenshotImages = screenshotFiles.map((file) => ({
-    url: `${baseUrl}/extensions/${extId}/releases/${newest.version}/screenshots/${file}`,
-  }));
+  const screenshotImages: OcisImage[] = screenshotFiles.map((file, i) => {
+    const img: OcisImage = {
+      url: `${baseUrl}/extensions/${extId}/releases/${newest.version}/screenshots/${file}`,
+    };
+    const caption = newest.screenshotCaptions?.[i];
+    if (caption) img.caption = caption;
+    return img;
+  });
 
   const app: OcisApp = {
     id: newest.id,
@@ -72,10 +86,20 @@ export function buildExtension(
   };
   if (newest.description) app.description = newest.description;
   if (newest.resources) app.resources = newest.resources;
-  // The first ingested screenshot doubles as the cover image oCIS shows in its
-  // app-store grid; the full set is exposed as screenshots on the detail view.
-  if (screenshotImages.length > 0) {
+  // A distinct cover.<ext> file (when present) is the cover oCIS shows in its
+  // app-store grid; otherwise the first screenshot doubles as the cover. The
+  // full screenshot set is exposed on the detail view either way.
+  const coverFile = cover(extId, newest.version);
+  if (coverFile) {
+    const coverImage: OcisImage = {
+      url: `${baseUrl}/extensions/${extId}/releases/${newest.version}/${coverFile}`,
+    };
+    if (newest.coverCaption) coverImage.caption = newest.coverCaption;
+    app.coverImage = coverImage;
+  } else if (screenshotImages.length > 0) {
     app.coverImage = screenshotImages[0];
+  }
+  if (screenshotImages.length > 0) {
     app.screenshots = screenshotImages;
   }
   return app;

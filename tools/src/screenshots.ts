@@ -23,3 +23,21 @@ export async function listScreenshots(releaseDir: string): Promise<string[]> {
   }
   return entries.filter((name) => SCREENSHOT_EXT_RE.test(name)).sort();
 }
+
+/** Matches the distinct cover image file `cover.<ext>` in a release dir root. */
+const COVER_RE = /^cover\.(png|jpg|webp)$/i;
+
+/**
+ * Find a release's distinct cover image file name (e.g. "cover.png"), or
+ * undefined when none ships. The cover lives at the release-dir root (beside
+ * bundle.zip), NOT inside screenshots/, so it is never treated as a screenshot.
+ */
+export async function findCover(releaseDir: string): Promise<string | undefined> {
+  let entries: string[];
+  try {
+    entries = await readdir(releaseDir);
+  } catch {
+    return undefined;
+  }
+  return entries.filter((name) => COVER_RE.test(name)).sort()[0];
+}

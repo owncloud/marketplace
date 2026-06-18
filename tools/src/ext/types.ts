@@ -89,4 +89,18 @@ export interface ExtensionInfo {
   authors: OcisAuthor[];
   tags: string[];
   resources?: OcisResource[];
+  /**
+   * True when a distinct `cover.<ext>` image file ships in the release dir
+   * (beside bundle.zip, outside screenshots/). When false/absent, the generator
+   * falls back to the first screenshot as the cover.
+   */
+  cover?: boolean;
+  /** Optional caption for the cover image (only meaningful when `cover` is true). */
+  coverCaption?: string;
+  /**
+   * Optional captions paired positionally to the sorted screenshot files
+   * (screenshotCaptions[i] ↔ the i-th `screenshots/NN.<ext>`). A shorter list
+   * leaves later screenshots uncaptioned; surplus entries are ignored.
+   */
+  screenshotCaptions?: string[];
 }

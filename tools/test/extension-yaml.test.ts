@@ -85,6 +85,20 @@ tags: [t]
     ).toThrow(/reverse-DNS/i);
   });
 
+  it("accepts a reverse-DNS id with a digit-leading segment", () => {
+    const info = parseExtensionYaml(`
+id: com.github.sawjan.3dviewer
+name: 3D Model Viewer
+subtitle: View 3D models.
+license: AGPL-3.0
+version: 0.1.0
+authors:
+  - name: Sajan Gurung
+tags: [viewer]
+`);
+    expect(info.id).toBe("com.github.sawjan.3dviewer");
+  });
+
   it("requires at least one author", () => {
     expect(() =>
       parseExtensionYaml(`
@@ -112,6 +126,76 @@ authors:
 tags: []
 `),
     ).toThrow(/tags/i);
+  });
+
+  it("parses cover, coverCaption and screenshotCaptions", () => {
+    const info = parseExtensionYaml(`
+id: com.example.x
+name: X
+subtitle: s
+license: MIT
+version: 1.0.0
+authors:
+  - name: A
+tags: [t]
+cover: true
+coverCaption: The cover
+screenshotCaptions:
+  - First
+  - Second
+`);
+    expect(info.cover).toBe(true);
+    expect(info.coverCaption).toBe("The cover");
+    expect(info.screenshotCaptions).toEqual(["First", "Second"]);
+  });
+
+  it("omits cover/caption fields when absent", () => {
+    const info = parseExtensionYaml(`
+id: com.example.x
+name: X
+subtitle: s
+license: MIT
+version: 1.0.0
+authors:
+  - name: A
+tags: [t]
+`);
+    expect(info.cover).toBeUndefined();
+    expect(info.coverCaption).toBeUndefined();
+    expect(info.screenshotCaptions).toBeUndefined();
+  });
+
+  it("rejects coverCaption without cover: true", () => {
+    expect(() =>
+      parseExtensionYaml(`
+id: com.example.x
+name: X
+subtitle: s
+license: MIT
+version: 1.0.0
+authors:
+  - name: A
+tags: [t]
+coverCaption: Orphan caption
+`),
+    ).toThrow(/coverCaption/i);
+  });
+
+  it("rejects non-string screenshotCaptions entries", () => {
+    expect(() =>
+      parseExtensionYaml(`
+id: com.example.x
+name: X
+subtitle: s
+license: MIT
+version: 1.0.0
+authors:
+  - name: A
+tags: [t]
+screenshotCaptions:
+  - 42
+`),
+    ).toThrow(/screenshotCaptions/i);
   });
 
   it("rejects malformed YAML", () => {

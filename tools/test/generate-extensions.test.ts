@@ -36,6 +36,7 @@ describe("buildExtension", () => {
       [info("0.1.0"), info("0.2.0")],
       () => "2026-06-11T00:00:00+00:00",
       () => [],
+      () => undefined,
       "https://site",
       { "0.1.0": 5, "0.2.0": 12 },
     );
@@ -58,27 +59,67 @@ describe("buildExtension", () => {
       ],
       () => "2026-06-11T00:00:00+00:00",
       () => [],
+      () => undefined,
       "https://site",
     );
     expect(app.subtitle).toBe("new subtitle");
     expect(app.description).toBe("Full.");
   });
 
-  it("rewrites ingested screenshots to same-origin URLs and a cover image", () => {
+  it("rewrites ingested screenshots to same-origin URLs, cover falls back to the first", () => {
     const app = buildExtension(
       "draw-io",
       [info("0.2.0")],
       () => "2026-06-11T00:00:00+00:00",
       (id, version) => (id === "draw-io" && version === "0.2.0" ? ["01.png", "02.jpg"] : []),
+      () => undefined,
       "https://site",
     );
     expect(app.screenshots).toEqual([
       { url: "https://site/extensions/draw-io/releases/0.2.0/screenshots/01.png" },
       { url: "https://site/extensions/draw-io/releases/0.2.0/screenshots/02.jpg" },
     ]);
+    // No distinct cover file → the first screenshot doubles as the cover.
     expect(app.coverImage).toEqual({
       url: "https://site/extensions/draw-io/releases/0.2.0/screenshots/01.png",
     });
+  });
+
+  it("pairs screenshot captions positionally and tolerates a short list", () => {
+    const app = buildExtension(
+      "draw-io",
+      [info("0.2.0", { screenshotCaptions: ["First shot"] })],
+      () => "2026-06-11T00:00:00+00:00",
+      () => ["01.png", "02.jpg"],
+      () => undefined,
+      "https://site",
+    );
+    expect(app.screenshots).toEqual([
+      {
+        url: "https://site/extensions/draw-io/releases/0.2.0/screenshots/01.png",
+        caption: "First shot",
+      },
+      { url: "https://site/extensions/draw-io/releases/0.2.0/screenshots/02.jpg" },
+    ]);
+  });
+
+  it("uses a distinct cover file with its caption, separate from the screenshots", () => {
+    const app = buildExtension(
+      "draw-io",
+      [info("0.2.0", { cover: true, coverCaption: "The editor" })],
+      () => "2026-06-11T00:00:00+00:00",
+      () => ["01.png"],
+      (id, version) => (id === "draw-io" && version === "0.2.0" ? "cover.png" : undefined),
+      "https://site",
+    );
+    expect(app.coverImage).toEqual({
+      url: "https://site/extensions/draw-io/releases/0.2.0/cover.png",
+      caption: "The editor",
+    });
+    // The cover is distinct from the screenshots, which are still exposed.
+    expect(app.screenshots).toEqual([
+      { url: "https://site/extensions/draw-io/releases/0.2.0/screenshots/01.png" },
+    ]);
   });
 
   it("omits screenshots/coverImage when the release is not yet ingested", () => {
@@ -87,6 +128,7 @@ describe("buildExtension", () => {
       [info("0.2.0")],
       () => "2026-06-11T00:00:00+00:00",
       () => [],
+      () => undefined,
       "https://site",
     );
     expect(app.screenshots).toBeUndefined();
@@ -99,6 +141,7 @@ describe("buildExtension", () => {
       [info("0.2.0", { minOCIS: undefined })],
       () => "2026-06-11T00:00:00+00:00",
       () => [],
+      () => undefined,
       "https://site",
     );
     expect(app.versions[0].minOCIS).toBeUndefined();
@@ -137,6 +180,7 @@ describe("oCIS RawAppSchema conformance", () => {
       [info("0.2.0")],
       () => "2026-06-11T00:00:00+00:00",
       () => ["01.png"],
+      () => undefined,
       "https://site",
     );
     assertConformant(app);
@@ -156,6 +200,7 @@ describe("writeOcisApi", () => {
       [info("0.2.0")],
       () => "2026-06-11T00:00:00+00:00",
       () => [],
+      () => undefined,
       "https://site",
     );
     await writeOcisApi(out, [app]);
@@ -171,6 +216,7 @@ describe("writeOcisApi", () => {
       [info("0.2.0")],
       () => "2026-06-11T00:00:00+00:00",
       () => [],
+      () => undefined,
       "https://site",
     );
     await writeOcisApi(out, [app]);

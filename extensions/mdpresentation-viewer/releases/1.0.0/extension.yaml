@@ -1,0 +1,23 @@
+id: com.github.jankaritech.mdpresentation-viewer
+name: Markdown Presentation Viewer
+subtitle: Convert and view markdown file (.md) as presentation.
+license: AGPL-2.0
+version: 1.0.0
+authors:
+  - name: JankariTech
+    url: https://jankaritech.com
+tags:
+  - viewer
+  - markdown
+  - presentation
+  - slides
+minOCIS: 6.2.0
+resources:
+  - label: GitHub
+    icon: github
+    url: https://github.com/JankariTech/web-app-presentation-viewer
+cover: true
+screenshotCaptions:
+  - Open in Presentation Viewer in your ownCloud
+  - Slide with some lists
+  - Slide with code block

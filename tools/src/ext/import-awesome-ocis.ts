@@ -43,14 +43,20 @@ export interface SourceDocument {
  */
 function lastSegmentSlug(id: string): string {
   const last = id.split(".").pop() ?? id;
-  return last.toLowerCase().replace(/[^a-z0-9-]+/g, "-").replace(/^-+|-+$/g, "");
+  return last
+    .toLowerCase()
+    .replace(/[^a-z0-9-]+/g, "-")
+    .replace(/^-+|-+$/g, "");
 }
 
 /** The last two dot-segments joined by `-`, used as a collision fallback. */
 function twoSegmentSlug(id: string): string {
   const segs = id.split(".");
   const tail = segs.slice(-2).join("-");
-  return tail.toLowerCase().replace(/[^a-z0-9-]+/g, "-").replace(/^-+|-+$/g, "");
+  return tail
+    .toLowerCase()
+    .replace(/[^a-z0-9-]+/g, "-")
+    .replace(/^-+|-+$/g, "");
 }
 
 /**

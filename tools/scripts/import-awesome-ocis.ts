@@ -124,7 +124,11 @@ async function exists(path: string): Promise<boolean> {
 }
 
 /** Import one (app, version): write the full release dir, or skip if it exists. */
-async function importVersion(app: SourceApp, slug: string, version: SourceVersion): Promise<boolean> {
+async function importVersion(
+  app: SourceApp,
+  slug: string,
+  version: SourceVersion,
+): Promise<boolean> {
   const releaseDir = join(EXT_ROOT, slug, "releases", version.version);
   if (await exists(releaseDir)) {
     console.log(`= ${slug}@${version.version}: release dir exists, skipping`);
@@ -194,9 +198,7 @@ async function main(): Promise<void> {
     }
   }
 
-  console.log(
-    `Importing ${selected.length} app(s) into ${EXT_ROOT}${DRY_RUN ? " (dry run)" : ""}`,
-  );
+  console.log(`Importing ${selected.length} app(s) into ${EXT_ROOT}${DRY_RUN ? " (dry run)" : ""}`);
   let imported = 0;
   let skipped = 0;
   for (const app of selected) {

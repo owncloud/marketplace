@@ -149,7 +149,15 @@ async function main(): Promise<void> {
 
   const exts = [...byExt.entries()]
     .map(([extId, infos]) =>
-      buildExtension(extId, infos, extCreated, extShots, extCover, BASE_URL, extCounts[extId] ?? {}),
+      buildExtension(
+        extId,
+        infos,
+        extCreated,
+        extShots,
+        extCover,
+        BASE_URL,
+        extCounts[extId] ?? {},
+      ),
     )
     .sort((a, b) => a.id.localeCompare(b.id));
 

@@ -1,0 +1,10 @@
+{
+  "slug": "jankaritech",
+  "name": "JankariTech",
+  "enabled": true,
+  "website": "https://jankaritech.com",
+  "description": "Software engineering company and long-time ownCloud contributor.",
+  "extensions": [
+    "mdpresentation-viewer"
+  ]
+}

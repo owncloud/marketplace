@@ -44,6 +44,32 @@ export interface RawDownloads {
   apps?: AppDownloadCounts;
   /** Extension bundle download counts from this repo's Release assets (extId → version → count). */
   extensions?: AppDownloadCounts;
+  /**
+   * Public app-store stats for the mobile surfaces, fetched from the store
+   * listings (not GitHub). Optional and per-surface: a store outage leaves the
+   * relevant entry absent, and older committed files predate this field.
+   */
+  stores?: {
+    android?: StoreStats;
+    ios?: StoreStats;
+  };
+}
+
+/**
+ * Public app-store stats for a mobile surface, sourced from its store listing
+ * (not GitHub). `installs` is Google Play's approximate range ("1,000,000+");
+ * the Apple App Store publishes no install count anywhere, so it is omitted
+ * there. `rating`/`ratingCount` come from each store's listing when available.
+ */
+export interface StoreStats {
+  /** The store listing URL — the target of the primary download button. */
+  url: string;
+  /** Average user rating (0–5), rounded to one decimal place. */
+  rating?: number;
+  /** Number of user ratings the store reports. */
+  ratingCount?: number;
+  /** Google Play's coarse install range, e.g. "1,000,000+". Absent for Apple. */
+  installs?: string;
 }
 
 /** A single resolved binary download row in the normalized API. */
@@ -78,6 +104,8 @@ export interface DownloadSurface {
   binaries: DownloadBinary[];
   downloads: number;
   releases: DownloadRelease[];
+  /** App-store listing stats, for the mobile surfaces only (else absent). */
+  store?: StoreStats;
 }
 
 /** The normalized, published _site/api/v1/downloads.json. */

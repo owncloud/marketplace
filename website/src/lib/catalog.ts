@@ -57,6 +57,13 @@ export interface DownloadRelease {
   downloads: number;
   binaries: DownloadBinary[];
 }
+/** App-store listing stats for a mobile surface (see tools StoreStats). */
+export interface StoreStats {
+  url: string;
+  rating?: number;
+  ratingCount?: number;
+  installs?: string;
+}
 export interface DownloadSurface {
   version: string;
   releaseUrl: string;
@@ -64,6 +71,7 @@ export interface DownloadSurface {
   binaries: DownloadBinary[];
   downloads: number;
   releases: DownloadRelease[];
+  store?: StoreStats;
 }
 export interface Downloads {
   generatedAt: string;

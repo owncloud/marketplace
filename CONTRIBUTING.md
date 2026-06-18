@@ -65,6 +65,39 @@ that URL to the `web` app's app-store `repositories` configuration; the
 extensions then appear in the in-product App Store. The classic ownCloud Server
 API at `…/api/v1/**` is unaffected — it remains a separate catalog.
 
+## Setting up a publisher page
+
+Publishers can have an opt-in public page at `/publishers/<slug>` (for example
+`/publishers/owncloud`) that lists their apps and web extensions together with a
+logo, description, website link and aggregate download stats. To set one up, open
+a pull request that adds a publisher directory:
+
+```
+publishers/<slug>/
+├── publisher.json   # the publisher metadata
+└── logo.png         # optional logo image (PNG/JPEG/WebP)
+```
+
+`<slug>` is the URL segment of the page and **must equal the folder name**.
+
+### `publisher.json` fields
+
+| Field         | Required | Notes                                                                                  |
+| ------------- | -------- | -------------------------------------------------------------------------------------- |
+| `slug`        | yes      | Lowercase letters, digits and hyphens (e.g. `owncloud`). Must match the folder name.   |
+| `name`        | yes      | Display name shown on the page.                                                        |
+| `enabled`     | no       | Defaults to `false`. The page is created **only** when set to `true` (opt-in).         |
+| `website`     | no       | `http(s)` URL; also links the publisher name on the publisher's app pages.             |
+| `description` | no       | Short prose shown on the page.                                                         |
+| `logo`        | no       | File name of an image in the publisher directory (PNG/JPEG/WebP).                      |
+| `apps`        | no       | Owned app folder ids — the `apps/<id>` slugs.                                          |
+| `extensions`  | no       | Owned extension folder ids — the `extensions/<ext-id>` slugs (not the reverse-DNS id). |
+
+Ownership is exclusive: every id in `apps`/`extensions` must exist in the catalog
+and be claimed by only one publisher. A publisher whose `enabled` is `false` (or
+that is absent) has no page. CI validates the slug, the logo image, and ownership
+integrity.
+
 ## Code contributions
 
 For development setup, coding standards, and the pull request process, see the

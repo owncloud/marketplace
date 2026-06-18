@@ -1,0 +1,20 @@
+id: com.github.owncloud.web-extensions.progress-bars
+name: Progress Bars
+subtitle: A collection of progress bars for users to choose from.
+license: AGPL-3.0
+version: 0.1.0
+authors:
+  - name: ownCloud
+    url: https://owncloud.com
+tags:
+  - design
+  - fun
+minOCIS: 6.2.0
+resources:
+  - label: GitHub
+    icon: github
+    url: https://github.com/owncloud/web-extensions/tree/main/packages/web-app-progress-bars
+cover: true
+screenshotCaptions:
+  - Nyan Cat progress bar
+  - User settings

@@ -17,9 +17,8 @@ export async function getStaticPaths() {
 
 const { ext, publisherSlug } = Astro.props;
 const base = import.meta.env.BASE_URL;
-// On-site publisher page for the sidebar Author link, when a publisher claims
-// this extension; null leaves the author rendered as plain text. The header
-// byline keeps its external author.url link untouched.
+// On-site publisher page for the header byline and sidebar Author link, when a
+// publisher claims this extension; null leaves the author rendered as plain text.
 const publisherHref = publisherSlug
   ? withBase(base, `publishers/${publisherSlug}`)
   : null;
@@ -61,8 +60,8 @@ const ocisReq = (v?: string) => (v ? `Requires oCIS ${v} or newer` : "Any oCIS v
         <p class="app-hero__desc">{ext.description ?? ext.subtitle}</p>
         <div class="app-hero__by">
           {
-            author?.url ? (
-              <a href={author.url}>{author.name}</a>
+            publisherHref ? (
+              <a href={publisherHref}>{author?.name}</a>
             ) : (
               <span>{author?.name}</span>
             )

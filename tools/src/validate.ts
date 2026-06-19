@@ -34,9 +34,7 @@ export async function validateRelease(ref: ReleaseRef): Promise<AppInfo> {
   // Canonicalise to the supported set (case-insensitively), dropping unknowns
   // and de-duplicating once different casings collapse to the same id.
   const supported = [
-    ...new Set(
-      info.categories.map(canonicalCategory).filter((c): c is string => c !== undefined),
-    ),
+    ...new Set(info.categories.map(canonicalCategory).filter((c): c is string => c !== undefined)),
   ];
   if (supported.length === 0) {
     throw new ValidationError(

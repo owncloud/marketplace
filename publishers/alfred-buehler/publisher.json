@@ -5,6 +5,7 @@
   "website": "https://github.com/alfredbuehler",
   "description": "Maintainer of the Bookmarks and Blood Pressure Log apps for ownCloud.",
   "apps": [
-    "bookmarks"
+    "bookmarks",
+    "bplog"
   ]
 }

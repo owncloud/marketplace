@@ -1,0 +1,10 @@
+{
+  "slug": "vicdeo",
+  "name": "vicdeo",
+  "enabled": true,
+  "website": "https://github.com/VicDeo/cms_pico",
+  "description": "Author of the Pico CMS app for ownCloud.",
+  "apps": [
+    "cms_pico"
+  ]
+}

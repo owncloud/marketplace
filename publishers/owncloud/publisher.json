@@ -3,10 +3,26 @@
   "name": "ownCloud GmbH",
   "enabled": true,
   "website": "https://owncloud.com",
-  "description": "The company behind ownCloud \u2014 open-source content collaboration and file sync & share.",
+  "description": "The company behind ownCloud — open-source content collaboration and file sync & share.",
   "logo": "logo.png",
   "apps": [
-    "example-app"
+    "activity",
+    "calendar",
+    "contacts",
+    "example-app",
+    "files_antivirus",
+    "files_external_ftp",
+    "files_mediaviewer",
+    "files_pdfviewer",
+    "files_texteditor",
+    "gallery",
+    "guests",
+    "impersonate",
+    "market",
+    "oauth2",
+    "templateeditor",
+    "twofactor_totp",
+    "user_ldap"
   ],
   "extensions": [
     "example-extension",

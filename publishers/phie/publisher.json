@@ -1,0 +1,10 @@
+{
+  "slug": "phie",
+  "name": "Phie",
+  "enabled": true,
+  "website": "https://github.com/PhieF/CarnetNextcloud",
+  "description": "Author of the Carnet note-taking app for ownCloud.",
+  "apps": [
+    "carnet"
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "slug": "ponder-source",
+  "name": "Ponder Source",
+  "enabled": true,
+  "website": "https://pondersource.com",
+  "description": "Developers of federated sharing apps — ScienceMesh, Open Cloud Mesh and Federated Groups for ownCloud.",
+  "apps": [
+    "federatedgroups",
+    "opencloudmesh",
+    "sciencemesh"
+  ]
+}

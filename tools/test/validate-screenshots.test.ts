@@ -101,7 +101,10 @@ describe("validateAddedScreenshots", () => {
     await expect(validateAddedScreenshots(base, repo)).resolves.toBe(1);
   });
 
-  it("rejects a newly-added release whose screenshot is not an image", async () => {
+  it("skips (does not reject) a release whose only info.xml screenshot source is not an image", async () => {
+    // info.xml URLs are only an ingestion source — never served — so a bad one
+    // is warned and skipped (best-effort), matching ingest-screenshots. The
+    // release imports with no screenshots, a valid catalog state.
     const repo = await newRepo();
     await writeFile(join(repo, "README.md"), "base\n");
     await gitC(repo, ["add", "."]);
@@ -113,7 +116,8 @@ describe("validateAddedScreenshots", () => {
     await gitC(repo, ["add", "."]);
     await gitC(repo, ["commit", "-q", "-m", "add release"]);
 
-    await expect(validateAddedScreenshots(base, repo)).rejects.toThrow(/image/i);
+    // The bad source URL is skipped, so nothing is counted and the gate passes.
+    await expect(validateAddedScreenshots(base, repo)).resolves.toBe(0);
   });
 
   it("validates committed local screenshots in place without fetching info.xml URLs", async () => {

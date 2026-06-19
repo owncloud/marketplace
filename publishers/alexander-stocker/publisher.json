@@ -1,0 +1,11 @@
+{
+  "slug": "alexander-stocker",
+  "name": "Alexander Stocker",
+  "enabled": true,
+  "website": "https://www.html5live.at",
+  "description": "Author of the Sensorlogger and 3D File Viewer apps for ownCloud.",
+  "apps": [
+    "files_3dviewer",
+    "sensorlogger"
+  ]
+}

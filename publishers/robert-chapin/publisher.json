@@ -1,0 +1,10 @@
+{
+  "slug": "robert-chapin",
+  "name": "Robert Chapin",
+  "enabled": true,
+  "website": "https://www.miqrogroove.com",
+  "description": "Author of the Text File Viewer app for ownCloud.",
+  "apps": [
+    "files_textviewer"
+  ]
+}

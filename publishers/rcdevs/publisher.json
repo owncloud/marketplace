@@ -1,0 +1,10 @@
+{
+  "slug": "rcdevs",
+  "name": "RCDevs",
+  "enabled": true,
+  "website": "https://www.rcdevs.com",
+  "description": "Security software company behind OpenOTP two-factor authentication for ownCloud.",
+  "apps": [
+    "openotp_auth"
+  ]
+}

@@ -10,6 +10,10 @@ export const CATEGORIES: { id: string; name: string }[] = [
   { id: "files", name: "Files" },
   { id: "integration", name: "Integration" },
   { id: "security", name: "Security" },
+  { id: "storage", name: "Storage" },
+  { id: "collaboration", name: "Collaboration" },
+  { id: "automation", name: "Automation" },
+  { id: "customization", name: "Customization" },
 ];
 
 /** Lower-cased category id → canonical id, for case-insensitive lookup. */

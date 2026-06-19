@@ -27,7 +27,13 @@ describe("categories", () => {
     expect(canonicalCategory("Security")).toBe("security");
     expect(canonicalCategory("tools")).toBe("tools");
     expect(canonicalCategory(" PIM ")).toBe("pim");
-    expect(canonicalCategory("storage")).toBeUndefined();
+    expect(canonicalCategory("nonsense")).toBeUndefined();
+  });
+
+  it("recognises the legacy categories carried by classic apps", () => {
+    for (const id of ["storage", "collaboration", "automation", "customization"]) {
+      expect(isValidCategory(id)).toBe(true);
+    }
   });
 
   it("emits English-only API category shape", () => {

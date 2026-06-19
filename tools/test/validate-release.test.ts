@@ -73,6 +73,28 @@ describe("validateRelease", () => {
     expect(info.categories).toEqual(["integration"]);
   });
 
+  it("accepts a capitalised category and canonicalises it to lowercase", async () => {
+    // Classic apps declare e.g. <category>Security</category>; matching is
+    // case-insensitive and the published category is the canonical "security".
+    const ref = await release(
+      "twofactor_privacyidea",
+      "3.2.0",
+      infoXml("twofactor_privacyidea", "3.2.0", "Security"),
+    );
+    const info = await validateRelease(ref);
+    expect(info.categories).toEqual(["security"]);
+  });
+
+  it("de-duplicates categories that collapse to one id across casings", async () => {
+    const ref = await release(
+      "calendar",
+      "2.1.0",
+      infoXml("calendar", "2.1.0", ["Tools", "tools"]),
+    );
+    const info = await validateRelease(ref);
+    expect(info.categories).toEqual(["tools"]);
+  });
+
   it("does NOT apply the platform floor (historical sub-11 releases stay valid)", async () => {
     // The min-version floor is enforced on new submissions (check-changeset),
     // not over the whole catalog — already-published min-10 releases are immutable.

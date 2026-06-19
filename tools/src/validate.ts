@@ -1,5 +1,5 @@
 import { type AppInfo, ValidationError } from "./types.js";
-import { isValidCategory } from "./categories.js";
+import { canonicalCategory } from "./categories.js";
 import { parseInfoXml } from "./info-xml.js";
 import { readInfoXmlFromTarball } from "./package-reader.js";
 import type { ReleaseRef } from "./scan.js";
@@ -11,6 +11,8 @@ import type { ReleaseRef } from "./scan.js";
  * otherwise. Categories outside the supported set are dropped (classic apps
  * carry legacy categories such as "office") rather than rejecting the release —
  * the info.xml inside a published tarball is immutable and cannot be amended.
+ * Matching is case-insensitive and the survivors are canonicalised (classic
+ * apps declare e.g. "Security", which maps to the canonical "security").
  */
 export async function validateRelease(ref: ReleaseRef): Promise<AppInfo> {
   const xml = await readInfoXmlFromTarball(ref.tarballPath);
@@ -29,7 +31,13 @@ export async function validateRelease(ref: ReleaseRef): Promise<AppInfo> {
   if (info.categories.length === 0) {
     throw new ValidationError(`app "${info.id}" declares no <category> in info.xml`);
   }
-  const supported = info.categories.filter(isValidCategory);
+  // Canonicalise to the supported set (case-insensitively), dropping unknowns
+  // and de-duplicating once different casings collapse to the same id.
+  const supported = [
+    ...new Set(
+      info.categories.map(canonicalCategory).filter((c): c is string => c !== undefined),
+    ),
+  ];
   if (supported.length === 0) {
     throw new ValidationError(
       `app "${info.id}" declares no supported category (saw: ${info.categories.join(", ")})`,

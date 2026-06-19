@@ -1,5 +1,6 @@
 ---
 import Base from "../../layouts/Base.astro";
+import ExternalLink from "../../components/ExternalLink.astro";
 import { loadDownloads, withBase, type DownloadSurface } from "../../lib/catalog.ts";
 import { SURFACES, type SurfaceMeta } from "../../lib/downloads.ts";
 
@@ -67,9 +68,9 @@ const fmtDownloads = (n: number) => `${fmtCount(n)} download${n === 1 ? "" : "s"
           {surface.releases.map((r, i) => (
             <li class="release">
               <div class="release__head">
-                <a class="release__version" href={r.releaseUrl} rel="noopener">
+                <ExternalLink class="release__version" href={r.releaseUrl}>
                   v{r.version}
-                </a>
+                </ExternalLink>
                 {i === 0 && <span class="release__badge">Latest</span>}
                 <span class="release__date">{fmtDate(r.publishedAt)}</span>
               </div>
@@ -93,7 +94,7 @@ const fmtDownloads = (n: number) => `${fmtCount(n)} download${n === 1 ? "" : "s"
               ) : (
                 <p class="release__fallback">
                   No direct binaries listed.{" "}
-                  <a href={r.releaseUrl} rel="noopener">Browse this release on GitHub →</a>
+                  <ExternalLink href={r.releaseUrl}>Browse this release on GitHub →</ExternalLink>
                 </p>
               )}
             </li>
@@ -105,9 +106,9 @@ const fmtDownloads = (n: number) => `${fmtCount(n)} download${n === 1 ? "" : "s"
         <h2>Release history</h2>
         <p class="release__fallback">
           No release data is available yet.{" "}
-          <a href={`https://github.com/${meta.repo}/releases`} rel="noopener">
+          <ExternalLink href={`https://github.com/${meta.repo}/releases`}>
             Browse releases on GitHub →
-          </a>
+          </ExternalLink>
         </p>
       </section>
     )}

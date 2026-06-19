@@ -1,5 +1,6 @@
 ---
 import Base from "../layouts/Base.astro";
+import ExternalLink from "../components/ExternalLink.astro";
 import { loadDownloads, withBase, type DownloadSurface } from "../lib/catalog.ts";
 import { SURFACES } from "../lib/downloads.ts";
 
@@ -71,13 +72,9 @@ const generated = downloads ? fmtDate(downloads.generatedAt) : null;
             </div>
             {surface && (
               <div class="surface__release">
-                <a
-                  class="surface__version"
-                  href={surface.releaseUrl}
-                  rel="noopener"
-                >
+                <ExternalLink class="surface__version" href={surface.releaseUrl}>
                   v{surface.version}
-                </a>
+                </ExternalLink>
                 <span class="surface__date">{fmtDate(surface.publishedAt)}</span>
                 {surface.store?.installs && (
                   <span class="surface__downloads">{surface.store.installs} installs</span>
@@ -95,9 +92,9 @@ const generated = downloads ? fmtDate(downloads.generatedAt) : null;
           </header>
 
           {surface?.store && (
-            <a class="store-cta" href={surface.store.url} rel="noopener">
+            <ExternalLink class="store-cta" href={surface.store.url}>
               {STORE_LABEL[key] ?? "View in store"}
-            </a>
+            </ExternalLink>
           )}
 
           {surface && surface.binaries.length > 0 ? (
@@ -119,9 +116,9 @@ const generated = downloads ? fmtDate(downloads.generatedAt) : null;
             !surface?.store && (
               <p class="surface__fallback">
                 No direct binaries listed for this release.{" "}
-                <a href={surface?.releaseUrl ?? `https://github.com/${repo}/releases`} rel="noopener">
+                <ExternalLink href={surface?.releaseUrl ?? `https://github.com/${repo}/releases`}>
                   Browse releases on GitHub →
-                </a>
+                </ExternalLink>
               </p>
             )
           )}

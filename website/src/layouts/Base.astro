@@ -1,5 +1,6 @@
 ---
 import Logo from "../components/Logo.astro";
+import ExternalLink from "../components/ExternalLink.astro";
 import { withBase } from "../lib/catalog.ts";
 
 interface Props {
@@ -241,6 +242,74 @@ const home = withBase(base, "");
         justify-content: space-between;
       }
 
+      /* ---- Leave-the-site notice ---- */
+      .leave-notice {
+        border: none;
+        border-radius: var(--radius);
+        padding: 28px;
+        max-width: 440px;
+        width: calc(100% - 32px);
+        box-shadow: var(--shadow-lg);
+        color: var(--oc-text);
+      }
+      .leave-notice::backdrop {
+        background: rgba(4, 30, 66, 0.45);
+        backdrop-filter: blur(2px);
+      }
+      .leave-notice__title {
+        font-size: 1.25rem;
+        color: var(--oc-brand);
+        margin-bottom: 12px;
+      }
+      .leave-notice__text {
+        margin: 0 0 6px;
+        color: var(--oc-text-muted);
+        font-size: 0.95rem;
+      }
+      .leave-notice__host {
+        margin: 0 0 4px;
+        font-size: 1.05rem;
+        word-break: break-word;
+      }
+      .leave-notice__url {
+        margin: 0;
+        font-family: var(--font-mono);
+        font-size: 0.78rem;
+        color: var(--oc-text-muted);
+        word-break: break-all;
+      }
+      .leave-notice__actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 12px;
+        margin-top: 24px;
+      }
+      .leave-notice__btn {
+        font: inherit;
+        font-weight: 600;
+        cursor: pointer;
+        padding: 10px 20px;
+        border-radius: 999px;
+        border: 1px solid var(--oc-border-input);
+        background: var(--oc-bg);
+        color: var(--oc-text);
+        transition:
+          background 0.18s ease,
+          transform 0.18s ease;
+      }
+      .leave-notice__btn:hover {
+        background: var(--oc-bg-muted);
+      }
+      .leave-notice__btn--go {
+        border-color: var(--oc-brand);
+        background: var(--oc-brand);
+        color: var(--oc-contrast);
+      }
+      .leave-notice__btn--go:hover {
+        background: var(--oc-brand-hover);
+        transform: translateY(-1px);
+      }
+
       :focus-visible {
         outline: 2px solid var(--oc-primary);
         outline-offset: 2px;
@@ -260,15 +329,15 @@ const home = withBase(base, "");
             <a href={withBase(base, "#catalog")}>Apps</a>
             <a href={withBase(base, "extensions")}>Web Extensions</a>
             <a href={withBase(base, "downloads")}>Downloads</a>
-            <a href="https://doc.owncloud.com">Docs</a>
-            <a href="https://github.com/owncloud/marketplace">GitHub</a>
+            <ExternalLink href="https://doc.owncloud.com">Docs</ExternalLink>
+            <ExternalLink href="https://github.com/owncloud/marketplace">GitHub</ExternalLink>
           </span>
-          <a
+          <ExternalLink
             class="nav__cta"
             href="https://github.com/owncloud/marketplace/blob/main/.github/pull_request_template.md"
           >
             Publish an app
-          </a>
+          </ExternalLink>
         </nav>
       </div>
     </header>
@@ -294,9 +363,9 @@ const home = withBase(base, "");
               <li><a href={withBase(base, "extensions")}>Web Extensions</a></li>
               <li><a href={withBase(base, "downloads")}>Downloads</a></li>
               <li>
-                <a
+                <ExternalLink
                   href="https://github.com/owncloud/marketplace/blob/main/.github/pull_request_template.md"
-                  >Publish</a
+                  >Publish</ExternalLink
                 >
               </li>
               <li><a href={withBase(base, "api/v1/apps.json")}>JSON API</a></li>
@@ -305,11 +374,11 @@ const home = withBase(base, "");
           <div>
             <h4>ownCloud</h4>
             <ul>
-              <li><a href="https://owncloud.com">Website</a></li>
-              <li><a href="https://doc.owncloud.com">Documentation</a></li>
+              <li><ExternalLink href="https://owncloud.com">Website</ExternalLink></li>
+              <li><ExternalLink href="https://doc.owncloud.com">Documentation</ExternalLink></li>
               <li>
-                <a href="https://github.com/orgs/owncloud/discussions"
-                  >Discussions</a
+                <ExternalLink href="https://github.com/orgs/owncloud/discussions"
+                  >Discussions</ExternalLink
                 >
               </li>
             </ul>
@@ -321,5 +390,95 @@ const home = withBase(base, "");
         <span>© ownCloud — a Kiteworks company.</span>
       </div>
     </footer>
+
+    {/* Leave notice: confirms before any outbound navigation link sends the
+        user off-site. Populated and opened by the script below; the page
+        still works (links open in a new tab) if that script never runs. */}
+    <dialog class="leave-notice" aria-labelledby="leave-notice-title">
+      <h2 id="leave-notice-title" class="leave-notice__title">
+        You're leaving the Marketplace
+      </h2>
+      <p class="leave-notice__text">
+        This link opens an external site in a new tab:
+      </p>
+      <p class="leave-notice__host"><strong data-leave-host></strong></p>
+      <p class="leave-notice__url" data-leave-url></p>
+      <div class="leave-notice__actions">
+        <button type="button" class="leave-notice__btn" data-leave-cancel>
+          Cancel
+        </button>
+        <button
+          type="button"
+          class="leave-notice__btn leave-notice__btn--go"
+          data-leave-continue
+        >
+          Continue ↗
+        </button>
+      </div>
+    </dialog>
+
+    <script>
+      // Intercept clicks on outbound navigation links (marked by
+      // ExternalLink.astro) and confirm before sending the user off-site.
+      const dialog = document.querySelector<HTMLDialogElement>(".leave-notice");
+      const hostEl = dialog?.querySelector<HTMLElement>("[data-leave-host]");
+      const urlEl = dialog?.querySelector<HTMLElement>("[data-leave-url]");
+      const cancelBtn = dialog?.querySelector<HTMLButtonElement>("[data-leave-cancel]");
+      const continueBtn = dialog?.querySelector<HTMLButtonElement>("[data-leave-continue]");
+
+      let pendingUrl: string | null = null;
+
+      if (dialog && hostEl && urlEl && cancelBtn && continueBtn) {
+        document.addEventListener("click", (event) => {
+          // Honor modifier-clicks (new tab/window) and non-primary buttons.
+          if (
+            event.defaultPrevented ||
+            (event as MouseEvent).button !== 0 ||
+            (event as MouseEvent).metaKey ||
+            (event as MouseEvent).ctrlKey ||
+            (event as MouseEvent).shiftKey ||
+            (event as MouseEvent).altKey
+          )
+            return;
+
+          const link = (event.target as Element | null)?.closest<HTMLAnchorElement>(
+            "a[data-external-link]",
+          );
+          if (!link) return;
+
+          event.preventDefault();
+          pendingUrl = link.href;
+          let host = link.href;
+          try {
+            host = new URL(link.href).hostname;
+          } catch {
+            // Leave host as the raw href if it does not parse as a URL.
+          }
+          hostEl.textContent = host;
+          urlEl.textContent = link.href;
+          dialog.showModal();
+        });
+
+        const close = () => {
+          pendingUrl = null;
+          dialog.close();
+        };
+
+        continueBtn.addEventListener("click", () => {
+          if (pendingUrl) window.open(pendingUrl, "_blank", "noopener,noreferrer");
+          close();
+        });
+        cancelBtn.addEventListener("click", close);
+
+        // Click on the backdrop (outside the dialog box) dismisses it.
+        dialog.addEventListener("click", (event) => {
+          if (event.target === dialog) close();
+        });
+        // Esc-to-close fires the native cancel event; clear pending state.
+        dialog.addEventListener("cancel", () => {
+          pendingUrl = null;
+        });
+      }
+    </script>
   </body>
 </html>

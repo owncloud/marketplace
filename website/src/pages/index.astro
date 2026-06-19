@@ -1,5 +1,6 @@
 ---
 import Base from "../layouts/Base.astro";
+import ExternalLink from "../components/ExternalLink.astro";
 import { loadApps, loadCategories, withBase } from "../lib/catalog.ts";
 
 const apps = await loadApps();
@@ -41,10 +42,10 @@ const initial = (name: string) => name.trim().charAt(0).toUpperCase() || "?";
       <div class="hero__actions">
         <a class="btn btn--solid" href="#catalog">Browse {apps.length}
           {apps.length === 1 ? "app" : "apps"}</a>
-        <a
+        <ExternalLink
           class="btn btn--ghost"
           href="https://github.com/owncloud/marketplace/blob/main/.github/pull_request_template.md"
-          >Publish your app →</a
+          >Publish your app →</ExternalLink
         >
       </div>
       <dl class="hero__stats">
@@ -161,10 +162,10 @@ const initial = (name: string) => name.trim().charAt(0).toUpperCase() || "?";
           adding a single tarball — CI validates it against the catalog rules,
           and once merged the API and this site regenerate automatically.
         </p>
-        <a
+        <ExternalLink
           class="btn btn--solid"
           href="https://github.com/owncloud/marketplace/blob/main/.github/pull_request_template.md"
-          >Read the publishing guide →</a
+          >Read the publishing guide →</ExternalLink
         >
       </div>
       <ol class="steps">

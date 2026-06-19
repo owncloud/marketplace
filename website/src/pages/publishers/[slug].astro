@@ -1,5 +1,6 @@
 ---
 import Base from "../../layouts/Base.astro";
+import ExternalLink from "../../components/ExternalLink.astro";
 import { loadApps, loadCategories, withBase } from "../../lib/catalog.ts";
 import { loadExtensions } from "../../lib/extensions.ts";
 import { loadPublishers } from "../../lib/publishers.ts";
@@ -66,9 +67,9 @@ const descHtml = renderDescription(publisher.description);
         <div class="pub-hero__meta">
           {
             publisher.website && (
-              <a class="pub-hero__site" href={publisher.website} rel="nofollow noopener">
+              <ExternalLink class="pub-hero__site" href={publisher.website}>
                 {publisher.website.replace(/^https?:\/\//, "").replace(/\/$/, "")}
-              </a>
+              </ExternalLink>
             )
           }
         </div>

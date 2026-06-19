@@ -1,5 +1,6 @@
 ---
 import Base from "../../layouts/Base.astro";
+import ExternalLink from "../../components/ExternalLink.astro";
 import { withBase } from "../../lib/catalog.ts";
 import { loadExtensions } from "../../lib/extensions.ts";
 import { loadPublishers, extensionIdToPublisher } from "../../lib/publishers.ts";
@@ -218,9 +219,7 @@ const ocisReq = (v?: string) => (v ? `Requires oCIS ${v} or newer` : "Any oCIS v
                 <dt>Resources</dt>
                 <dd class="info__links">
                   {ext.resources.map((r) => (
-                    <a href={r.url} rel="noopener">
-                      {r.label}
-                    </a>
+                    <ExternalLink href={r.url}>{r.label}</ExternalLink>
                   ))}
                 </dd>
               </div>

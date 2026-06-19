@@ -16,11 +16,19 @@ const exec = promisify(execFile);
  * within the supported formats and size/dimension limits (see image-validate).
  * A release that ships committed screenshots (screenshots/NN.ext beside its
  * package) is validated from those local files — the bytes the catalog actually
- * serves — without any network access. Only a release that ships no local files
- * falls back to fetching its info.xml <screenshot> URLs. This keeps the gate off
- * external hosts that block CI (e.g. a WAF returning 415 to datacenter IPs)
- * while still validating exactly what is published. Strict — the first bad
- * screenshot throws. Already-published releases are not re-checked.
+ * serves — without any network access. This local validation is **strict**: a
+ * committed file that is not a valid, in-bounds image fails the gate.
+ *
+ * A release that ships no local files falls back to fetching its info.xml
+ * <screenshot> URLs. Those URLs are only an *ingestion source* — the catalog
+ * never serves them (it serves committed files), and post-merge ingestion is
+ * itself best-effort (cli/ingest-screenshots skips a dead/invalid URL and
+ * ingests the rest). So this fallback is **best-effort too**: an unreachable or
+ * unsupported source URL is warned and skipped rather than failing the gate.
+ * That keeps the gate off external hosts that block CI (e.g. a WAF returning 415
+ * to datacenter IPs) and lets a legacy app whose only screenshot source has
+ * rotted (wrong format, 404, dead host) still be imported with no screenshots —
+ * a valid catalog state. Already-published releases are not re-checked.
  */
 export async function validateAddedScreenshots(baseRef: string, repoRoot: string): Promise<number> {
   const added = await addedPackagePaths(baseRef, repoRoot);
@@ -38,8 +46,15 @@ export async function validateAddedScreenshots(baseRef: string, repoRoot: string
     }
     const info = parseInfoXml(await readInfoXmlFromTarball(join(repoRoot, path)));
     for (const url of info.screenshots) {
-      await fetchAndValidateImage(url);
-      count++;
+      try {
+        await fetchAndValidateImage(url);
+        count++;
+      } catch (err) {
+        // Best-effort: a bad source URL is never served (only committed files
+        // are), so warn and continue rather than blocking the release.
+        const reason = err instanceof Error ? err.message : String(err);
+        console.warn(`WARN ${path}: skipped screenshot ${url} — ${reason}`);
+      }
     }
   }
   return count;

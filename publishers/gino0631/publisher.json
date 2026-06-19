@@ -1,0 +1,10 @@
+{
+  "slug": "gino0631",
+  "name": "gino0631",
+  "enabled": true,
+  "website": "https://github.com/gino0631/nextcloud-metadata",
+  "description": "Author of the Metadata app for ownCloud.",
+  "apps": [
+    "metadata"
+  ]
+}

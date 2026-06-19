@@ -1,0 +1,10 @@
+{
+  "slug": "afterlogic",
+  "name": "AfterLogic",
+  "enabled": true,
+  "website": "https://afterlogic.org/webmail-lite",
+  "description": "The team behind AfterLogic WebMail, integrated with ownCloud.",
+  "apps": [
+    "afterlogic"
+  ]
+}

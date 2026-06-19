@@ -1,0 +1,10 @@
+{
+  "slug": "paul-rosenberg",
+  "name": "Paul Rosenberg",
+  "enabled": true,
+  "website": "https://github.com/prsnbrg/NextcloudExtract",
+  "description": "Author of the Extract app for unpacking archives in ownCloud.",
+  "apps": [
+    "extract"
+  ]
+}

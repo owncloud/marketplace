@@ -1,0 +1,10 @@
+{
+  "slug": "dan-landon",
+  "name": "Dan Landon",
+  "enabled": true,
+  "website": "https://github.com/owncloud/tasks",
+  "description": "Author of the Tasks app — a to-do and task manager for ownCloud.",
+  "apps": [
+    "tasks"
+  ]
+}

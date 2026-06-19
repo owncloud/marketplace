@@ -1,0 +1,10 @@
+{
+  "slug": "semih-serhat-karakaya",
+  "name": "Semih Serhat Karakaya",
+  "enabled": true,
+  "website": "https://github.com/owncloud/twofactor_backup_codes",
+  "description": "Author of the Two-Factor Backup Codes app for ownCloud.",
+  "apps": [
+    "twofactor_backup_codes"
+  ]
+}

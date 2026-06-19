@@ -4,6 +4,7 @@
   "enabled": true,
   "website": "https://jankaritech.com",
   "description": "Software engineering company and long-time ownCloud contributor.",
+  "logo": "logo.png",
   "extensions": [
     "mdpresentation-viewer"
   ]

@@ -1,0 +1,10 @@
+{
+  "slug": "netknights",
+  "name": "NetKnights GmbH",
+  "enabled": true,
+  "website": "https://privacyidea.org",
+  "description": "The company behind privacyIDEA, providing two-factor authentication for ownCloud.",
+  "apps": [
+    "twofactor_privacyidea"
+  ]
+}

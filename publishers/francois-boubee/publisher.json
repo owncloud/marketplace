@@ -1,0 +1,10 @@
+{
+  "slug": "francois-boubee",
+  "name": "François Boubée",
+  "enabled": true,
+  "website": "https://bitbucket.org/zb2oby/groupalert",
+  "description": "Author of the Group Alert app for ownCloud.",
+  "apps": [
+    "groupalert"
+  ]
+}

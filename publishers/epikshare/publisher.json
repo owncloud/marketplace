@@ -1,0 +1,10 @@
+{
+  "slug": "epikshare",
+  "name": "epiKshare GmbH",
+  "enabled": true,
+  "website": "https://epikshare.com",
+  "description": "The company behind the E2EE File Sharing app for ownCloud.",
+  "apps": [
+    "e2eeshare"
+  ]
+}

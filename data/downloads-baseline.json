@@ -6,14 +6,23 @@
     "admin_audit": {
       "2.1.4": 16366
     },
+    "afterlogic": {
+      "1.2.3": 14628
+    },
     "announcementcenter": {
       "1.2.2": 24938
+    },
+    "bookmarks": {
+      "0.10.6": 36443
     },
     "brute_force_protection": {
       "1.3.0": 49127
     },
     "calendar": {
       "2.0.0": 253151
+    },
+    "checksum": {
+      "0.3.6": 14978
     },
     "contacts": {
       "1.5.5": 179460
@@ -27,8 +36,14 @@
     "drawio": {
       "1.0.2": 37128
     },
+    "duo": {
+      "3.0.2": 18870
+    },
     "enterprise_key": {
       "0.3.0": 11056
+    },
+    "extract": {
+      "1.3.7": 28274
     },
     "files_antivirus": {
       "1.2.3": 66317
@@ -63,6 +78,9 @@
     "files_texteditor": {
       "2.5.1": 316056
     },
+    "files_textviewer": {
+      "1.0.3": 26404
+    },
     "firewall": {
       "2.10.3": 14873
     },
@@ -84,6 +102,9 @@
     "market": {
       "0.9.0": 861129
     },
+    "metadata": {
+      "0.10.0": 13935
+    },
     "metrics": {
       "1.4.1": 11553
     },
@@ -92,6 +113,12 @@
     },
     "music": {
       "2.5.2": 102780
+    },
+    "nextbackup": {
+      "21.1.1": 9057
+    },
+    "notes": {
+      "2.0.7": 519189
     },
     "oauth2": {
       "0.6.1": 60704
@@ -108,6 +135,9 @@
     "password_policy": {
       "2.2.1": 32439
     },
+    "qownnotesapi": {
+      "21.3.0": 18626
+    },
     "ransomware_protection": {
       "1.7.1": 15949
     },
@@ -117,17 +147,26 @@
     "search_elastic": {
       "2.4.0": 16507
     },
+    "sensorlogger": {
+      "0.1.1": 10747
+    },
     "sharepoint": {
       "0.4.1": 8590
     },
     "systemtags_management": {
       "0.4.1": 8452
     },
+    "tasks": {
+      "0.9.7": 756968
+    },
     "templateeditor": {
       "0.5.0": 187560
     },
     "theme-enterprise": {
       "2.3.1": 17050
+    },
+    "twofactor_backup_codes": {
+      "0.1.0": 8781
     },
     "twofactor_totp": {
       "0.9.0": 96763
@@ -137,6 +176,9 @@
     },
     "user_shibboleth": {
       "3.6.0": 8400
+    },
+    "wallpaper": {
+      "0.2.2": 51261
     },
     "web": {
       "7.0.3": 29398

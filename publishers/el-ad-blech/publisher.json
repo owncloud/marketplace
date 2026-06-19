@@ -1,0 +1,10 @@
+{
+  "slug": "el-ad-blech",
+  "name": "El-ad Blech",
+  "enabled": true,
+  "website": "https://github.com/elie195/duo_provider",
+  "description": "Author of the Duo two-factor authentication provider for ownCloud.",
+  "apps": [
+    "duo"
+  ]
+}

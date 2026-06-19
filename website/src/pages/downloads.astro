@@ -1,6 +1,7 @@
 ---
 import Base from "../layouts/Base.astro";
 import ExternalLink from "../components/ExternalLink.astro";
+import StoreBadge from "../components/StoreBadge.astro";
 import { loadDownloads, withBase, type DownloadSurface } from "../lib/catalog.ts";
 import { SURFACES } from "../lib/downloads.ts";
 
@@ -22,12 +23,6 @@ const fmtDate = (iso: string): string => {
 
 const fmtCount = (n: number) => n.toLocaleString("en-US");
 const fmtDownloads = (n: number) => `${fmtCount(n)} download${n === 1 ? "" : "s"}`;
-
-// The store button label per mobile surface; other surfaces have no store link.
-const STORE_LABEL: Partial<Record<string, string>> = {
-  android: "Get it on Google Play",
-  ios: "Download on the App Store",
-};
 
 // "★ 4.5 · 345 ratings" from a store's rating/ratingCount, when present.
 const fmtRating = (rating?: number, count?: number): string | null => {
@@ -91,10 +86,8 @@ const generated = downloads ? fmtDate(downloads.generatedAt) : null;
             )}
           </header>
 
-          {surface?.store && (
-            <ExternalLink class="store-cta" href={surface.store.url}>
-              {STORE_LABEL[key] ?? "View in store"}
-            </ExternalLink>
+          {surface?.store && (key === "ios" || key === "android") && (
+            <StoreBadge store={key} href={surface.store.url} />
           )}
 
           {surface && surface.binaries.length > 0 ? (
@@ -273,26 +266,6 @@ const generated = downloads ? fmtDate(downloads.generatedAt) : null;
     color: var(--oc-text-muted);
   }
 
-  /* ---------- Primary app-store call to action (mobile surfaces) ---------- */
-  .store-cta {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 12px 22px;
-    border-radius: var(--radius-sm);
-    background: var(--oc-brand);
-    color: #fff;
-    font-weight: 700;
-    font-size: 0.98rem;
-    transition:
-      transform 0.16s ease,
-      box-shadow 0.16s ease;
-  }
-  .store-cta:hover {
-    text-decoration: none;
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-md);
-  }
   .downloads__label {
     margin: 22px 0 10px;
     font-size: 0.78rem;

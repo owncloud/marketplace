@@ -1,0 +1,10 @@
+{
+  "slug": "westberliner",
+  "name": "Patrick (westberliner)",
+  "enabled": true,
+  "website": "https://github.com/westberliner/owncloud-checksum",
+  "description": "Author of the Checksum app for ownCloud.",
+  "apps": [
+    "checksum"
+  ]
+}

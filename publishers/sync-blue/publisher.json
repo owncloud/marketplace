@@ -1,0 +1,10 @@
+{
+  "slug": "sync-blue",
+  "name": "sync.blue®",
+  "enabled": true,
+  "website": "https://www.sync.blue",
+  "description": "The company behind the sync.blue contact synchronisation app for ownCloud.",
+  "apps": [
+    "syncblue"
+  ]
+}

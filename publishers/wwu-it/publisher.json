@@ -1,0 +1,10 @@
+{
+  "slug": "wwu-it",
+  "name": "University of Münster IT",
+  "enabled": true,
+  "website": "https://www.uni-muenster.de",
+  "description": "IT department of the University of Münster, author of the Sccuot NG app.",
+  "apps": [
+    "sccuot_ng"
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "slug": "uni-muenster",
+  "name": "University of Münster",
+  "enabled": true,
+  "website": "https://www.research-data-services.org",
+  "description": "Author of the Research Data Services app for ownCloud.",
+  "apps": [
+    "rds"
+  ]
+}

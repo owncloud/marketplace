@@ -1,0 +1,11 @@
+{
+  "slug": "patrizio-bekerle",
+  "name": "Patrizio Bekerle",
+  "enabled": true,
+  "website": "https://www.bekerle.com",
+  "description": "Author of QOwnNotes and the QOwnNotesAPI and NextBackup apps for ownCloud.",
+  "apps": [
+    "nextbackup",
+    "qownnotesapi"
+  ]
+}

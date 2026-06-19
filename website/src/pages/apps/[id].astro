@@ -2,6 +2,7 @@
 import Base from "../../layouts/Base.astro";
 import { loadApps, loadCategories, withBase } from "../../lib/catalog.ts";
 import { loadPublishers, appIdToPublisher } from "../../lib/publishers.ts";
+import { renderDescription } from "../../lib/markdown.ts";
 
 export async function getStaticPaths() {
   const apps = await loadApps();
@@ -9,19 +10,32 @@ export async function getStaticPaths() {
   // Reverse-map owned app ids to their (enabled) publisher, so we can link the
   // publisher name to its page. Apps no publisher claims get no link.
   const ownerBySlug = appIdToPublisher(await loadPublishers());
-  return apps.map((app) => ({
-    params: { id: app.id },
-    props: { app, categories, publisherSlug: ownerBySlug.get(app.id)?.slug ?? null },
-  }));
+  return apps.map((app) => {
+    const owner = ownerBySlug.get(app.id) ?? null;
+    return {
+      params: { id: app.id },
+      props: {
+        app,
+        categories,
+        publisherSlug: owner?.slug ?? null,
+        publisherName: owner?.name ?? null,
+      },
+    };
+  });
 }
 
-const { app, categories, publisherSlug } = Astro.props;
+const { app, categories, publisherSlug, publisherName } = Astro.props;
 const base = import.meta.env.BASE_URL;
 // Prefer the on-site publisher page when one exists; otherwise fall back to the
 // app's publisher.url (also filled from the publisher website) or plain text.
 const publisherHref = publisherSlug
   ? withBase(base, `publishers/${publisherSlug}`)
   : app.publisher.url || null;
+// Clean publisher display name when an enabled publisher claims this app; else
+// fall back to the app's own (often long) publisher string.
+const publisherLabel = publisherName ?? app.publisher.name;
+// Sanitized markdown for the hero description (strict subset, no raw HTML).
+const descHtml = renderDescription(app.description);
 
 const categoryName = (id: string) =>
   categories.find((c) => c.id === id)?.name ?? id;
@@ -56,13 +70,13 @@ const fmtDownloads = (n: number) => `${fmtCount(n)} download${n === 1 ? "" : "s"
           {app.categories.map((c) => <span class="tag">{categoryName(c)}</span>)}
         </div>
         <h1>{app.name}</h1>
-        <p class="app-hero__desc">{app.description}</p>
+        <div class="app-hero__desc" set:html={descHtml}></div>
         <div class="app-hero__by">
           {
             publisherHref ? (
-              <a href={publisherHref}>{app.publisher.name}</a>
+              <a href={publisherHref}>{publisherLabel}</a>
             ) : (
-              <span>{app.publisher.name}</span>
+              <span>{publisherLabel}</span>
             )
           }
           {latest && <span class="dot" aria-hidden="true">·</span>}
@@ -155,9 +169,9 @@ const fmtDownloads = (n: number) => `${fmtCount(n)} download${n === 1 ? "" : "s"
             <dd>
               {
                 publisherHref ? (
-                  <a href={publisherHref}>{app.publisher.name}</a>
+                  <a href={publisherHref}>{publisherLabel}</a>
                 ) : (
-                  app.publisher.name
+                  publisherLabel
                 )
               }
             </dd>
@@ -265,6 +279,32 @@ const fmtDownloads = (n: number) => `${fmtCount(n)} download${n === 1 ? "" : "s"
     color: var(--oc-text-muted);
     max-width: 60ch;
     margin: 0 0 16px;
+  }
+  /* Markdown-rendered children carry no scope hash, so style them globally. */
+  .app-hero__desc :global(p),
+  .app-hero__desc :global(ul),
+  .app-hero__desc :global(ol) {
+    margin: 0 0 12px;
+  }
+  .app-hero__desc :global(ul),
+  .app-hero__desc :global(ol) {
+    padding-left: 1.4em;
+  }
+  .app-hero__desc :global(p:last-child),
+  .app-hero__desc :global(ul:last-child),
+  .app-hero__desc :global(ol:last-child) {
+    margin-bottom: 0;
+  }
+  .app-hero__desc :global(a) {
+    color: var(--oc-primary-hover);
+    font-weight: 600;
+  }
+  .app-hero__desc :global(code) {
+    font-family: var(--font-mono);
+    font-size: 0.92em;
+    background: var(--oc-bg-highlight);
+    padding: 1px 5px;
+    border-radius: 4px;
   }
   .app-hero__by {
     display: flex;

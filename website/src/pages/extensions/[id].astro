@@ -3,19 +3,27 @@ import Base from "../../layouts/Base.astro";
 import { withBase } from "../../lib/catalog.ts";
 import { loadExtensions } from "../../lib/extensions.ts";
 import { loadPublishers, extensionIdToPublisher } from "../../lib/publishers.ts";
+import { renderDescription } from "../../lib/markdown.ts";
 
 export async function getStaticPaths() {
   const extensions = await loadExtensions();
   // Reverse-map owned extension ids to their (enabled) publisher, so the sidebar
   // Author can link to its on-site publisher page. Unclaimed extensions get no link.
   const ownerById = extensionIdToPublisher(await loadPublishers());
-  return extensions.map((ext) => ({
-    params: { id: ext.id },
-    props: { ext, publisherSlug: ownerById.get(ext.id)?.slug ?? null },
-  }));
+  return extensions.map((ext) => {
+    const owner = ownerById.get(ext.id) ?? null;
+    return {
+      params: { id: ext.id },
+      props: {
+        ext,
+        publisherSlug: owner?.slug ?? null,
+        publisherName: owner?.name ?? null,
+      },
+    };
+  });
 }
 
-const { ext, publisherSlug } = Astro.props;
+const { ext, publisherSlug, publisherName } = Astro.props;
 const base = import.meta.env.BASE_URL;
 // On-site publisher page for the header byline and sidebar Author link, when a
 // publisher claims this extension; null leaves the author rendered as plain text.
@@ -27,6 +35,11 @@ const latest = ext.versions[0];
 const initial = ext.name.trim().charAt(0).toUpperCase() || "?";
 const totalDownloads = ext.downloads ?? 0;
 const author = ext.authors[0];
+// Publisher display name when an enabled publisher claims this extension; else
+// fall back to the extension author's name.
+const authorLabel = publisherName ?? author?.name;
+// Sanitized markdown for the hero description (strict subset, no raw HTML).
+const descHtml = renderDescription(ext.description ?? ext.subtitle);
 
 const fmtDate = (iso?: string) => {
   if (!iso) return "";
@@ -57,13 +70,13 @@ const ocisReq = (v?: string) => (v ? `Requires oCIS ${v} or newer` : "Any oCIS v
           {ext.tags.map((t) => <span class="tag">{t}</span>)}
         </div>
         <h1>{ext.name}</h1>
-        <p class="app-hero__desc">{ext.description ?? ext.subtitle}</p>
+        <div class="app-hero__desc" set:html={descHtml}></div>
         <div class="app-hero__by">
           {
             publisherHref ? (
-              <a href={publisherHref}>{author?.name}</a>
+              <a href={publisherHref}>{authorLabel}</a>
             ) : (
-              <span>{author?.name}</span>
+              <span>{authorLabel}</span>
             )
           }
           {latest && <span class="dot" aria-hidden="true">·</span>}
@@ -166,9 +179,9 @@ const ocisReq = (v?: string) => (v ? `Requires oCIS ${v} or newer` : "Any oCIS v
             <dd>
               {
                 publisherHref ? (
-                  <a href={publisherHref}>{author?.name}</a>
+                  <a href={publisherHref}>{authorLabel}</a>
                 ) : (
-                  author?.name
+                  authorLabel
                 )
               }
             </dd>
@@ -284,6 +297,32 @@ const ocisReq = (v?: string) => (v ? `Requires oCIS ${v} or newer` : "Any oCIS v
     color: var(--oc-text-muted);
     max-width: 60ch;
     margin: 0 0 16px;
+  }
+  /* Markdown-rendered children carry no scope hash, so style them globally. */
+  .app-hero__desc :global(p),
+  .app-hero__desc :global(ul),
+  .app-hero__desc :global(ol) {
+    margin: 0 0 12px;
+  }
+  .app-hero__desc :global(ul),
+  .app-hero__desc :global(ol) {
+    padding-left: 1.4em;
+  }
+  .app-hero__desc :global(p:last-child),
+  .app-hero__desc :global(ul:last-child),
+  .app-hero__desc :global(ol:last-child) {
+    margin-bottom: 0;
+  }
+  .app-hero__desc :global(a) {
+    color: var(--oc-primary-hover);
+    font-weight: 600;
+  }
+  .app-hero__desc :global(code) {
+    font-family: var(--font-mono);
+    font-size: 0.92em;
+    background: var(--oc-bg-highlight);
+    padding: 1px 5px;
+    border-radius: 4px;
   }
   .app-hero__by {
     display: flex;

@@ -3,6 +3,7 @@ import Base from "../../layouts/Base.astro";
 import { loadApps, loadCategories, withBase } from "../../lib/catalog.ts";
 import { loadExtensions } from "../../lib/extensions.ts";
 import { loadPublishers } from "../../lib/publishers.ts";
+import { renderDescription } from "../../lib/markdown.ts";
 
 export async function getStaticPaths() {
   // Only enabled publishers are written to publishers.json, so every entry here
@@ -37,6 +38,8 @@ const categoryName = (id: string) =>
 
 const initial = publisher.name.trim().charAt(0).toUpperCase() || "?";
 const fmtCount = (n: number) => n.toLocaleString("en-US");
+// Sanitized markdown for the hero description (strict subset, no raw HTML).
+const descHtml = renderDescription(publisher.description);
 ---
 <Base
   title={`${publisher.name} — ownCloud Marketplace`}
@@ -59,7 +62,7 @@ const fmtCount = (n: number) => n.toLocaleString("en-US");
       }
       <div class="pub-hero__body">
         <h1>{publisher.name}</h1>
-        {publisher.description && <p class="pub-hero__desc">{publisher.description}</p>}
+        {publisher.description && <div class="pub-hero__desc" set:html={descHtml}></div>}
         <div class="pub-hero__meta">
           {
             publisher.website && (
@@ -236,6 +239,32 @@ const fmtCount = (n: number) => n.toLocaleString("en-US");
     color: var(--oc-text-muted);
     max-width: 60ch;
     margin: 0 0 14px;
+  }
+  /* Markdown-rendered children carry no scope hash, so style them globally. */
+  .pub-hero__desc :global(p),
+  .pub-hero__desc :global(ul),
+  .pub-hero__desc :global(ol) {
+    margin: 0 0 12px;
+  }
+  .pub-hero__desc :global(ul),
+  .pub-hero__desc :global(ol) {
+    padding-left: 1.4em;
+  }
+  .pub-hero__desc :global(p:last-child),
+  .pub-hero__desc :global(ul:last-child),
+  .pub-hero__desc :global(ol:last-child) {
+    margin-bottom: 0;
+  }
+  .pub-hero__desc :global(a) {
+    color: var(--oc-primary-hover);
+    font-weight: 600;
+  }
+  .pub-hero__desc :global(code) {
+    font-family: var(--font-mono);
+    font-size: 0.92em;
+    background: var(--oc-bg-highlight);
+    padding: 1px 5px;
+    border-radius: 4px;
   }
   .pub-hero__meta {
     display: flex;

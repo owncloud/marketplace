@@ -1,13 +1,61 @@
 {
   "apps": {
+    "activity": {
+      "2.7.3": 762114
+    },
+    "calendar": {
+      "2.0.0": 253151
+    },
+    "contacts": {
+      "1.5.5": 179460
+    },
+    "files_antivirus": {
+      "1.2.3": 66317
+    },
+    "files_external_ftp": {
+      "0.2.1": 52368
+    },
+    "files_mediaviewer": {
+      "1.0.5": 234637
+    },
+    "files_pdfviewer": {
+      "1.0.2": 394295
+    },
+    "files_texteditor": {
+      "2.5.1": 316056
+    },
+    "gallery": {
+      "16.1.2": 298618
+    },
+    "guests": {
+      "0.12.4": 166297
+    },
+    "impersonate": {
+      "0.6.1": 75398
+    },
+    "market": {
+      "0.9.0": 861129
+    },
+    "music": {
+      "2.5.2": 102780
+    },
+    "oauth2": {
+      "0.6.1": 60704
+    },
     "onlyoffice": {
       "9.12.1": 231701
     },
     "richdocuments": {
       "4.2.3": 194030
     },
-    "music": {
-      "2.5.2": 102780
+    "templateeditor": {
+      "0.5.0": 187560
+    },
+    "twofactor_totp": {
+      "0.9.0": 96763
+    },
+    "user_ldap": {
+      "0.19.1": 303896
     }
   }
 }

@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { renderDescription } from "./markdown.ts";
+import { renderDescription, renderDescriptionInline } from "./markdown.ts";
 
 describe("renderDescription — approved subset renders", () => {
   it("renders bold", () => {
@@ -112,5 +112,67 @@ describe("renderDescription — empty input", () => {
     expect(renderDescription("")).toBe("");
     expect(renderDescription(null)).toBe("");
     expect(renderDescription(undefined)).toBe("");
+  });
+});
+
+describe("renderDescriptionInline — emphasis renders, blocks flatten", () => {
+  it("renders bold", () => {
+    expect(renderDescriptionInline("**bold**")).toContain("<strong>bold</strong>");
+  });
+
+  it("renders italic", () => {
+    expect(renderDescriptionInline("*italic*")).toContain("<em>italic</em>");
+  });
+
+  it("renders inline code", () => {
+    expect(renderDescriptionInline("`code`")).toContain("<code>code</code>");
+  });
+
+  it("does not wrap prose in a paragraph", () => {
+    const html = renderDescriptionInline("hello");
+    expect(html).not.toContain("<p>");
+    expect(html).toContain("hello");
+  });
+
+  it("flattens a link to plain text (no anchor, no href)", () => {
+    const html = renderDescriptionInline("[Android](https://play.google.com/x)");
+    expect(html).not.toContain("<a");
+    expect(html).not.toContain("href");
+    expect(html).toContain("Android");
+  });
+
+  it("flattens a bullet list, keeping item text", () => {
+    const html = renderDescriptionInline("- one\n- two");
+    expect(html).not.toContain("<ul>");
+    expect(html).not.toContain("<li>");
+    expect(html).toContain("one");
+    expect(html).toContain("two");
+  });
+
+  it("keeps word separation across flattened block boundaries", () => {
+    // Two paragraphs must not fuse into "end.Start" once <p> tags are dropped.
+    expect(renderDescriptionInline("end.\n\nStart")).toBe("end. Start");
+  });
+});
+
+describe("renderDescriptionInline — security hardening", () => {
+  it("strips raw <script> including its text content", () => {
+    const html = renderDescriptionInline("<script>alert(1)</script>hi");
+    expect(html).not.toContain("<script");
+    expect(html).not.toContain("alert(1)");
+    expect(html).toContain("hi");
+  });
+
+  it("strips <img onerror>", () => {
+    const html = renderDescriptionInline('<img src=x onerror=alert(1)>');
+    expect(html).not.toContain("<img");
+    expect(html).not.toContain("onerror");
+    expect(html).not.toContain("alert");
+  });
+
+  it("returns empty string for empty/nullish input", () => {
+    expect(renderDescriptionInline("")).toBe("");
+    expect(renderDescriptionInline(null)).toBe("");
+    expect(renderDescriptionInline(undefined)).toBe("");
   });
 });

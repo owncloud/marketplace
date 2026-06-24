@@ -4,7 +4,7 @@ import ExternalLink from "../../components/ExternalLink.astro";
 import { loadApps, loadCategories, withBase } from "../../lib/catalog.ts";
 import { loadExtensions } from "../../lib/extensions.ts";
 import { loadPublishers } from "../../lib/publishers.ts";
-import { renderDescription } from "../../lib/markdown.ts";
+import { renderDescription, renderDescriptionInline } from "../../lib/markdown.ts";
 
 export async function getStaticPaths() {
   // Only enabled publishers are written to publishers.json, so every entry here
@@ -109,7 +109,7 @@ const descHtml = renderDescription(publisher.description);
                       <span class="card__publisher">{publisher.name}</span>
                     </div>
                   </div>
-                  <p class="card__desc">{app.description}</p>
+                  <p class="card__desc" set:html={renderDescriptionInline(app.description)} />
                   <div class="card__meta">
                     <div class="card__cats">
                       {app.categories.map((c) => (
@@ -145,7 +145,7 @@ const descHtml = renderDescription(publisher.description);
                       <span class="card__publisher">{ext.authors[0]?.name}</span>
                     </div>
                   </div>
-                  <p class="card__desc">{ext.subtitle}</p>
+                  <p class="card__desc" set:html={renderDescriptionInline(ext.description ?? ext.subtitle)} />
                   <div class="card__meta">
                     <div class="card__cats">
                       {ext.tags.map((t) => (

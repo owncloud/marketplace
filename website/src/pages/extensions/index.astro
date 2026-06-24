@@ -2,6 +2,7 @@
 import Base from "../../layouts/Base.astro";
 import { withBase } from "../../lib/catalog.ts";
 import { loadExtensions } from "../../lib/extensions.ts";
+import { renderDescriptionInline } from "../../lib/markdown.ts";
 
 const extensions = await loadExtensions();
 const base = import.meta.env.BASE_URL;
@@ -135,7 +136,7 @@ const initial = (name: string) => name.trim().charAt(0).toUpperCase() || "?";
                     <span class="card__publisher">{ext.authors[0]?.name}</span>
                   </div>
                 </div>
-                <p class="card__desc">{ext.subtitle}</p>
+                <p class="card__desc" set:html={renderDescriptionInline(ext.description ?? ext.subtitle)} />
                 <div class="card__meta">
                   <div class="card__cats">
                     {ext.tags.map((t) => (

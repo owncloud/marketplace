@@ -2,6 +2,7 @@
 import Base from "../layouts/Base.astro";
 import ExternalLink from "../components/ExternalLink.astro";
 import { loadApps, loadCategories, withBase } from "../lib/catalog.ts";
+import { renderDescriptionInline } from "../lib/markdown.ts";
 
 const apps = await loadApps();
 const categories = await loadCategories();
@@ -130,7 +131,7 @@ const initial = (name: string) => name.trim().charAt(0).toUpperCase() || "?";
                   <span class="card__publisher">{app.publisher.name}</span>
                 </div>
               </div>
-              <p class="card__desc">{app.description}</p>
+              <p class="card__desc" set:html={renderDescriptionInline(app.description)} />
               <div class="card__meta">
                 <div class="card__cats">
                   {app.categories.map((c) => (

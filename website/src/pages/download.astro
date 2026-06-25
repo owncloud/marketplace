@@ -1,441 +1,281 @@
 ---
 import Base from "../layouts/Base.astro";
 import ExternalLink from "../components/ExternalLink.astro";
-import StoreBadge from "../components/StoreBadge.astro";
 import { loadDownloads, withBase, type DownloadSurface } from "../lib/catalog.ts";
 import { SURFACES } from "../lib/downloads.ts";
 
-// The canonical download directory — successor to download.owncloud.com. Every
-// product and every version come straight from the GitHub release data the
-// project already fetches into _site/api/v1/downloads.json; no values are
-// hardcoded here. ocis and the Classic server ship direct binaries on each
-// release; the desktop client and the mobile apps publish via GitHub/app
-// stores, so those releases link out instead.
+// The canonical download index — successor to download.owncloud.com. It is
+// styled as a plain file-server directory listing (the autoindex the old
+// domain served), but every entry is generated from the GitHub release data
+// the project already collects into _site/api/v1/downloads.json. The tree is
+// product/ → version/ → file, mirroring how the artifacts are actually laid
+// out. ocis and the Classic server ship direct binaries; the desktop client
+// and the mobile apps publish via GitHub/app stores, so their version folders
+// link out to the release page.
 const downloads = await loadDownloads();
 const base = import.meta.env.BASE_URL;
 
+// The on-disk directory name for each surface — mirrors download.owncloud.com's
+// own top-level folders where they existed (desktop/, ocis/, server/).
+const DIR_NAMES: Record<string, string> = {
+  ocis: "ocis",
+  server: "server",
+  client: "desktop",
+  android: "android",
+  ios: "ios",
+};
+
 const surfaces = SURFACES.map((s) => ({
   ...s,
+  dir: DIR_NAMES[s.key] ?? s.key,
   surface: (downloads?.[s.key] ?? null) as DownloadSurface | null,
 }));
 
-// "2026-02-01T…" → "1 Feb 2026"; matches the downloads landing/history pages.
-const fmtDate = (iso: string): string => {
+// Apache/nginx autoindex date style, e.g. "2026-05-22 08:59" (UTC).
+const fmtIndexDate = (iso: string): string => {
   const d = new Date(iso);
-  return Number.isNaN(d.getTime())
-    ? iso
-    : d.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" });
+  return Number.isNaN(d.getTime()) ? iso : d.toISOString().slice(0, 16).replace("T", " ");
 };
 
-const fmtCount = (n: number) => n.toLocaleString("en-US");
-const fmtDownloads = (n: number) => `${fmtCount(n)} download${n === 1 ? "" : "s"}`;
+// Last path segment of a download URL — the artifact's real file name.
+const fileName = (url: string): string => url.split("/").pop() || url;
 
-const generated = downloads ? fmtDate(downloads.generatedAt) : null;
+const generated = downloads ? fmtIndexDate(downloads.generatedAt) : null;
 
-// PGP signing keys, vendored under website/public/keys/ so they keep resolving
-// once download.owncloud.com is retired. Used to verify release artifacts.
+// PGP signing keys, vendored under website/public/keys/ so verification keeps
+// working once download.owncloud.com is retired. Values match the original
+// index listing; sizes are the vendored files'.
 const keys = [
   {
     name: "owncloud.asc",
     href: withBase(base, "keys/owncloud.asc"),
-    note: "Primary release signing key",
+    size: "3.1 KB",
+    modified: "2022-09-21 05:45",
   },
   {
     name: "owncloud-oem-pubkey.asc",
     href: withBase(base, "keys/owncloud-oem-pubkey.asc"),
-    note: "OEM signing key",
+    size: "1.3 KB",
+    modified: "2019-07-09 13:59",
   },
 ];
 ---
 <Base
-  title="Downloads — ownCloud"
-  description="Every release of every ownCloud product — Infinite Scale, Classic 10 server, the desktop client and the Android & iOS apps — with direct download links, straight from the official GitHub sources."
+  title="Index of ownCloud downloads"
+  description="Directory index of every ownCloud release — Infinite Scale, Classic 10 server, the desktop client and the Android & iOS apps — generated from the official GitHub sources."
 >
-  <!-- ===================== HERO ===================== -->
-  <section class="hero">
-    <div class="hero__grid" aria-hidden="true"></div>
-    <div class="hero__glow" aria-hidden="true"></div>
-    <div class="container hero__inner">
-      <p class="eyebrow">Open Source Program Office · Releases</p>
-      <h1 class="hero__title">Download <span class="hero__accent">ownCloud</span>.</h1>
-      <p class="hero__lede">
-        Every release of every ownCloud product — Infinite Scale, Classic 10
-        server, the desktop client and the Android &amp; iOS apps — pulled
-        straight from the official sources.
-      </p>
-      {generated && <p class="hero__note">Release data refreshed {generated}.</p>}
+  <header class="idx-head">
+    <div class="container">
+      <h1 class="idx-head__title">Index of ownCloud downloads</h1>
+      <p class="idx-head__path">/</p>
+      {generated && <p class="idx-head__note">Generated {generated} UTC from the official release sources.</p>}
     </div>
-  </section>
+  </header>
 
-  <!-- ===================== JUMP NAV ===================== -->
-  <nav class="jump container" aria-label="Jump to a product">
-    {
-      surfaces.map(({ key, name }) => (
-        <a class="jump__link" href={`#${key}`}>
-          {name}
-        </a>
-      ))
-    }
-    <a class="jump__link" href="#keys">Signing keys</a>
-  </nav>
+  <div class="container">
+    <div class="idx" role="table" aria-label="Download directory listing">
+      <div class="idx__head" role="row">
+        <span class="idx__c idx__c--name">Name</span>
+        <span class="idx__c idx__c--date">Last modified</span>
+        <span class="idx__c idx__c--size">Size</span>
+        <span class="idx__c idx__c--desc">Description</span>
+      </div>
+      <div class="idx__rule" aria-hidden="true"></div>
 
-  <!-- ===================== PRODUCTS ===================== -->
-  <div class="container products">
-    {
-      surfaces.map(({ key, name, tagline, repo, surface }) => (
-        <section class="product" id={key}>
-          <header class="product__head">
-            <div>
-              <h2 class="product__name">{name}</h2>
-              <p class="product__tagline">{tagline}</p>
+      {
+        surfaces.map(({ key, name, tagline, repo, dir, surface }) => (
+          <>
+            <div class="idx__row idx__row--dir" id={dir} role="row">
+              <span class="idx__c idx__c--name">
+                <span class="idx__icon" aria-hidden="true">📁</span>
+                <span class="idx__dir">{dir}/</span>
+              </span>
+              <span class="idx__c idx__c--date">{surface ? fmtIndexDate(surface.publishedAt) : "-"}</span>
+              <span class="idx__c idx__c--size">-</span>
+              <span class="idx__c idx__c--desc">{name} — {tagline}</span>
             </div>
-            {surface && (
-              <p class="product__meta">
-                <span>Latest v{surface.version}</span>
-                <span class="dot" aria-hidden="true">·</span>
-                <span>{fmtDate(surface.publishedAt)}</span>
-                {surface.downloads > 0 && (
-                  <>
-                    <span class="dot" aria-hidden="true">·</span>
-                    <span>{fmtDownloads(surface.downloads)}</span>
-                  </>
-                )}
-              </p>
-            )}
-          </header>
 
-          {surface?.store && (key === "ios" || key === "android") && (
-            <div class="product__store">
-              <StoreBadge store={key} href={surface.store.url} />
-            </div>
-          )}
-
-          {surface ? (
-            <ul class="releases">
-              {surface.releases.map((r, i) => (
-                <li class="release">
-                  <div class="release__head">
-                    <ExternalLink class="release__version" href={r.releaseUrl}>
-                      v{r.version}
-                    </ExternalLink>
-                    {i === 0 && <span class="release__badge">Latest</span>}
-                    <span class="release__date">{fmtDate(r.publishedAt)}</span>
-                  </div>
-                  {r.downloads > 0 && (
-                    <div class="release__facts">
-                      <span>{fmtDownloads(r.downloads)}</span>
-                    </div>
-                  )}
-                  {r.binaries.length > 0 ? (
-                    <ul class="downloads">
-                      {r.binaries.map((b) => (
-                        <li>
-                          <a class="download" href={b.url} rel="noopener">
-                            <span class="download__os">{b.os}</span>
-                            {b.arch && <span class="download__arch">{b.arch}</span>}
-                            <span class="download__size">{b.size}</span>
-                          </a>
-                        </li>
-                      ))}
-                    </ul>
-                  ) : (
-                    <p class="release__fallback">
-                      No direct binaries listed.{" "}
-                      <ExternalLink href={r.releaseUrl}>
-                        Browse this release on GitHub →
+            {surface ? (
+              surface.releases.map((r) => (
+                <>
+                  <div class="idx__row idx__row--ver" role="row">
+                    <span class="idx__c idx__c--name idx__indent-1">
+                      <span class="idx__icon" aria-hidden="true">📁</span>
+                      <ExternalLink class="idx__link" href={r.releaseUrl}>
+                        {r.version}/
                       </ExternalLink>
-                    </p>
-                  )}
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <p class="release__fallback">
-              No release data is available yet.{" "}
-              <ExternalLink href={`https://github.com/${repo}/releases`}>
-                Browse releases on GitHub →
-              </ExternalLink>
-            </p>
-          )}
-        </section>
-      ))
-    }
+                    </span>
+                    <span class="idx__c idx__c--date">{fmtIndexDate(r.publishedAt)}</span>
+                    <span class="idx__c idx__c--size">-</span>
+                    <span class="idx__c idx__c--desc">
+                      {r.binaries.length === 0 && "release on GitHub"}
+                    </span>
+                  </div>
 
-    <!-- ===================== SIGNING KEYS ===================== -->
-    <section class="product" id="keys">
-      <header class="product__head">
-        <div>
-          <h2 class="product__name">PGP signing keys</h2>
-          <p class="product__tagline">
-            Verify the authenticity of downloaded release artifacts against these
-            public keys.
-          </p>
-        </div>
-      </header>
-      <ul class="downloads">
-        {
-          keys.map((k) => (
-            <li>
-              <a class="download" href={k.href} download>
-                <span class="download__os">{k.name}</span>
-                <span class="download__arch">{k.note}</span>
+                  {r.binaries.map((b) => (
+                    <div class="idx__row idx__row--file" role="row">
+                      <span class="idx__c idx__c--name idx__indent-2">
+                        <span class="idx__icon" aria-hidden="true">📄</span>
+                        <a class="idx__link" href={b.url} rel="noopener">
+                          {fileName(b.url)}
+                        </a>
+                      </span>
+                      <span class="idx__c idx__c--date">{fmtIndexDate(r.publishedAt)}</span>
+                      <span class="idx__c idx__c--size">{b.size}</span>
+                      <span class="idx__c idx__c--desc">{[b.os, b.arch].filter(Boolean).join(" ")}</span>
+                    </div>
+                  ))}
+                </>
+              ))
+            ) : (
+              <div class="idx__row idx__row--file" role="row">
+                <span class="idx__c idx__c--name idx__indent-1 idx__muted">
+                  (no release data — <ExternalLink class="idx__link" href={`https://github.com/${repo}/releases`}>browse on GitHub</ExternalLink>)
+                </span>
+                <span class="idx__c idx__c--date">-</span>
+                <span class="idx__c idx__c--size">-</span>
+                <span class="idx__c idx__c--desc" />
+              </div>
+            )}
+          </>
+        ))
+      }
+
+      {/* Top-level signing keys, as on the original index root. */}
+      <div class="idx__rule idx__rule--soft" aria-hidden="true"></div>
+      {
+        keys.map((k) => (
+          <div class="idx__row idx__row--file" role="row">
+            <span class="idx__c idx__c--name">
+              <span class="idx__icon" aria-hidden="true">🔑</span>
+              <a class="idx__link" href={k.href} download>
+                {k.name}
               </a>
-            </li>
-          ))
-        }
-      </ul>
-    </section>
+            </span>
+            <span class="idx__c idx__c--date">{k.modified}</span>
+            <span class="idx__c idx__c--size">{k.size}</span>
+            <span class="idx__c idx__c--desc">PGP signing key</span>
+          </div>
+        ))
+      }
+      <div class="idx__rule" aria-hidden="true"></div>
+    </div>
   </div>
 </Base>
 
 <style>
-  /* ---------- Hero (shared visual language with the downloads page) ---------- */
-  .hero {
-    position: relative;
-    overflow: hidden;
-    background:
-      radial-gradient(130% 100% at 80% -10%, #1d3a66 0%, var(--oc-brand) 55%, #03152f 100%);
+  /* ---------- Slim, utilitarian header (not a marketing hero) ---------- */
+  .idx-head {
+    background: var(--oc-brand);
     color: #fff;
-    isolation: isolate;
-  }
-  .hero__grid {
-    position: absolute;
-    inset: 0;
-    background-image:
-      linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
-    background-size: 48px 48px;
-    mask-image: radial-gradient(120% 80% at 50% 0%, #000 30%, transparent 78%);
-    z-index: -1;
-  }
-  .hero__glow {
-    position: absolute;
-    width: 620px;
-    height: 620px;
-    right: -160px;
-    top: -260px;
-    border-radius: 50%;
-    background: radial-gradient(circle, rgba(74, 118, 172, 0.55), transparent 65%);
-    filter: blur(20px);
-    z-index: -1;
-  }
-  .hero__inner {
-    padding-block: 84px 72px;
-    max-width: 860px;
-  }
-  .eyebrow {
-    text-transform: uppercase;
-    letter-spacing: 0.18em;
-    font-size: 0.74rem;
-    font-weight: 700;
-    color: #8fb4e3;
-    margin: 0 0 20px;
-  }
-  .hero__title {
-    font-size: clamp(2.4rem, 6vw, 4rem);
-    font-weight: 700;
-    margin: 0 0 22px;
-  }
-  .hero__accent {
-    position: relative;
-    white-space: nowrap;
-  }
-  .hero__accent::after {
-    content: "";
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 0.08em;
-    height: 0.14em;
-    background: linear-gradient(90deg, #4a76ac, #8fb4e3);
-    border-radius: 2px;
-  }
-  .hero__lede {
-    font-size: clamp(1.05rem, 2vw, 1.25rem);
-    color: rgba(255, 255, 255, 0.82);
-    max-width: 620px;
-    margin: 0 0 18px;
-  }
-  .hero__note {
-    font-size: 0.86rem;
-    color: #8fb4e3;
-    margin: 0;
-  }
-
-  /* ---------- Jump nav ---------- */
-  .jump {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    padding-top: 32px;
-  }
-  .jump__link {
-    font-size: 0.9rem;
-    font-weight: 600;
-    color: var(--oc-primary-hover);
-    padding: 7px 14px;
-    border: 1px solid var(--oc-border-input);
-    border-radius: 999px;
-    background: var(--oc-bg);
-    transition:
-      background 0.16s ease,
-      border-color 0.16s ease;
-  }
-  .jump__link:hover {
-    text-decoration: none;
-    background: var(--oc-bg-highlight);
-    border-color: var(--oc-primary);
-  }
-
-  /* ---------- Products ---------- */
-  .products {
-    padding-top: 40px;
-    display: grid;
-    gap: 40px;
-  }
-  /* Offset anchor targets so the sticky header doesn't cover the heading. */
-  .product {
-    scroll-margin-top: 88px;
-  }
-  .product__head {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: flex-start;
-    justify-content: space-between;
-    gap: 8px 24px;
-    padding-bottom: 16px;
     border-bottom: 1px solid var(--oc-border);
-    margin-bottom: 20px;
   }
-  .product__name {
-    font-size: 1.6rem;
-    color: var(--oc-brand);
+  .idx-head .container {
+    padding-block: 30px 26px;
   }
-  .product__tagline {
-    margin: 4px 0 0;
-    color: var(--oc-text-muted);
-    font-size: 0.96rem;
-  }
-  .product__meta {
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 9px;
-    font-size: 0.92rem;
-    color: var(--oc-text-muted);
+  .idx-head__title {
+    font-size: clamp(1.4rem, 3vw, 1.9rem);
+    font-weight: 700;
     margin: 0;
   }
-  .dot {
-    color: var(--oc-border-input);
+  .idx-head__path {
+    font-family: var(--font-mono);
+    font-size: 0.95rem;
+    color: #8fb4e3;
+    margin: 6px 0 0;
   }
-  .product__store {
-    margin-bottom: 20px;
+  .idx-head__note {
+    font-size: 0.84rem;
+    color: rgba(255, 255, 255, 0.7);
+    margin: 10px 0 0;
   }
 
-  /* ---------- Release rows (shared with downloads/[product]) ---------- */
-  .releases {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    display: grid;
-    gap: 14px;
-  }
-  .release {
-    border: 1px solid var(--oc-border);
-    border-radius: var(--radius-sm);
-    padding: 18px 20px;
-    transition: border-color 0.18s ease;
-  }
-  .release:hover {
-    border-color: var(--oc-border-input);
-  }
-  .release__head {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin-bottom: 8px;
-  }
-  .release__version {
+  /* ---------- Directory autoindex ---------- */
+  .idx {
     font-family: var(--font-mono);
-    font-weight: 500;
-    font-size: 1.05rem;
-    color: var(--oc-brand);
-  }
-  .release__badge {
-    font-size: 0.7rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    padding: 2px 9px;
-    border-radius: 999px;
-    background: var(--oc-success);
-    color: #fff;
-  }
-  .release__date {
-    margin-left: auto;
     font-size: 0.86rem;
-    color: var(--oc-text-muted);
-  }
-  .release__facts {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 8px;
-    font-size: 0.9rem;
-    color: var(--oc-text-muted);
-    margin-bottom: 12px;
-  }
-  .release__fallback {
-    margin: 0;
-    color: var(--oc-text-muted);
-    font-size: 0.96rem;
-  }
-
-  /* ---------- Binary download buttons (shared with downloads pages) ---------- */
-  .downloads {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
-    gap: 12px;
-  }
-  .download {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 14px 16px;
-    border: 1px solid var(--oc-border-input);
-    border-radius: var(--radius-sm);
-    background: var(--oc-bg);
+    line-height: 1.5;
     color: var(--oc-text);
-    transition:
-      transform 0.16s ease,
-      border-color 0.16s ease,
-      box-shadow 0.16s ease;
+    margin: 28px 0 96px;
+    overflow-x: auto;
   }
-  .download:hover {
-    text-decoration: none;
-    transform: translateY(-2px);
-    border-color: var(--oc-primary);
-    box-shadow: var(--shadow-md);
+  .idx__head {
+    font-weight: 600;
+    color: var(--oc-text-muted);
   }
-  .download__os {
+  .idx__head,
+  .idx__row {
+    display: grid;
+    grid-template-columns: minmax(280px, 1fr) 160px 90px minmax(160px, 1fr);
+    gap: 16px;
+    padding: 3px 8px;
+    align-items: baseline;
+  }
+  .idx__rule {
+    height: 0;
+    border-top: 1px solid var(--oc-text-muted);
+    margin: 4px 0;
+  }
+  .idx__rule--soft {
+    border-top-style: dashed;
+    border-top-color: var(--oc-border-input);
+  }
+  .idx__row:hover {
+    background: var(--oc-bg-highlight);
+  }
+  .idx__c {
+    min-width: 0;
+  }
+  .idx__c--name {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    overflow-wrap: anywhere;
+  }
+  .idx__c--date,
+  .idx__c--size {
+    color: var(--oc-text-muted);
+    white-space: nowrap;
+  }
+  .idx__c--size {
+    text-align: right;
+  }
+  .idx__c--desc {
+    color: var(--oc-text-muted);
+    overflow-wrap: anywhere;
+  }
+  .idx__icon {
+    flex: none;
+  }
+  .idx__dir {
     font-weight: 700;
     color: var(--oc-brand);
-    white-space: nowrap;
   }
-  .download__arch {
-    font-family: var(--font-mono);
-    font-size: 0.82rem;
-    color: var(--oc-text-muted);
-    white-space: nowrap;
+  .idx__row--ver .idx__link {
+    font-weight: 600;
   }
-  .download__size {
-    margin-left: auto;
-    padding-left: 8px;
-    font-size: 0.82rem;
+  .idx__indent-1 {
+    padding-left: 22px;
+  }
+  .idx__indent-2 {
+    padding-left: 44px;
+  }
+  .idx__muted {
     color: var(--oc-text-muted);
-    white-space: nowrap;
+  }
+  .idx__link {
+    color: var(--oc-primary-hover);
+  }
+
+  /* Drop the Description column on narrow screens; the listing scrolls if the
+     remaining columns still overflow. */
+  @media (max-width: 720px) {
+    .idx__head,
+    .idx__row {
+      grid-template-columns: minmax(220px, 1fr) 140px 80px;
+    }
+    .idx__c--desc {
+      display: none;
+    }
   }
 </style>

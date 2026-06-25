@@ -1,126 +1,191 @@
 ---
 import Base from "../layouts/Base.astro";
 import ExternalLink from "../components/ExternalLink.astro";
+import StoreBadge from "../components/StoreBadge.astro";
+import { loadDownloads, withBase, type DownloadSurface } from "../lib/catalog.ts";
+import { SURFACES } from "../lib/downloads.ts";
 
-// Mirrors the root directory index served at download.owncloud.com: the three
-// top-level product folders plus the two PGP signing keys. The values are a
-// point-in-time snapshot of that auto-generated listing — sizes and timestamps
-// drift over time — kept static by design so the page stays backend-free. The
-// `note` column is the one addition beyond the raw index: a short human label
-// giving each entry context within the marketplace.
-const ROOT = "https://download.owncloud.com";
+// The canonical download directory — successor to download.owncloud.com. Every
+// product and every version come straight from the GitHub release data the
+// project already fetches into _site/api/v1/downloads.json; no values are
+// hardcoded here. ocis and the Classic server ship direct binaries on each
+// release; the desktop client and the mobile apps publish via GitHub/app
+// stores, so those releases link out instead.
+const downloads = await loadDownloads();
+const base = import.meta.env.BASE_URL;
 
-type Entry = {
-  name: string;
-  kind: "dir" | "file";
-  href: string;
-  size: string;
-  modified: string;
-  note: string;
+const surfaces = SURFACES.map((s) => ({
+  ...s,
+  surface: (downloads?.[s.key] ?? null) as DownloadSurface | null,
+}));
+
+// "2026-02-01T…" → "1 Feb 2026"; matches the downloads landing/history pages.
+const fmtDate = (iso: string): string => {
+  const d = new Date(iso);
+  return Number.isNaN(d.getTime())
+    ? iso
+    : d.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" });
 };
 
-const entries: Entry[] = [
+const fmtCount = (n: number) => n.toLocaleString("en-US");
+const fmtDownloads = (n: number) => `${fmtCount(n)} download${n === 1 ? "" : "s"}`;
+
+const generated = downloads ? fmtDate(downloads.generatedAt) : null;
+
+// PGP signing keys, vendored under website/public/keys/ so they keep resolving
+// once download.owncloud.com is retired. Used to verify release artifacts.
+const keys = [
   {
-    name: "desktop",
-    kind: "dir",
-    href: `${ROOT}/desktop/`,
-    size: "74 B",
-    modified: "03/26/2026 02:00:03 AM",
-    note: "ownCloud Desktop client",
-  },
-  {
-    name: "ocis",
-    kind: "dir",
-    href: `${ROOT}/ocis/`,
-    size: "31 B",
-    modified: "02/04/2026 10:08:26 AM",
-    note: "ownCloud Infinite Scale",
-  },
-  {
-    name: "server",
-    kind: "dir",
-    href: `${ROOT}/server/`,
-    size: "48 B",
-    modified: "03/25/2026 11:00:01 PM",
-    note: "ownCloud Server (Classic 10)",
+    name: "owncloud.asc",
+    href: withBase(base, "keys/owncloud.asc"),
+    note: "Primary release signing key",
   },
   {
     name: "owncloud-oem-pubkey.asc",
-    kind: "file",
-    href: `${ROOT}/owncloud-oem-pubkey.asc`,
-    size: "1.3 KiB",
-    modified: "07/09/2019 01:59:49 PM",
-    note: "OEM PGP signing key",
-  },
-  {
-    name: "owncloud.asc",
-    kind: "file",
-    href: `${ROOT}/owncloud.asc`,
-    size: "3.1 KiB",
-    modified: "09/21/2022 05:45:54 AM",
-    note: "PGP signing key",
+    href: withBase(base, "keys/owncloud-oem-pubkey.asc"),
+    note: "OEM signing key",
   },
 ];
 ---
 <Base
-  title="Download Directory — ownCloud"
-  description="The ownCloud download directory — the desktop client, Infinite Scale and Classic 10 server folders, plus the official PGP signing keys, mirrored from download.owncloud.com."
+  title="Downloads — ownCloud"
+  description="Every release of every ownCloud product — Infinite Scale, Classic 10 server, the desktop client and the Android & iOS apps — with direct download links, straight from the official GitHub sources."
 >
   <!-- ===================== HERO ===================== -->
   <section class="hero">
     <div class="hero__grid" aria-hidden="true"></div>
     <div class="hero__glow" aria-hidden="true"></div>
     <div class="container hero__inner">
-      <p class="eyebrow">Open Source Program Office · File Server</p>
-      <h1 class="hero__title">
-        The ownCloud <span class="hero__accent">download</span> directory.
-      </h1>
+      <p class="eyebrow">Open Source Program Office · Releases</p>
+      <h1 class="hero__title">Download <span class="hero__accent">ownCloud</span>.</h1>
       <p class="hero__lede">
-        A mirror of the file server at
-        <strong>download.owncloud.com</strong> — the desktop client, Infinite
-        Scale and Classic 10 server folders, plus the official PGP signing keys
-        used to verify release artifacts.
+        Every release of every ownCloud product — Infinite Scale, Classic 10
+        server, the desktop client and the Android &amp; iOS apps — pulled
+        straight from the official sources.
       </p>
+      {generated && <p class="hero__note">Release data refreshed {generated}.</p>}
     </div>
   </section>
 
-  <!-- ===================== DIRECTORY INDEX ===================== -->
-  <section class="index container">
-    <div class="listing">
-      <div class="listing__head" role="row" aria-hidden="true">
-        <span class="col col--name">Name</span>
-        <span class="col col--size">Size</span>
-        <span class="col col--modified">Modified</span>
-      </div>
-      <ul class="listing__body">
+  <!-- ===================== JUMP NAV ===================== -->
+  <nav class="jump container" aria-label="Jump to a product">
+    {
+      surfaces.map(({ key, name }) => (
+        <a class="jump__link" href={`#${key}`}>
+          {name}
+        </a>
+      ))
+    }
+    <a class="jump__link" href="#keys">Signing keys</a>
+  </nav>
+
+  <!-- ===================== PRODUCTS ===================== -->
+  <div class="container products">
+    {
+      surfaces.map(({ key, name, tagline, repo, surface }) => (
+        <section class="product" id={key}>
+          <header class="product__head">
+            <div>
+              <h2 class="product__name">{name}</h2>
+              <p class="product__tagline">{tagline}</p>
+            </div>
+            {surface && (
+              <p class="product__meta">
+                <span>Latest v{surface.version}</span>
+                <span class="dot" aria-hidden="true">·</span>
+                <span>{fmtDate(surface.publishedAt)}</span>
+                {surface.downloads > 0 && (
+                  <>
+                    <span class="dot" aria-hidden="true">·</span>
+                    <span>{fmtDownloads(surface.downloads)}</span>
+                  </>
+                )}
+              </p>
+            )}
+          </header>
+
+          {surface?.store && (key === "ios" || key === "android") && (
+            <div class="product__store">
+              <StoreBadge store={key} href={surface.store.url} />
+            </div>
+          )}
+
+          {surface ? (
+            <ul class="releases">
+              {surface.releases.map((r, i) => (
+                <li class="release">
+                  <div class="release__head">
+                    <ExternalLink class="release__version" href={r.releaseUrl}>
+                      v{r.version}
+                    </ExternalLink>
+                    {i === 0 && <span class="release__badge">Latest</span>}
+                    <span class="release__date">{fmtDate(r.publishedAt)}</span>
+                  </div>
+                  {r.downloads > 0 && (
+                    <div class="release__facts">
+                      <span>{fmtDownloads(r.downloads)}</span>
+                    </div>
+                  )}
+                  {r.binaries.length > 0 ? (
+                    <ul class="downloads">
+                      {r.binaries.map((b) => (
+                        <li>
+                          <a class="download" href={b.url} rel="noopener">
+                            <span class="download__os">{b.os}</span>
+                            {b.arch && <span class="download__arch">{b.arch}</span>}
+                            <span class="download__size">{b.size}</span>
+                          </a>
+                        </li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <p class="release__fallback">
+                      No direct binaries listed.{" "}
+                      <ExternalLink href={r.releaseUrl}>
+                        Browse this release on GitHub →
+                      </ExternalLink>
+                    </p>
+                  )}
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p class="release__fallback">
+              No release data is available yet.{" "}
+              <ExternalLink href={`https://github.com/${repo}/releases`}>
+                Browse releases on GitHub →
+              </ExternalLink>
+            </p>
+          )}
+        </section>
+      ))
+    }
+
+    <!-- ===================== SIGNING KEYS ===================== -->
+    <section class="product" id="keys">
+      <header class="product__head">
+        <div>
+          <h2 class="product__name">PGP signing keys</h2>
+          <p class="product__tagline">
+            Verify the authenticity of downloaded release artifacts against these
+            public keys.
+          </p>
+        </div>
+      </header>
+      <ul class="downloads">
         {
-          entries.map((e) => (
-            <li class="row">
-              <span class="col col--name">
-                <span class="row__icon" aria-hidden="true">
-                  {e.kind === "dir" ? "📁" : "📄"}
-                </span>
-                <span class="row__text">
-                  <ExternalLink class="row__link" href={e.href}>
-                    {e.name}
-                  </ExternalLink>
-                  <span class="row__note">{e.note}</span>
-                </span>
-              </span>
-              <span class="col col--size">{e.size}</span>
-              <span class="col col--modified">{e.modified}</span>
+          keys.map((k) => (
+            <li>
+              <a class="download" href={k.href} download>
+                <span class="download__os">{k.name}</span>
+                <span class="download__arch">{k.note}</span>
+              </a>
             </li>
           ))
         }
       </ul>
-    </div>
-
-    <p class="index__foot">
-      <ExternalLink href={ROOT}>
-        Browse the full directory at download.owncloud.com →
-      </ExternalLink>
-    </p>
-  </section>
+    </section>
+  </div>
 </Base>
 
 <style>
@@ -189,102 +254,188 @@ const entries: Entry[] = [
     font-size: clamp(1.05rem, 2vw, 1.25rem);
     color: rgba(255, 255, 255, 0.82);
     max-width: 620px;
+    margin: 0 0 18px;
+  }
+  .hero__note {
+    font-size: 0.86rem;
+    color: #8fb4e3;
     margin: 0;
   }
 
-  /* ---------- Directory index ---------- */
-  .index {
-    padding-top: 64px;
+  /* ---------- Jump nav ---------- */
+  .jump {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    padding-top: 32px;
   }
-  .listing {
+  .jump__link {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--oc-primary-hover);
+    padding: 7px 14px;
+    border: 1px solid var(--oc-border-input);
+    border-radius: 999px;
     background: var(--oc-bg);
-    border: 1px solid var(--oc-border);
-    border-radius: var(--radius);
-    box-shadow: var(--shadow-sm);
-    overflow: hidden;
+    transition:
+      background 0.16s ease,
+      border-color 0.16s ease;
   }
-  .listing__head,
-  .row {
+  .jump__link:hover {
+    text-decoration: none;
+    background: var(--oc-bg-highlight);
+    border-color: var(--oc-primary);
+  }
+
+  /* ---------- Products ---------- */
+  .products {
+    padding-top: 40px;
     display: grid;
-    grid-template-columns: minmax(0, 1fr) 90px 220px;
-    align-items: center;
-    gap: 16px;
-    padding: 14px 24px;
+    gap: 40px;
   }
-  .listing__head {
+  /* Offset anchor targets so the sticky header doesn't cover the heading. */
+  .product {
+    scroll-margin-top: 88px;
+  }
+  .product__head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 8px 24px;
+    padding-bottom: 16px;
     border-bottom: 1px solid var(--oc-border);
-    background: var(--oc-bg-muted);
-    font-size: 0.74rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: var(--oc-text-muted);
+    margin-bottom: 20px;
   }
-  .listing__body {
+  .product__name {
+    font-size: 1.6rem;
+    color: var(--oc-brand);
+  }
+  .product__tagline {
+    margin: 4px 0 0;
+    color: var(--oc-text-muted);
+    font-size: 0.96rem;
+  }
+  .product__meta {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 9px;
+    font-size: 0.92rem;
+    color: var(--oc-text-muted);
+    margin: 0;
+  }
+  .dot {
+    color: var(--oc-border-input);
+  }
+  .product__store {
+    margin-bottom: 20px;
+  }
+
+  /* ---------- Release rows (shared with downloads/[product]) ---------- */
+  .releases {
     list-style: none;
     margin: 0;
     padding: 0;
+    display: grid;
+    gap: 14px;
   }
-  .row {
-    border-bottom: 1px solid var(--oc-border);
+  .release {
+    border: 1px solid var(--oc-border);
+    border-radius: var(--radius-sm);
+    padding: 18px 20px;
+    transition: border-color 0.18s ease;
   }
-  .row:last-child {
-    border-bottom: none;
+  .release:hover {
+    border-color: var(--oc-border-input);
   }
-  .row:hover {
-    background: var(--oc-bg-highlight);
+  .release__head {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 8px;
   }
-  .col--size,
-  .col--modified {
+  .release__version {
+    font-family: var(--font-mono);
+    font-weight: 500;
+    font-size: 1.05rem;
+    color: var(--oc-brand);
+  }
+  .release__badge {
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding: 2px 9px;
+    border-radius: 999px;
+    background: var(--oc-success);
+    color: #fff;
+  }
+  .release__date {
+    margin-left: auto;
+    font-size: 0.86rem;
+    color: var(--oc-text-muted);
+  }
+  .release__facts {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.9rem;
+    color: var(--oc-text-muted);
+    margin-bottom: 12px;
+  }
+  .release__fallback {
+    margin: 0;
+    color: var(--oc-text-muted);
+    font-size: 0.96rem;
+  }
+
+  /* ---------- Binary download buttons (shared with downloads pages) ---------- */
+  .downloads {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+    gap: 12px;
+  }
+  .download {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 14px 16px;
+    border: 1px solid var(--oc-border-input);
+    border-radius: var(--radius-sm);
+    background: var(--oc-bg);
+    color: var(--oc-text);
+    transition:
+      transform 0.16s ease,
+      border-color 0.16s ease,
+      box-shadow 0.16s ease;
+  }
+  .download:hover {
+    text-decoration: none;
+    transform: translateY(-2px);
+    border-color: var(--oc-primary);
+    box-shadow: var(--shadow-md);
+  }
+  .download__os {
+    font-weight: 700;
+    color: var(--oc-brand);
+    white-space: nowrap;
+  }
+  .download__arch {
     font-family: var(--font-mono);
     font-size: 0.82rem;
     color: var(--oc-text-muted);
     white-space: nowrap;
   }
-  .col--name {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    min-width: 0;
-  }
-  .row__icon {
-    flex: none;
-    font-size: 1.1rem;
-    line-height: 1;
-  }
-  .row__text {
-    display: flex;
-    flex-direction: column;
-    min-width: 0;
-  }
-  .row__link {
-    font-weight: 600;
-    color: var(--oc-brand);
-    word-break: break-word;
-  }
-  .row__link:hover {
-    color: var(--oc-primary-hover);
-  }
-  .row__note {
+  .download__size {
+    margin-left: auto;
+    padding-left: 8px;
     font-size: 0.82rem;
     color: var(--oc-text-muted);
-  }
-
-  .index__foot {
-    margin: 20px 0 0;
-    font-size: 0.95rem;
-  }
-
-  /* On narrow screens drop the Modified column and let the card scroll if
-     needed, keeping Name + Size readable. */
-  @media (max-width: 640px) {
-    .listing__head,
-    .row {
-      grid-template-columns: minmax(0, 1fr) 80px;
-      padding-inline: 16px;
-    }
-    .col--modified {
-      display: none;
-    }
+    white-space: nowrap;
   }
 </style>

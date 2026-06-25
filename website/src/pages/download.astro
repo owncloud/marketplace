@@ -1,0 +1,290 @@
+---
+import Base from "../layouts/Base.astro";
+import ExternalLink from "../components/ExternalLink.astro";
+
+// Mirrors the root directory index served at download.owncloud.com: the three
+// top-level product folders plus the two PGP signing keys. The values are a
+// point-in-time snapshot of that auto-generated listing — sizes and timestamps
+// drift over time — kept static by design so the page stays backend-free. The
+// `note` column is the one addition beyond the raw index: a short human label
+// giving each entry context within the marketplace.
+const ROOT = "https://download.owncloud.com";
+
+type Entry = {
+  name: string;
+  kind: "dir" | "file";
+  href: string;
+  size: string;
+  modified: string;
+  note: string;
+};
+
+const entries: Entry[] = [
+  {
+    name: "desktop",
+    kind: "dir",
+    href: `${ROOT}/desktop/`,
+    size: "74 B",
+    modified: "03/26/2026 02:00:03 AM",
+    note: "ownCloud Desktop client",
+  },
+  {
+    name: "ocis",
+    kind: "dir",
+    href: `${ROOT}/ocis/`,
+    size: "31 B",
+    modified: "02/04/2026 10:08:26 AM",
+    note: "ownCloud Infinite Scale",
+  },
+  {
+    name: "server",
+    kind: "dir",
+    href: `${ROOT}/server/`,
+    size: "48 B",
+    modified: "03/25/2026 11:00:01 PM",
+    note: "ownCloud Server (Classic 10)",
+  },
+  {
+    name: "owncloud-oem-pubkey.asc",
+    kind: "file",
+    href: `${ROOT}/owncloud-oem-pubkey.asc`,
+    size: "1.3 KiB",
+    modified: "07/09/2019 01:59:49 PM",
+    note: "OEM PGP signing key",
+  },
+  {
+    name: "owncloud.asc",
+    kind: "file",
+    href: `${ROOT}/owncloud.asc`,
+    size: "3.1 KiB",
+    modified: "09/21/2022 05:45:54 AM",
+    note: "PGP signing key",
+  },
+];
+---
+<Base
+  title="Download Directory — ownCloud"
+  description="The ownCloud download directory — the desktop client, Infinite Scale and Classic 10 server folders, plus the official PGP signing keys, mirrored from download.owncloud.com."
+>
+  <!-- ===================== HERO ===================== -->
+  <section class="hero">
+    <div class="hero__grid" aria-hidden="true"></div>
+    <div class="hero__glow" aria-hidden="true"></div>
+    <div class="container hero__inner">
+      <p class="eyebrow">Open Source Program Office · File Server</p>
+      <h1 class="hero__title">
+        The ownCloud <span class="hero__accent">download</span> directory.
+      </h1>
+      <p class="hero__lede">
+        A mirror of the file server at
+        <strong>download.owncloud.com</strong> — the desktop client, Infinite
+        Scale and Classic 10 server folders, plus the official PGP signing keys
+        used to verify release artifacts.
+      </p>
+    </div>
+  </section>
+
+  <!-- ===================== DIRECTORY INDEX ===================== -->
+  <section class="index container">
+    <div class="listing">
+      <div class="listing__head" role="row" aria-hidden="true">
+        <span class="col col--name">Name</span>
+        <span class="col col--size">Size</span>
+        <span class="col col--modified">Modified</span>
+      </div>
+      <ul class="listing__body">
+        {
+          entries.map((e) => (
+            <li class="row">
+              <span class="col col--name">
+                <span class="row__icon" aria-hidden="true">
+                  {e.kind === "dir" ? "📁" : "📄"}
+                </span>
+                <span class="row__text">
+                  <ExternalLink class="row__link" href={e.href}>
+                    {e.name}
+                  </ExternalLink>
+                  <span class="row__note">{e.note}</span>
+                </span>
+              </span>
+              <span class="col col--size">{e.size}</span>
+              <span class="col col--modified">{e.modified}</span>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+
+    <p class="index__foot">
+      <ExternalLink href={ROOT}>
+        Browse the full directory at download.owncloud.com →
+      </ExternalLink>
+    </p>
+  </section>
+</Base>
+
+<style>
+  /* ---------- Hero (shared visual language with the downloads page) ---------- */
+  .hero {
+    position: relative;
+    overflow: hidden;
+    background:
+      radial-gradient(130% 100% at 80% -10%, #1d3a66 0%, var(--oc-brand) 55%, #03152f 100%);
+    color: #fff;
+    isolation: isolate;
+  }
+  .hero__grid {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+    background-size: 48px 48px;
+    mask-image: radial-gradient(120% 80% at 50% 0%, #000 30%, transparent 78%);
+    z-index: -1;
+  }
+  .hero__glow {
+    position: absolute;
+    width: 620px;
+    height: 620px;
+    right: -160px;
+    top: -260px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(74, 118, 172, 0.55), transparent 65%);
+    filter: blur(20px);
+    z-index: -1;
+  }
+  .hero__inner {
+    padding-block: 84px 72px;
+    max-width: 860px;
+  }
+  .eyebrow {
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    font-size: 0.74rem;
+    font-weight: 700;
+    color: #8fb4e3;
+    margin: 0 0 20px;
+  }
+  .hero__title {
+    font-size: clamp(2.4rem, 6vw, 4rem);
+    font-weight: 700;
+    margin: 0 0 22px;
+  }
+  .hero__accent {
+    position: relative;
+    white-space: nowrap;
+  }
+  .hero__accent::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0.08em;
+    height: 0.14em;
+    background: linear-gradient(90deg, #4a76ac, #8fb4e3);
+    border-radius: 2px;
+  }
+  .hero__lede {
+    font-size: clamp(1.05rem, 2vw, 1.25rem);
+    color: rgba(255, 255, 255, 0.82);
+    max-width: 620px;
+    margin: 0;
+  }
+
+  /* ---------- Directory index ---------- */
+  .index {
+    padding-top: 64px;
+  }
+  .listing {
+    background: var(--oc-bg);
+    border: 1px solid var(--oc-border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-sm);
+    overflow: hidden;
+  }
+  .listing__head,
+  .row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 90px 220px;
+    align-items: center;
+    gap: 16px;
+    padding: 14px 24px;
+  }
+  .listing__head {
+    border-bottom: 1px solid var(--oc-border);
+    background: var(--oc-bg-muted);
+    font-size: 0.74rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--oc-text-muted);
+  }
+  .listing__body {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .row {
+    border-bottom: 1px solid var(--oc-border);
+  }
+  .row:last-child {
+    border-bottom: none;
+  }
+  .row:hover {
+    background: var(--oc-bg-highlight);
+  }
+  .col--size,
+  .col--modified {
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+    color: var(--oc-text-muted);
+    white-space: nowrap;
+  }
+  .col--name {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 0;
+  }
+  .row__icon {
+    flex: none;
+    font-size: 1.1rem;
+    line-height: 1;
+  }
+  .row__text {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+  .row__link {
+    font-weight: 600;
+    color: var(--oc-brand);
+    word-break: break-word;
+  }
+  .row__link:hover {
+    color: var(--oc-primary-hover);
+  }
+  .row__note {
+    font-size: 0.82rem;
+    color: var(--oc-text-muted);
+  }
+
+  .index__foot {
+    margin: 20px 0 0;
+    font-size: 0.95rem;
+  }
+
+  /* On narrow screens drop the Modified column and let the card scroll if
+     needed, keeping Name + Size readable. */
+  @media (max-width: 640px) {
+    .listing__head,
+    .row {
+      grid-template-columns: minmax(0, 1fr) 80px;
+      padding-inline: 16px;
+    }
+    .col--modified {
+      display: none;
+    }
+  }
+</style>

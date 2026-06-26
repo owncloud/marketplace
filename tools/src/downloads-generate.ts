@@ -199,14 +199,26 @@ export async function readRawDownloads(path: string): Promise<RawDownloads | nul
 /**
  * Read and parse the committed download-count baseline, or null when it is
  * absent. Mirrors readRawDownloads' ENOENT-degrades-gracefully behaviour so the
- * build works with no baseline at all.
+ * build works with no baseline at all. When the path was explicitly requested
+ * but missing, warn loudly: that is a misconfiguration that would silently drop
+ * the historical download totals of imported releases.
  */
-export async function readDownloadsBaseline(path: string): Promise<DownloadsBaseline | null> {
+export async function readDownloadsBaseline(
+  path: string,
+  explicit = false,
+): Promise<DownloadsBaseline | null> {
   let text: string;
   try {
     text = await readFile(path, "utf8");
   } catch (err) {
-    if ((err as NodeJS.ErrnoException).code === "ENOENT") return null;
+    if ((err as NodeJS.ErrnoException).code === "ENOENT") {
+      if (explicit) {
+        console.warn(
+          `WARN: --downloads-baseline file not found at "${path}"; historical download totals dropped.`,
+        );
+      }
+      return null;
+    }
     throw err;
   }
   return JSON.parse(text) as DownloadsBaseline;

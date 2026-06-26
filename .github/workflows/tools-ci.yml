@@ -33,7 +33,7 @@ jobs:
         run: cd tools && npm test
       - name: Website build smoke test
         run: |
-          cd tools && npx tsx src/cli/generate-api.ts --apps ../apps --extensions ../extensions --publishers ../publishers --out ../_site
+          cd tools && npx tsx src/cli/generate-api.ts --apps ../apps --extensions ../extensions --publishers ../publishers --out ../_site --created ../data/created.json --downloads-baseline ../data/downloads-baseline.json
           cd ../website && npm run build
       - name: Verify build output
         run: |
@@ -64,7 +64,7 @@ jobs:
       - name: Generate static API (re-validates all apps)
         env:
           MARKETPLACE_BASE_URL: ${{ steps.pages.outputs.base_url }}
-        run: cd tools && npx tsx src/cli/generate-api.ts --apps ../apps --extensions ../extensions --publishers ../publishers --out ../_site
+        run: cd tools && npx tsx src/cli/generate-api.ts --apps ../apps --extensions ../extensions --publishers ../publishers --out ../_site --created ../data/created.json --downloads-baseline ../data/downloads-baseline.json
       - name: Build website
         env:
           MARKETPLACE_SITE_URL: ${{ steps.pages.outputs.origin }}

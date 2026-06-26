@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, vi } from "vitest";
 import { mkdtemp, writeFile, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
@@ -52,5 +52,27 @@ describe("readCreatedOverrides", () => {
 
   it("returns {} when the file is absent", async () => {
     expect(await readCreatedOverrides(join(tmpdir(), "does-not-exist-created.json"))).toEqual({});
+  });
+
+  it("warns when an explicitly-requested file is missing", async () => {
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    try {
+      const missing = join(tmpdir(), "does-not-exist-created.json");
+      expect(await readCreatedOverrides(missing, true)).toEqual({});
+      expect(warn).toHaveBeenCalledOnce();
+      expect(warn.mock.calls[0][0]).toContain(missing);
+    } finally {
+      warn.mockRestore();
+    }
+  });
+
+  it("does not warn when a defaulted file is absent", async () => {
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    try {
+      await readCreatedOverrides(join(tmpdir(), "does-not-exist-created.json"));
+      expect(warn).not.toHaveBeenCalled();
+    } finally {
+      warn.mockRestore();
+    }
   });
 });

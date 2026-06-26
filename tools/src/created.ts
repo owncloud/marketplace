@@ -28,13 +28,26 @@ export function withCreatedOverrides(
 
 /**
  * Read the committed created-date overrides (appId@version → ISO), or {} when
- * the file is absent — so the build degrades to pure git history.
+ * the file is absent — so the build degrades to pure git history. When the path
+ * was explicitly requested but missing, warn loudly: that is a misconfiguration
+ * (e.g. a workflow pointing at the wrong cwd-relative path) that would silently
+ * date every imported release as the day it was committed here.
  */
-export async function readCreatedOverrides(path: string): Promise<Record<string, string>> {
+export async function readCreatedOverrides(
+  path: string,
+  explicit = false,
+): Promise<Record<string, string>> {
   try {
     return JSON.parse(await readFile(path, "utf8")) as Record<string, string>;
   } catch (err) {
-    if ((err as NodeJS.ErrnoException).code === "ENOENT") return {};
+    if ((err as NodeJS.ErrnoException).code === "ENOENT") {
+      if (explicit) {
+        console.warn(
+          `WARN: --created file not found at "${path}"; release dates fall back to git commit dates.`,
+        );
+      }
+      return {};
+    }
     throw err;
   }
 }

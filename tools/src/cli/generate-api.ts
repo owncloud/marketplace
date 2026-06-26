@@ -27,6 +27,12 @@ function arg(name: string, fallback: string): string {
   return i >= 0 && process.argv[i + 1] ? process.argv[i + 1] : fallback;
 }
 
+/** True when the flag was explicitly passed on the command line. */
+function argGiven(name: string): boolean {
+  const i = process.argv.indexOf(name);
+  return i >= 0 && !!process.argv[i + 1];
+}
+
 /**
  * Usage: tsx src/cli/generate-api.ts [--apps apps] [--out _site]
  * Re-validates all releases (defense in depth), then writes the static API.
@@ -69,7 +75,10 @@ async function main(): Promise<void> {
     refs.map((r) => ({ appId: r.appId, version: r.version, dir: r.dir })),
     "1970-01-01T00:00:00+00:00",
   );
-  const created = withCreatedOverrides(gitCreated, await readCreatedOverrides(createdData));
+  const created = withCreatedOverrides(
+    gitCreated,
+    await readCreatedOverrides(createdData, argGiven("--created")),
+  );
 
   // Map each release to its ingested screenshot files on disk; buildApp turns
   // these into same-origin URLs. Keyed by appId/version, read once up front.
@@ -86,7 +95,7 @@ async function main(): Promise<void> {
   // Historical totals for imported releases live in a committed baseline that
   // fetch-downloads never rewrites; add them on top of the live GitHub counts.
   const rawDownloads = await readRawDownloads(downloadsData);
-  const baseline = await readDownloadsBaseline(baselineData);
+  const baseline = await readDownloadsBaseline(baselineData, argGiven("--downloads-baseline"));
   const appCounts = mergeAppCounts(rawDownloads?.apps ?? {}, baseline?.apps ?? {});
 
   const apps = [...byApp.entries()]

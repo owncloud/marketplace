@@ -62,12 +62,16 @@ jobs:
       # files back into the repo stays the job of ingest-screenshots.yml.
       - name: Ingest screenshots
         run: cd tools && npx tsx src/cli/ingest-screenshots.ts --apps ../apps
-      # --downloads points at the committed release data (refreshed by
-      # fetch-downloads.yml); generate-api skips downloads.json when absent.
+      # Point at all committed release data: --downloads (live counts, refreshed
+      # by fetch-downloads.yml), --downloads-baseline (historical totals for
+      # imported releases) and --created (real historical release dates). Without
+      # --created/--downloads-baseline the defaults resolve to tools/data/* (cwd
+      # is tools/), which don't exist, so imported releases would silently fall
+      # back to their git-commit date and lose their baseline download counts.
       - name: Generate static API (re-validates all apps)
         env:
           MARKETPLACE_BASE_URL: ${{ steps.pages.outputs.base_url }}
-        run: cd tools && npx tsx src/cli/generate-api.ts --apps ../apps --extensions ../extensions --publishers ../publishers --out ../_site --downloads ../data/downloads.json
+        run: cd tools && npx tsx src/cli/generate-api.ts --apps ../apps --extensions ../extensions --publishers ../publishers --out ../_site --downloads ../data/downloads.json --downloads-baseline ../data/downloads-baseline.json --created ../data/created.json
       - name: Build website
         env:
           MARKETPLACE_SITE_URL: ${{ steps.pages.outputs.origin }}

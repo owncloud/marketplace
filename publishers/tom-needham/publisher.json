@@ -5,6 +5,7 @@
   "website": "https://github.com/tomneedham/oc-wallpaper",
   "description": "Developer of the Wallpaper app for ownCloud.",
   "apps": [
-    "wallpaper"
+    "wallpaper",
+    "xmas"
   ]
 }

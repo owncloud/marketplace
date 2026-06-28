@@ -1,0 +1,8 @@
+{
+  "slug": "vinzenz-rosenkranz",
+  "name": "Vinzenz Rosenkranz",
+  "enabled": false,
+  "website": "https://github.com/nextcloud/polls",
+  "description": "Author of the Polls app for ownCloud.",
+  "apps": []
+}

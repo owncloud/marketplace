@@ -5,6 +5,7 @@
   "website": "https://github.com/owncloud/notes",
   "description": "ownCloud co-founder and author of the Notes app.",
   "apps": [
-    "notes"
+    "notes",
+    "rainloop"
   ]
 }

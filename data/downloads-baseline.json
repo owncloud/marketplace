@@ -33,6 +33,12 @@
     "files_3dviewer": {
       "0.0.1": 2487
     },
+    "files_opds": {
+      "0.8.8": 1112
+    },
+    "files_reader": {
+      "1.2.3": 11598
+    },
     "files_textviewer": {
       "1.0.3": 26404
     },

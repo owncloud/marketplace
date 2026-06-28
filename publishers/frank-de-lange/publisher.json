@@ -1,0 +1,11 @@
+{
+  "slug": "frank-de-lange",
+  "name": "Frank de Lange",
+  "enabled": false,
+  "website": "https://github.com/dewey",
+  "description": "Author of the Reader and OPDS apps for ownCloud.",
+  "apps": [
+    "files_opds",
+    "files_reader"
+  ]
+}

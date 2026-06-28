@@ -1,0 +1,8 @@
+{
+  "slug": "sander-brand",
+  "name": "Sander Brand",
+  "enabled": true,
+  "website": "https://github.com/nextcloud/passman",
+  "description": "Author of the Passman password manager app for ownCloud.",
+  "apps": []
+}

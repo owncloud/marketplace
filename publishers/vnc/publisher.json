@@ -1,0 +1,10 @@
+{
+  "slug": "vnc",
+  "name": "VNC",
+  "enabled": false,
+  "website": "https://vnclagoon.com",
+  "description": "The company behind the appVNCsafe app for ownCloud.",
+  "apps": [
+    "appvncsafe"
+  ]
+}

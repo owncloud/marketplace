@@ -1,0 +1,10 @@
+{
+  "slug": "piotr-mrowczynski",
+  "name": "Piotr Mrowczynski",
+  "enabled": false,
+  "website": "https://github.com/mrow4a",
+  "description": "Author of the PaperHive app for ownCloud.",
+  "apps": [
+    "files_paperhive"
+  ]
+}

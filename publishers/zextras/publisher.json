@@ -1,0 +1,8 @@
+{
+  "slug": "zextras",
+  "name": "ZeXtras",
+  "enabled": false,
+  "website": "https://www.zextras.com",
+  "description": "The company behind the Zimbra Drive app for ownCloud.",
+  "apps": []
+}

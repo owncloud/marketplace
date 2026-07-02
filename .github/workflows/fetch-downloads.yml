@@ -36,8 +36,8 @@ jobs:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
           ref: main
-          # Persist the App token so the `git push` below authenticates as the
-          # marketplace-bot App (the ruleset bypass actor), not the default token.
+          # Persist the App token so git-auto-commit-action's push authenticates
+          # as the marketplace-bot App (the ruleset bypass actor).
           token: ${{ steps.app-token.outputs.token }}
       - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
         with:
@@ -51,14 +51,14 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: npx tsx src/cli/fetch-downloads.ts --out ../data/downloads.json
+      # Commit and push data/downloads.json straight to `main` (no PR). A no-op
+      # when nothing changed. Authored as the marketplace-bot App so the commit is
+      # attributed to the same identity that pushes and bypasses the ruleset.
       - name: Commit downloads data
-        run: |
-          git config user.name "owncloud-bot"
-          git config user.email "bot@users.noreply.github.com"
-          if [ -n "$(git status --porcelain data/downloads.json)" ]; then
-            git add data/downloads.json
-            git commit -m "chore: refresh downloads data"
-            git push origin main
-          else
-            echo "Downloads data unchanged."
-          fi
+        uses: stefanzweifel/git-auto-commit-action@4a55954c782fc1ea30b9056cd3e7a2b40ca8887d # v7.2.0
+        with:
+          file_pattern: data/downloads.json
+          commit_message: "chore: refresh downloads data"
+          commit_user_name: "owncloud-marketplace-bot[bot]"
+          commit_user_email: "299143275+owncloud-marketplace-bot[bot]@users.noreply.github.com"
+          commit_author: "owncloud-marketplace-bot[bot] <299143275+owncloud-marketplace-bot[bot]@users.noreply.github.com>"

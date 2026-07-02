@@ -53,8 +53,14 @@ jobs:
         run: npx tsx src/cli/ingest-screenshots.ts --apps ../apps
       - name: Commit ingested screenshots
         run: |
-          git config user.name "owncloud-bot"
-          git config user.email "bot@users.noreply.github.com"
+          # Author the commit as the marketplace-bot App itself (the identity
+          # that pushes and bypasses the ruleset). The email is GitHub's
+          # canonical App-bot no-reply form, <user-id>+<slug>[bot]@…, which makes
+          # GitHub attribute the commit to the App. (Previously hardcoded to
+          # `owncloud-bot` / a stray `bot@users.noreply.github.com`, which
+          # mis-attributed these commits to an unrelated user.)
+          git config user.name "owncloud-marketplace-bot[bot]"
+          git config user.email "299143275+owncloud-marketplace-bot[bot]@users.noreply.github.com"
           if [ -n "$(git status --porcelain apps)" ]; then
             git add apps
             git commit -m "chore: ingest validated app screenshots"

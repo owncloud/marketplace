@@ -92,7 +92,7 @@ submit a new version rather than editing an existing one.
 
 The generated feed is published at `…/api/ocis/v1/apps.json`. An oCIS admin adds
 that URL to the `web` app's app-store `repositories` configuration; the
-extensions then appear in the in-product App Store. The classic ownCloud Server
+extensions then appear in the in-product App Store. The ownCloud Classic
 API at `…/api/v1/**` is unaffected — it remains a separate catalog.
 
 ## Setting up a publisher page

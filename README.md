@@ -41,7 +41,7 @@ npm run build
 
 ### Repository Structure
 
-- **apps/** — the classic ownCloud Server catalog and source of truth (one
+- **apps/** — the ownCloud Classic catalog and source of truth (one
   folder per app/release): `apps/<app-id>/releases/<version>/package.tar.gz`.
   Metadata is read from the `appinfo/info.xml` inside each tarball.
 - **extensions/** — the ownCloud Infinite Scale (oCIS) web-extension catalog
@@ -71,13 +71,13 @@ See the pull request template for the full checklist.
 
 Served as static JSON from GitHub Pages:
 
-Classic ownCloud Server (`market` app):
+ownCloud Classic (`market` app):
 
 - `GET /api/v1/categories.json`
 - `GET /api/v1/apps.json` — full catalog
 - `GET /api/v1/platform/{ocVersion}/apps.json` — back-compat with the `market` app
 - `GET /api/v1/bundles.json`
-- `GET /api/v1/downloads.json` — latest server, desktop and mobile release downloads
+- `GET /api/v1/downloads.json` — latest ownCloud Classic, desktop and mobile release downloads
 
 ownCloud Infinite Scale (oCIS) web extensions:
 

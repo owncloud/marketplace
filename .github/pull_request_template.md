@@ -5,7 +5,7 @@ submission is a pull request that adds files to the repository. Pick the type of
 submission below, fill in that section, and **delete the sections you are not using**.
 
 **What are you submitting?**
-- [ ] An **app** (classic ownCloud Server app)
+- [ ] An **app** (ownCloud Classic app)
 - [ ] An **oCIS web extension**
 - [ ] A **publisher page**
 

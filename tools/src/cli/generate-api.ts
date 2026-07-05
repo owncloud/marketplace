@@ -221,7 +221,10 @@ async function main(): Promise<void> {
   const extBySlug = new Map(extRefs.map((r) => [r.extId, r] as const));
   const ocisBySlug = new Map<string, OcisApp>();
   for (const [extId, infos] of byExt) {
-    ocisBySlug.set(extId, exts.find((e) => e.id === infos[0].id)!);
+    ocisBySlug.set(
+      extId,
+      exts.find((e) => e.id === infos[0].id)!,
+    );
   }
   assertOwnershipIntegrity(publisherInfos, new Set(appById.keys()), new Set(extBySlug.keys()));
 

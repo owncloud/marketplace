@@ -1,0 +1,27 @@
+# ownCloud Marketplace
+
+> The community-driven catalog of apps and web extensions for ownCloud. It is
+> backend-free: every listing is a file in a Git repository, validated in the
+> open and served as static pages and JSON.
+
+The marketplace covers two platforms:
+- **ownCloud Classic (OC10)** apps, installed on the PHP server.
+- **ownCloud Infinite Scale (oCIS)** web extensions, loaded at runtime.
+
+## Browse
+
+- [All apps](/apps): ownCloud Classic apps, filterable by category.
+- [Web Extensions](/extensions): oCIS web extensions, filterable by tag.
+- [Downloads](/downloads): official ownCloud server, desktop and mobile releases.
+
+## Data / API
+
+- [Apps JSON API](/api/v1/apps.json): machine-readable feed of all Classic apps.
+- [Categories](/api/v1/categories.json): the supported app categories.
+- [oCIS extensions feed](/api/ocis/v1/apps.json): the oCIS app-store repository feed.
+
+## Docs
+
+- [Developer documentation](https://doc.owncloud.com/): how to build and publish apps.
+- [Publish an app](https://github.com/owncloud/marketplace/blob/main/.github/pull_request_template.md): open a pull request to submit a package.
+- [Source repository](https://github.com/owncloud/marketplace): the marketplace itself.

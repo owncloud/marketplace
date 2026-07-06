@@ -8,8 +8,14 @@ import { withBase } from "../lib/catalog.ts";
 interface Props {
   title: string;
   description?: string;
+  /** Absolute or base-relative path to the social share image. */
+  ogImage?: string;
+  /** Open Graph object type; "website" for listings, "article" for detail pages. */
+  ogType?: "website" | "article";
+  /** Optional Schema.org JSON-LD object, serialized into a <script> tag. */
+  jsonLd?: Record<string, unknown>;
 }
-const { title, description } = Astro.props;
+const { title, description, ogImage, ogType = "website", jsonLd } = Astro.props;
 const base = import.meta.env.BASE_URL;
 const home = withBase(base, "");
 
@@ -19,6 +25,19 @@ const home = withBase(base, "");
 const path = Astro.url.pathname;
 const onExtensions = path.includes("/extensions");
 const platform: "classic" | "ocis" = onExtensions ? "ocis" : "classic";
+
+// Absolute URLs for canonical + social tags. Astro.site is the configured
+// origin; fall back to a relative canonical when it is unset (e.g. dev).
+const canonical = Astro.site
+  ? new URL(Astro.url.pathname, Astro.site).href
+  : Astro.url.pathname;
+const isAbsolute = (u: string) => /^https?:\/\//.test(u);
+const ogImagePath = ogImage ?? "android-chrome-512x512.png";
+const ogImageUrl = isAbsolute(ogImagePath)
+  ? ogImagePath
+  : Astro.site
+    ? new URL(withBase(base, ogImagePath), Astro.site).href
+    : withBase(base, ogImagePath);
 ---
 <!doctype html>
 <html lang="en">
@@ -27,6 +46,24 @@ const platform: "classic" | "ocis" = onExtensions ? "ocis" : "classic";
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{title}</title>
     {description && <meta name="description" content={description} />}
+    <link rel="canonical" href={canonical} />
+    {/* Open Graph / social sharing previews. */}
+    <meta property="og:type" content={ogType} />
+    <meta property="og:site_name" content="ownCloud Marketplace" />
+    <meta property="og:title" content={title} />
+    {description && <meta property="og:description" content={description} />}
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImageUrl} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    {description && <meta name="twitter:description" content={description} />}
+    <meta name="twitter:image" content={ogImageUrl} />
+    {jsonLd && (
+      <script
+        type="application/ld+json"
+        set:html={JSON.stringify(jsonLd).replace(/</g, "\\u003c").replace(/>/g, "\\u003e").replace(/&/g, "\\u0026")}
+      />
+    )}
     {/* Favicons vendored from owncloud.com's official brand asset set. */}
     <link rel="icon" type="image/x-icon" href={withBase(base, "favicon.ico")} sizes="any" />
     <link rel="icon" type="image/png" sizes="32x32" href={withBase(base, "favicon-32x32.png")} />

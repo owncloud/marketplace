@@ -1,0 +1,26 @@
+# ownCloud Marketplace — crawler policy
+#
+# The marketplace is public and benefits from discovery in both traditional
+# search and AI-assisted search, so all crawlers (including AI crawlers such as
+# GPTBot, ClaudeBot, PerplexityBot, Google-Extended) are explicitly allowed.
+#
+# NOTE: the site is served under a base path (e.g. /appstore) on GitHub Pages,
+# so this file is emitted at <base>/robots.txt rather than the true domain root.
+# A root-level robots.txt must be provided by the hosting domain to be honoured
+# by crawlers; keep this policy in sync when the site moves to a dedicated root.
+
+User-agent: *
+Allow: /
+
+# AI crawlers — allowed for AI-assisted discovery.
+User-agent: GPTBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /

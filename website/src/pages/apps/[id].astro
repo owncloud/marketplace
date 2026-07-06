@@ -52,8 +52,37 @@ const fmtDate = (iso: string) => {
 
 const fmtCount = (n: number) => n.toLocaleString("en-US");
 const fmtDownloads = (n: number) => `${fmtCount(n)} download${n === 1 ? "" : "s"}`;
+
+// Schema.org SoftwareApplication markup for the app detail page. Only include
+// fields we can populate accurately from the catalog data.
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  name: app.name,
+  description: app.description,
+  applicationCategory: app.categories.map(categoryName).join(", ") || undefined,
+  operatingSystem: "ownCloud",
+  ...(latest && {
+    softwareVersion: latest.version,
+    datePublished: latest.created,
+    downloadUrl: latest.download,
+    license: latest.license,
+  }),
+  author: { "@type": "Organization", name: publisherLabel },
+  ...(publisherHref && { url: publisherHref }),
+  offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+  ...(app.screenshots.length > 0 && {
+    screenshot: app.screenshots.map((s) => s.url),
+  }),
+};
 ---
-<Base title={`${app.name}: ownCloud Marketplace`} description={app.description}>
+<Base
+  title={`${app.name}: ownCloud Marketplace`}
+  description={app.description}
+  ogType="article"
+  ogImage={app.screenshots[0]?.url}
+  jsonLd={jsonLd}
+>
   <nav class="breadcrumb container" aria-label="Breadcrumb">
     <a href={withBase(base, "")}>Marketplace</a>
     <span aria-hidden="true">/</span>

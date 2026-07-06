@@ -53,8 +53,37 @@ const fmtDate = (iso?: string) => {
 const fmtCount = (n: number) => n.toLocaleString("en-US");
 const fmtDownloads = (n: number) => `${fmtCount(n)} download${n === 1 ? "" : "s"}`;
 const ocisReq = (v?: string) => (v ? `Requires oCIS ${v} or newer` : "Any oCIS version");
+
+// Schema.org SoftwareApplication markup for the extension detail page.
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  name: ext.name,
+  description: ext.description ?? ext.subtitle,
+  applicationCategory: ext.tags.join(", ") || undefined,
+  operatingSystem: "ownCloud Infinite Scale",
+  ...(latest && {
+    softwareVersion: latest.version,
+    datePublished: latest.created,
+    downloadUrl: latest.url,
+  }),
+  license: ext.license,
+  ...(authorLabel && {
+    author: { "@type": "Organization", name: authorLabel },
+  }),
+  offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+  ...(ext.screenshots?.length && {
+    screenshot: ext.screenshots.map((s) => s.url),
+  }),
+};
 ---
-<Base title={`${ext.name}: ownCloud Marketplace`} description={ext.subtitle}>
+<Base
+  title={`${ext.name}: ownCloud Marketplace`}
+  description={ext.subtitle}
+  ogType="article"
+  ogImage={ext.coverImage?.url ?? ext.screenshots?.[0]?.url}
+  jsonLd={jsonLd}
+>
   <nav class="breadcrumb container" aria-label="Breadcrumb">
     <a href={withBase(base, "")}>Marketplace</a>
     <span aria-hidden="true">/</span>

@@ -1,0 +1,81 @@
+---
+// Organisational-membership indicators for the footer (Linux Foundation,
+// Open Source Business Alliance). These are outward-facing claims, so they are
+// rendered as text badges linking to the official member directories rather
+// than with fabricated logo art. A maintainer should drop the official badge
+// image assets into `public/` and swap the text for them once membership is
+// confirmed — see the PR description.
+import ExternalLink from "./ExternalLink.astro";
+
+const MEMBERSHIPS = [
+  {
+    label: "Linux Foundation Silver Member",
+    short: "Linux Foundation",
+    tier: "Silver Member",
+    href: "https://www.linuxfoundation.org/membership/members/",
+  },
+  {
+    label: "Open Source Business Alliance member",
+    short: "OSBA",
+    tier: "Member",
+    href: "https://osb-alliance.de/mitglieder",
+  },
+] as const;
+---
+<ul class="memberships" aria-label="Organisational memberships">
+  {
+    MEMBERSHIPS.map((m) => (
+      <li>
+        <ExternalLink class="membership" href={m.href} aria-label={m.label}>
+          <span class="membership__org">{m.short}</span>
+          <span class="membership__tier">{m.tier}</span>
+        </ExternalLink>
+      </li>
+    ))
+  }
+</ul>
+
+<style>
+  .memberships {
+    list-style: none;
+    margin: 4px 0 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .membership {
+    display: inline-flex;
+    flex-direction: column;
+    gap: 1px;
+    padding: 7px 12px;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    color: rgba(255, 255, 255, 0.72);
+    line-height: 1.2;
+    transition:
+      color 0.16s ease,
+      border-color 0.16s ease,
+      transform 0.16s ease;
+  }
+  .membership:hover {
+    color: #fff;
+    border-color: rgba(255, 255, 255, 0.4);
+    transform: translateY(-2px);
+    text-decoration: none;
+  }
+  .membership:focus-visible {
+    outline: 3px solid var(--oc-primary);
+    outline-offset: 3px;
+  }
+  .membership__org {
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: #fff;
+  }
+  .membership__tier {
+    font-size: 0.68rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+</style>

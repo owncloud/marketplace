@@ -1,6 +1,8 @@
 ---
 import Logo from "../components/Logo.astro";
 import ExternalLink from "../components/ExternalLink.astro";
+import SocialLinks from "../components/SocialLinks.astro";
+import MembershipBadges from "../components/MembershipBadges.astro";
 import { withBase } from "../lib/catalog.ts";
 
 interface Props {
@@ -241,6 +243,11 @@ const home = withBase(base, "");
         gap: 8px 20px;
         justify-content: space-between;
       }
+      .site-footer__legal-links {
+        display: inline-flex;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
 
       /* ---- Leave-the-site notice ---- */
       .leave-notice {
@@ -383,11 +390,20 @@ const home = withBase(base, "");
               </li>
             </ul>
           </div>
+          <div>
+            <h4>Connect</h4>
+            <SocialLinks />
+            <MembershipBadges />
+          </div>
         </div>
       </div>
       <div class="container site-footer__legal">
         <span>Apache-2.0 licensed · Stewarded by the Kiteworks OSPO.</span>
-        <span>© ownCloud – a Kiteworks company.</span>
+        <span class="site-footer__legal-links">
+          <ExternalLink href="https://owncloud.com/imprint/">Imprint</ExternalLink>
+          <span aria-hidden="true">·</span>
+          <span>© ownCloud – a Kiteworks company.</span>
+        </span>
       </div>
     </footer>
 

@@ -1,0 +1,13 @@
+{
+  "slug": "julien-veyssier",
+  "name": "Julien Veyssier",
+  "enabled": false,
+  "website": "https://github.com/julien-nc",
+  "description": "Author of the GpxPod, GpxEdit, GpxMotion and PhoneTrack apps for ownCloud.",
+  "apps": [
+    "gpxedit",
+    "gpxmotion",
+    "gpxpod",
+    "phonetrack"
+  ]
+}

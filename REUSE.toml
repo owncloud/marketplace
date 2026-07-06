@@ -1,0 +1,42 @@
+version = 1
+SPDX-PackageName = "marketplace"
+SPDX-PackageSupplier = "ownCloud GmbH - A Kiteworks Company <ospo@kiteworks.com>"
+SPDX-PackageDownloadLocation = "https://github.com/owncloud/marketplace"
+
+# ---------------------------------------------------------------------------
+# Project-owned source and configuration.
+#
+# These are the files ownCloud authors and maintains in this repository: the
+# tooling, the website, the CI workflows, the project docs and the curated
+# data. They are all Apache-2.0, matching the root LICENSE.
+#
+# DELIBERATELY NOT covered here: apps/**, extensions/** and publishers/**.
+# Those hold third-party packages redistributed on behalf of their publishers
+# (app tarballs, extension bundles, screenshots) and publisher-submitted
+# assets. Their copyright belongs to the respective publishers and their
+# licenses vary (AGPL, OCL, Apache-2.0, ...), so asserting ownCloud copyright
+# or a single license over them would be incorrect. They are intentionally
+# left out of this baseline and remain a separate, per-package licensing task.
+# ---------------------------------------------------------------------------
+
+[[annotations]]
+path = [
+  "tools/**",
+  "website/**",
+  ".github/**",
+  "data/**",
+  "README.md",
+  "CONTRIBUTING.md",
+  "CODE_OF_CONDUCT.md",
+  "SECURITY.md",
+  "SUPPORT.md",
+  "agents.md",
+  ".gitignore",
+  ".gitattributes",
+  ".nvmrc",
+  "REUSE.toml",
+  "LICENSE",
+]
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2026 ownCloud GmbH - A Kiteworks Company and ownCloud contributors"
+SPDX-License-Identifier = "Apache-2.0"

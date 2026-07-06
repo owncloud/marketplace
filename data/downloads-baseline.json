@@ -39,11 +39,11 @@
     "files_opds": {
       "0.8.8": 1112
     },
-    "files_reader": {
-      "1.2.3": 11598
-    },
     "files_paperhive": {
       "1.1": 1383
+    },
+    "files_reader": {
+      "1.2.3": 11598
     },
     "files_textviewer": {
       "1.0.3": 26404
@@ -62,6 +62,9 @@
     },
     "metadata": {
       "0.10.0": 13935
+    },
+    "migrate_to_kiteworks": {
+      "1.0.2": 135
     },
     "music": {
       "2.5.2": 102780

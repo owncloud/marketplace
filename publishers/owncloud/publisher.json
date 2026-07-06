@@ -3,9 +3,10 @@
   "name": "ownCloud GmbH",
   "enabled": true,
   "website": "https://owncloud.com",
-  "description": "The company behind ownCloud \u2014 open-source content collaboration and file sync & share.",
+  "description": "The company behind ownCloud — open-source content collaboration and file sync & share.",
   "logo": "logo.png",
   "apps": [
+    "migrate_to_kiteworks",
     "migrate_to_ocis"
   ],
   "extensions": [

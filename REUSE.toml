@@ -38,5 +38,5 @@ path = [
   "LICENSE",
 ]
 precedence = "aggregate"
-SPDX-FileCopyrightText = "ownCloud GmbH - A Kiteworks Company and ownCloud contributors"
+SPDX-FileCopyrightText = "2026 ownCloud GmbH - A Kiteworks Company and ownCloud contributors"
 SPDX-License-Identifier = "Apache-2.0"

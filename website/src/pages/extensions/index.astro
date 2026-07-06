@@ -136,6 +136,9 @@ const initial = (name: string) => name.trim().charAt(0).toUpperCase() || "?";
                     <h3 class="card__title">{ext.name}</h3>
                     <span class="card__publisher">{ext.authors[0]?.name}</span>
                   </div>
+                  <span class="platform-badge platform-badge--ocis">
+                    Infinite Scale
+                  </span>
                 </div>
                 <p class="card__desc" set:html={renderDescriptionInline(ext.description ?? ext.subtitle)} />
                 <div class="card__meta">
@@ -547,6 +550,21 @@ const initial = (name: string) => name.trim().charAt(0).toUpperCase() || "?";
   }
   .card__heading {
     min-width: 0;
+    flex: 1 1 auto;
+  }
+  .platform-badge {
+    flex: none;
+    align-self: flex-start;
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    padding: 3px 9px;
+    border-radius: 999px;
+    white-space: nowrap;
+  }
+  .platform-badge--ocis {
+    background: var(--oc-brand);
+    color: var(--oc-contrast);
   }
   .card__title {
     font-size: 1.16rem;

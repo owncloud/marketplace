@@ -131,6 +131,9 @@ const initial = (name: string) => name.trim().charAt(0).toUpperCase() || "?";
                   <h3 class="card__title">{app.name}</h3>
                   <span class="card__publisher">{app.publisher.name}</span>
                 </div>
+                <span class="platform-badge platform-badge--classic">
+                  ownCloud Classic
+                </span>
               </div>
               <p class="card__desc" set:html={renderDescriptionInline(app.description)} />
               <div class="card__meta">
@@ -543,6 +546,22 @@ const initial = (name: string) => name.trim().charAt(0).toUpperCase() || "?";
   }
   .card__heading {
     min-width: 0;
+    flex: 1 1 auto;
+  }
+  .platform-badge {
+    flex: none;
+    align-self: flex-start;
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    padding: 3px 9px;
+    border-radius: 999px;
+    white-space: nowrap;
+  }
+  .platform-badge--classic {
+    background: var(--oc-bg-highlight);
+    color: var(--oc-primary-hover);
+    border: 1px solid var(--oc-border-input);
   }
   .card__title {
     font-size: 1.16rem;

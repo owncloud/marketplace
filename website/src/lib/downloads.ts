@@ -9,6 +9,8 @@ export interface SurfaceMeta {
   name: string;
   tagline: string;
   repo: string;
+  /** Docker Hub image (namespace/name) when the surface ships an official image. */
+  dockerImage?: string;
 }
 
 /**
@@ -17,8 +19,8 @@ export interface SurfaceMeta {
  * lockstep. Each `key` maps to a field on the published Downloads object.
  */
 export const SURFACES: readonly SurfaceMeta[] = [
-  { key: "ocis", name: "ownCloud Infinite Scale", tagline: "oCIS, the next-generation ownCloud", repo: "owncloud/ocis" },
-  { key: "server", name: "ownCloud Classic", tagline: "ownCloud Classic, the PHP server", repo: "owncloud/core" },
+  { key: "ocis", name: "ownCloud Infinite Scale", tagline: "oCIS, the next-generation ownCloud", repo: "owncloud/ocis", dockerImage: "owncloud/ocis" },
+  { key: "server", name: "ownCloud Classic", tagline: "ownCloud Classic, the PHP server", repo: "owncloud/core", dockerImage: "owncloud/server" },
   { key: "client", name: "Desktop Client", tagline: "Sync files on Windows, macOS and Linux", repo: "owncloud/client" },
   { key: "android", name: "Android", tagline: "ownCloud for phones and tablets", repo: "owncloud/android" },
   { key: "ios", name: "iOS", tagline: "ownCloud for iPhone and iPad", repo: "owncloud/ios-app" },

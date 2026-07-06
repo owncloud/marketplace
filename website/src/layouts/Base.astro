@@ -10,6 +10,13 @@ interface Props {
 const { title, description } = Astro.props;
 const base = import.meta.env.BASE_URL;
 const home = withBase(base, "");
+
+// Which platform's catalog the current page belongs to, so the header switch
+// can highlight it. Extension routes live under /extensions; everything else
+// (home catalog, app detail pages) is ownCloud Classic.
+const path = Astro.url.pathname;
+const onExtensions = path.includes("/extensions");
+const platform: "classic" | "ocis" = onExtensions ? "ocis" : "classic";
 ---
 <!doctype html>
 <html lang="en">
@@ -155,6 +162,34 @@ const home = withBase(base, "");
         color: var(--oc-primary-hover);
         text-decoration: none;
       }
+      /* Segmented switch between the two platform catalogs (Classic / oCIS). */
+      .platform-switch {
+        display: inline-flex;
+        padding: 3px;
+        border: 1px solid var(--oc-border-input);
+        border-radius: 999px;
+        background: var(--oc-bg-muted);
+      }
+      .platform-switch__opt {
+        padding: 5px 14px;
+        border-radius: 999px;
+        font-size: 0.88rem;
+        font-weight: 600;
+        color: var(--oc-text-muted);
+        line-height: 1.2;
+      }
+      .platform-switch__opt:hover {
+        color: var(--oc-primary-hover);
+        text-decoration: none;
+      }
+      .platform-switch__opt[data-active="true"] {
+        background: var(--oc-brand);
+        color: var(--oc-contrast);
+      }
+      .platform-switch__opt[data-active="true"]:hover {
+        color: var(--oc-contrast);
+      }
+
       .nav__cta {
         display: inline-flex;
         align-items: center;
@@ -326,8 +361,28 @@ const home = withBase(base, "");
         </a>
         <nav class="nav" aria-label="Primary">
           <span class="nav__links" style="display:contents">
-            <a href={withBase(base, "#catalog")}>Apps</a>
-            <a href={withBase(base, "extensions")}>Web Extensions</a>
+            <span
+              class="platform-switch"
+              role="group"
+              aria-label="Choose ownCloud platform"
+            >
+              <a
+                class="platform-switch__opt"
+                href={withBase(base, "#catalog")}
+                aria-current={platform === "classic" ? "true" : undefined}
+                data-active={platform === "classic"}
+              >
+                Classic
+              </a>
+              <a
+                class="platform-switch__opt"
+                href={withBase(base, "extensions")}
+                aria-current={platform === "ocis" ? "true" : undefined}
+                data-active={platform === "ocis"}
+              >
+                Infinite Scale
+              </a>
+            </span>
             <a href={withBase(base, "downloads")}>Downloads</a>
             <ExternalLink href="https://doc.owncloud.com">Docs</ExternalLink>
             <ExternalLink href="https://github.com/owncloud/marketplace">GitHub</ExternalLink>

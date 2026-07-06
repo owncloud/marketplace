@@ -53,7 +53,7 @@ const fmtDate = (iso: string) => {
 const fmtCount = (n: number) => n.toLocaleString("en-US");
 const fmtDownloads = (n: number) => `${fmtCount(n)} download${n === 1 ? "" : "s"}`;
 ---
-<Base title={`${app.name} · ownCloud Marketplace`} description={app.description}>
+<Base title={`${app.name}: ownCloud Marketplace`} description={app.description}>
   <nav class="breadcrumb container" aria-label="Breadcrumb">
     <a href={withBase(base, "")}>Marketplace</a>
     <span aria-hidden="true">/</span>

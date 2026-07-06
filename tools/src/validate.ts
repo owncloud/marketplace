@@ -60,22 +60,46 @@ function releaseDirOf(path: string): string | null {
   return m ? `${m[1]}/${m[2]}/releases/${m[3]}` : null;
 }
 
+/** The `(apps|extensions)/<id>` catalog prefix of a release file, or null. */
+function catalogEntryOf(path: string): string | null {
+  const m = RELEASE_FILE_RE.exec(path);
+  return m ? `${m[1]}/${m[2]}` : null;
+}
+
 /**
  * Enforce release immutability and no-collision over a set of changed paths.
+ *
  * `existsOnMaster(releaseDir)` returns true if that release is already published.
+ * `isDelisted(catalogEntry)` returns true if `<apps|extensions>/<id>` has no
+ * files left after the changeset — i.e. the whole app/extension is being
+ * removed from the catalog (a *delisting*). Deleting the release files of a
+ * delisted entry is allowed; editing or deleting individual files of an entry
+ * that still exists remains forbidden.
  */
 export function validateChangeset(
   changed: ChangedPath[],
   existsOnMaster: (releaseDir: string) => boolean,
+  isDelisted: (catalogEntry: string) => boolean = () => false,
 ): void {
   for (const change of changed) {
     const releaseDir = releaseDirOf(change.path);
     if (releaseDir === null) continue; // not an app release file; ignore
 
-    if (change.status === "M" || change.status === "D" || change.status === "R") {
+    if (change.status === "M") {
+      throw new ValidationError(
+        `published releases are immutable: "${change.path}" may not be modified ` +
+          `(${releaseDir} is already published — submit a new version instead)`,
+      );
+    }
+    if (change.status === "D" || change.status === "R") {
+      // Deleting a whole app/extension (delisting) is allowed; deleting or
+      // renaming a file while the entry still has other files is not.
+      const entry = catalogEntryOf(change.path);
+      if (entry !== null && isDelisted(entry)) continue;
       throw new ValidationError(
         `published releases are immutable: "${change.path}" may not be modified or deleted ` +
-          `(${releaseDir} is already published — submit a new version instead)`,
+          `(${releaseDir} is already published — submit a new version, or delete the whole ` +
+          `app/extension to delist it)`,
       );
     }
     // status === "A": adding. Reject if the release already exists on master.

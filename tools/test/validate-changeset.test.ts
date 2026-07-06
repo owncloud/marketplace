@@ -75,4 +75,53 @@ describe("validateChangeset", () => {
       ),
     ).toThrow(/already.*publish|collision|exists/i);
   });
+
+  // Delisting: removing an ENTIRE app/extension (no files left under its
+  // `<apps|extensions>/<id>` prefix) is allowed via the isDelisted predicate.
+  describe("delisting", () => {
+    const delistExampleApp = (entry: string) => entry === "apps/example-app";
+
+    it("accepts deleting every file of a fully-delisted app", () => {
+      expect(() =>
+        validateChangeset(
+          [
+            { path: "apps/example-app/releases/1.0.0/package.tar.gz", status: "D" },
+            { path: "apps/example-app/releases/1.0.2/screenshots/01.png", status: "D" },
+          ],
+          onMaster,
+          delistExampleApp,
+        ),
+      ).not.toThrow();
+    });
+
+    it("accepts deleting a fully-delisted extension", () => {
+      expect(() =>
+        validateChangeset(
+          [{ path: "extensions/example-extension/releases/0.1.0/bundle.zip", status: "D" }],
+          extOnMaster,
+          (entry) => entry === "extensions/example-extension",
+        ),
+      ).not.toThrow();
+    });
+
+    it("still rejects deleting one file of an app that is NOT delisted", () => {
+      expect(() =>
+        validateChangeset(
+          [{ path: "apps/calendar/releases/1.0.0/CHANGELOG.md", status: "D" }],
+          onMaster,
+          delistExampleApp, // calendar is not delisted → predicate is false
+        ),
+      ).toThrow(/immutable|delete/i);
+    });
+
+    it("still rejects modifying a file even when the app is delisted", () => {
+      expect(() =>
+        validateChangeset(
+          [{ path: "apps/example-app/releases/1.0.0/package.tar.gz", status: "M" }],
+          onMaster,
+          delistExampleApp,
+        ),
+      ).toThrow(/immutable|modify/i);
+    });
+  });
 });

@@ -84,13 +84,31 @@ async function main(): Promise<void> {
   // the classic apps/ catalog and the oCIS extensions/ catalog.
   const RELEASE_RE = /^(apps|extensions)\/([^/]+)\/releases\/([^/]+)\/.+/;
   const dirs = new Set<string>();
+  const entries = new Set<string>();
   for (const c of changed) {
     const m = RELEASE_RE.exec(c.path);
-    if (m) dirs.add(`${m[1]}/${m[2]}/releases/${m[3]}`);
+    if (m) {
+      dirs.add(`${m[1]}/${m[2]}/releases/${m[3]}`);
+      entries.add(`${m[1]}/${m[2]}`);
+    }
   }
   for (const dir of dirs) await existsOnBase(dir);
 
-  validateChangeset(changed, (releaseDir) => existsCache.get(releaseDir) ?? false);
+  // A catalog entry `<apps|extensions>/<id>` is *delisted* when the post-change
+  // HEAD tree contains no files under it — i.e. the whole app/extension was
+  // removed. Deleting the release files of a delisted entry is allowed (the rest
+  // of the immutability rules still apply). Probe the HEAD tree, not the diff.
+  const delisted = new Set<string>();
+  for (const entry of entries) {
+    const { stdout: tree } = await exec("git", ["ls-tree", "-r", "--name-only", "HEAD", entry]);
+    if (tree.trim() === "") delisted.add(entry);
+  }
+
+  validateChangeset(
+    changed,
+    (releaseDir) => existsCache.get(releaseDir) ?? false,
+    (entry) => delisted.has(entry),
+  );
 
   console.log("Changeset OK: no immutability or collision violations.");
 }

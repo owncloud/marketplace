@@ -6,11 +6,9 @@
   "description": "The company behind ownCloud \u2014 open-source content collaboration and file sync & share.",
   "logo": "logo.png",
   "apps": [
-    "example-app",
     "migrate_to_ocis"
   ],
   "extensions": [
-    "example-extension",
     "ai-doc-summary",
     "draw-io",
     "external-sites",

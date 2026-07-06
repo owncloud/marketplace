@@ -51,29 +51,29 @@ afterAll(async () => {
 });
 
 describe("static API is servable", () => {
-  it("serves apps.json containing the example app", async () => {
+  it("serves apps.json containing a published app", async () => {
     const res = await fetch(`http://127.0.0.1:${port}/api/v1/apps.json`);
     expect(res.status).toBe(200);
     const apps = (await res.json()) as { id: string }[];
-    expect(apps.find((a) => a.id === "example-app")).toBeTruthy();
+    expect(apps.find((a) => a.id === "migrate_to_ocis")).toBeTruthy();
   });
 
   it("serves the per-version apps.json for 11.0.0", async () => {
     const res = await fetch(`http://127.0.0.1:${port}/api/v1/platform/11.0.0/apps.json`);
     expect(res.status).toBe(200);
     const apps = (await res.json()) as { id: string }[];
-    expect(apps.find((a) => a.id === "example-app")).toBeTruthy();
+    expect(apps.find((a) => a.id === "migrate_to_ocis")).toBeTruthy();
   });
 
   it("serves a per-version apps.json for the classic 10.16.3 line", async () => {
-    // example-app 1.0.0 declares owncloud 10.0.0–10.99.99, so it is served to
-    // a classic Server asking for the apps compatible with its running version.
+    // migrate_to_ocis 2.0.0 declares owncloud 10.15–11, so it is served to a
+    // classic Server asking for the apps compatible with its running version.
     const res = await fetch(`http://127.0.0.1:${port}/api/v1/platform/10.16.3/apps.json`);
     expect(res.status).toBe(200);
     const apps = (await res.json()) as { id: string; releases: { version: string }[] }[];
-    const app = apps.find((a) => a.id === "example-app");
+    const app = apps.find((a) => a.id === "migrate_to_ocis");
     expect(app).toBeTruthy();
-    expect(app?.releases.map((r) => r.version)).toContain("1.0.0");
+    expect(app?.releases.map((r) => r.version)).toContain("2.0.0");
   });
 
   it("serves categories.json", async () => {

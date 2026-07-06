@@ -24,7 +24,7 @@ const versionCount = extensions.reduce((n, e) => n + e.versions.length, 0);
 const initial = (name: string) => name.trim().charAt(0).toUpperCase() || "?";
 ---
 <Base
-  title="oCIS Web Extensions — ownCloud Marketplace"
+  title="oCIS Web Extensions: ownCloud Marketplace"
   description="Discover web extensions for ownCloud Infinite Scale (oCIS). Add the repository to your oCIS app store and install extensions at runtime."
 >
   <!-- ===================== HERO ===================== -->
@@ -37,13 +37,14 @@ const initial = (name: string) => name.trim().charAt(0).toUpperCase() || "?";
         Extend <span class="hero__accent">Infinite Scale</span> at runtime.
       </h1>
       <p class="hero__lede">
-        Web extensions add features to the ownCloud Web frontend — validated in
+        Web extensions add features to the ownCloud Web frontend: validated in
         the open, versioned in Git, and served as a drop-in oCIS app-store
         repository feed.
       </p>
       <div class="hero__actions">
-        <a class="btn btn--solid" href="#catalog">Browse {extensions.length}
-          {extensions.length === 1 ? "extension" : "extensions"}</a>
+        <a class="btn btn--solid" href="#catalog"
+          >Browse {extensions.length} {extensions.length === 1 ? "extension" : "extensions"}</a
+        >
         <a class="btn btn--ghost" href="#use-in-ocis">Use in oCIS →</a>
       </div>
       <dl class="hero__stats">

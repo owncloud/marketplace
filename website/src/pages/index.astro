@@ -24,7 +24,7 @@ const categoryName = (id: string) =>
 const initial = (name: string) => name.trim().charAt(0).toUpperCase() || "?";
 ---
 <Base
-  title="ownCloud Marketplace — apps for your ownCloud"
+  title="ownCloud Marketplace: apps for your ownCloud"
   description="Browse and publish apps for ownCloud. A backend-free, community-driven catalog where the Git repository is the source of truth."
 >
   <!-- ===================== HERO ===================== -->
@@ -37,12 +37,13 @@ const initial = (name: string) => name.trim().charAt(0).toUpperCase() || "?";
         Apps that extend <span class="hero__accent">ownCloud</span>.
       </h1>
       <p class="hero__lede">
-        Discover community and partner extensions for your ownCloud Classic server —
+        Discover community and partner extensions for your ownCloud Classic server:
         validated in the open, versioned in Git, and served as static JSON.
       </p>
       <div class="hero__actions">
-        <a class="btn btn--solid" href="#catalog">Browse {apps.length}
-          {apps.length === 1 ? "app" : "apps"}</a>
+        <a class="btn btn--solid" href="#catalog"
+          >Browse {apps.length} {apps.length === 1 ? "app" : "apps"}</a
+        >
         <ExternalLink
           class="btn btn--ghost"
           href="https://github.com/owncloud/marketplace/blob/main/.github/pull_request_template.md"
@@ -160,7 +161,7 @@ const initial = (name: string) => name.trim().charAt(0).toUpperCase() || "?";
         <h2>Publish in three steps</h2>
         <p>
           There is no upload form and no account to create. Open a pull request
-          adding a single tarball — CI validates it against the catalog rules,
+          adding a single tarball, and CI validates it against the catalog rules,
           and once merged the API and this site regenerate automatically.
         </p>
         <ExternalLink
@@ -176,7 +177,7 @@ const initial = (name: string) => name.trim().charAt(0).toUpperCase() || "?";
             <h3>Add your package</h3>
             <p>
               Commit <code>apps/&lt;id&gt;/releases/&lt;version&gt;/package.tar.gz</code
-              > — all metadata is read from the <code>info.xml</code> inside it.
+              >. All metadata is read from the <code>info.xml</code> inside it.
             </p>
           </div>
         </li>

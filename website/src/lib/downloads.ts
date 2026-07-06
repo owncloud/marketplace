@@ -17,8 +17,8 @@ export interface SurfaceMeta {
  * lockstep. Each `key` maps to a field on the published Downloads object.
  */
 export const SURFACES: readonly SurfaceMeta[] = [
-  { key: "ocis", name: "Infinite Scale", tagline: "ocis — the next-generation ownCloud server", repo: "owncloud/ocis" },
-  { key: "server", name: "ownCloud Classic", tagline: "ownCloud Classic — the PHP server", repo: "owncloud/core" },
+  { key: "ocis", name: "Infinite Scale", tagline: "ocis, the next-generation ownCloud server", repo: "owncloud/ocis" },
+  { key: "server", name: "ownCloud Classic", tagline: "ownCloud Classic, the PHP server", repo: "owncloud/core" },
   { key: "client", name: "Desktop Client", tagline: "Sync files on Windows, macOS and Linux", repo: "owncloud/client" },
   { key: "android", name: "Android", tagline: "ownCloud for phones and tablets", repo: "owncloud/android" },
   { key: "ios", name: "iOS", tagline: "ownCloud for iPhone and iPad", repo: "owncloud/ios-app" },

@@ -54,7 +54,7 @@ const fmtCount = (n: number) => n.toLocaleString("en-US");
 const fmtDownloads = (n: number) => `${fmtCount(n)} download${n === 1 ? "" : "s"}`;
 const ocisReq = (v?: string) => (v ? `Requires oCIS ${v} or newer` : "Any oCIS version");
 ---
-<Base title={`${ext.name} — ownCloud Marketplace`} description={ext.subtitle}>
+<Base title={`${ext.name} · ownCloud Marketplace`} description={ext.subtitle}>
   <nav class="breadcrumb container" aria-label="Breadcrumb">
     <a href={withBase(base, "")}>Marketplace</a>
     <span aria-hidden="true">/</span>

@@ -62,6 +62,12 @@ const fmtDownloads = (n: number) => `${fmtCount(n)} download${n === 1 ? "" : "s"
   </header>
 
   <div class="container product-body">
+    {meta.linuxRepos?.beta && (
+      <aside class="beta-banner" role="note">
+        <span class="beta-banner__badge">Beta</span>
+        <p class="beta-banner__text">{meta.linuxRepos.beta}</p>
+      </aside>
+    )}
     {meta.linuxRepos && (
       <section class="panel repo-panel">
         <h2>Install via package manager (Linux)</h2>
@@ -236,6 +242,36 @@ const fmtDownloads = (n: number) => `${fmtCount(n)} download${n === 1 ? "" : "s"
     color: var(--oc-brand);
     margin-bottom: 20px;
   }
+  /* ---------- Beta banner (client page only) ---------- */
+  .beta-banner {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 20px;
+    padding: 14px 18px;
+    background: var(--oc-bg-highlight);
+    border: 1px solid var(--oc-border);
+    border-left: 3px solid var(--oc-primary);
+    border-radius: var(--radius-sm);
+  }
+  .beta-banner__badge {
+    flex-shrink: 0;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding: 2px 9px;
+    border-radius: 999px;
+    background: var(--oc-primary);
+    color: #fff;
+  }
+  .beta-banner__text {
+    margin: 0;
+    font-size: 0.92rem;
+    line-height: 1.5;
+    color: var(--oc-text);
+  }
+
   .repo-panel {
     margin-bottom: 20px;
   }

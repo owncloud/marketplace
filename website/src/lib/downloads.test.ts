@@ -30,4 +30,9 @@ describe("client surface Linux repos", () => {
     const others = SURFACES.filter((s) => s.key !== "client");
     expect(others.every((s) => s.linuxRepos === undefined)).toBe(true);
   });
+
+  it("carries a non-empty beta note while the repos are being rolled out", () => {
+    expect(client?.linuxRepos?.beta).toBeTruthy();
+    expect(typeof client?.linuxRepos?.beta).toBe("string");
+  });
 });

@@ -23,6 +23,8 @@ export interface LinuxRepos {
   previous?: LinuxRepoLine;
   /** Support floor: distro list + glibc note, shown above the commands. */
   supportNote: string;
+  /** When set, the client page shows a page-level "Beta" banner with this text. */
+  beta?: string;
 }
 
 /** Display metadata for one download surface (the data itself lives in Downloads). */
@@ -56,6 +58,8 @@ export const SURFACES: readonly SurfaceMeta[] = [
       previous: { label: "ownCloud 6", baseUrl: "https://marketplace.owncloud.com/packages/desktop/6/" },
       supportNote:
         "Debian 11+, Ubuntu 20.04+, Fedora 31+, RHEL/Rocky/AlmaLinux 9+ and openSUSE Leap 15.3+ (glibc 2.30 or newer). The packages bundle Qt, OpenSSL and their other libraries; they need only a graphical desktop with OpenGL.",
+      beta:
+        "The Linux package-manager repositories below are being rolled out — the repository URLs or signing key may still change, and the commands may not work yet. The Windows, macOS and Linux binary downloads are unaffected.",
     },
   },
   { key: "android", name: "Android", tagline: "ownCloud for phones and tablets", repo: "owncloud/android" },

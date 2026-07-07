@@ -1,0 +1,82 @@
+---
+import { aptSetup, dnfSetup } from "../lib/linux-repos.ts";
+import type { LinuxRepoLine } from "../lib/downloads.ts";
+
+interface Props {
+  line: LinuxRepoLine;
+  signingKey: string;
+}
+const { line, signingKey } = Astro.props;
+const apt = aptSetup(line.baseUrl, signingKey);
+const dnf = dnfSetup(line.baseUrl, signingKey);
+---
+<div class="repo-line">
+  <h3 class="repo-line__label">{line.label}</h3>
+
+  <p class="repo-block__caption">Debian, Ubuntu (apt)</p>
+  <div class="repo-block">
+    <button class="copy-btn" type="button" aria-label="Copy apt commands">Copy</button>
+    <pre><code>{apt}</code></pre>
+  </div>
+
+  <p class="repo-block__caption">Fedora, RHEL, openSUSE (dnf / zypper)</p>
+  <div class="repo-block">
+    <button class="copy-btn" type="button" aria-label="Copy dnf commands">Copy</button>
+    <pre><code>{dnf}</code></pre>
+  </div>
+</div>
+
+<style>
+  .repo-line__label {
+    font-size: 1rem;
+    color: var(--oc-brand);
+    margin: 4px 0 10px;
+  }
+  .repo-block__caption {
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--oc-text-muted);
+    margin: 14px 0 6px;
+  }
+  .repo-block {
+    position: relative;
+  }
+  .repo-block pre {
+    margin: 0;
+    padding: 14px 16px;
+    background: var(--oc-bg-highlight);
+    border: 1px solid var(--oc-border);
+    border-radius: var(--radius-sm);
+    overflow-x: auto;
+  }
+  .repo-block code {
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+    line-height: 1.55;
+    color: var(--oc-text);
+    white-space: pre;
+  }
+  .copy-btn {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    padding: 4px 10px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--oc-text-muted);
+    background: var(--oc-bg);
+    border: 1px solid var(--oc-border-input);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: color 0.16s ease, border-color 0.16s ease;
+  }
+  .copy-btn:hover {
+    color: var(--oc-primary);
+    border-color: var(--oc-primary);
+  }
+  .copy-btn.is-copied {
+    color: #fff;
+    background: var(--oc-success);
+    border-color: var(--oc-success);
+  }
+</style>

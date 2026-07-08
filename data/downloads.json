@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-07-08T07:09:22.038Z",
+  "generated_at": "2026-07-08T07:21:19.151Z",
   "ocis": [
     {
       "tag_name": "v8.1.0",
@@ -2629,7 +2629,7 @@
           "name": "ocis-5.0.6-linux-amd64",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v5.0.6/ocis-5.0.6-linux-amd64",
           "size": 101470336,
-          "download_count": 44
+          "download_count": 45
         },
         {
           "name": "ocis-5.0.6-linux-amd64.sha256",

@@ -64,6 +64,16 @@ export interface StoreStats {
   ratingCount?: number;
   installs?: string;
 }
+/** Latest release of one major-version line (desktop client only). */
+export interface DownloadLine {
+  label: string;
+  major: number;
+  version: string;
+  releaseUrl: string;
+  publishedAt: string;
+  downloads: number;
+  binaries: DownloadBinary[];
+}
 export interface DownloadSurface {
   version: string;
   releaseUrl: string;
@@ -72,6 +82,8 @@ export interface DownloadSurface {
   downloads: number;
   releases: DownloadRelease[];
   store?: StoreStats;
+  /** Latest per major-version line, newest first. Client only; absent elsewhere. */
+  lines?: DownloadLine[];
 }
 export interface Downloads {
   generatedAt: string;

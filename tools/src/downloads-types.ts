@@ -91,6 +91,23 @@ export interface DownloadRelease {
 }
 
 /**
+ * One major-version line of a surface (desktop client only): the newest release
+ * within a major series, with its own binaries. Lets the downloads landing page
+ * show both the 7.x and 6.x latest side by side under a single product card.
+ */
+export interface DownloadLine {
+  /** Human label, e.g. "ownCloud 7" (derived from the major integer). */
+  label: string;
+  major: number;
+  version: string;
+  releaseUrl: string;
+  publishedAt: string;
+  /** That release's own download count (0 when none recorded). */
+  downloads: number;
+  binaries: DownloadBinary[];
+}
+
+/**
  * A normalized per-surface entry in the published downloads.json. The top-level
  * version/releaseUrl/publishedAt/binaries fields describe the newest release
  * (what the downloads landing page shows); `releases` carries the full history
@@ -106,6 +123,12 @@ export interface DownloadSurface {
   releases: DownloadRelease[];
   /** App-store listing stats, for the mobile surfaces only (else absent). */
   store?: StoreStats;
+  /**
+   * Latest release per major-version line, newest major first. Desktop client
+   * only (absent on every other surface). Lets the landing page surface the 7.x
+   * and 6.x lines together under one product card.
+   */
+  lines?: DownloadLine[];
 }
 
 /** The normalized, published _site/api/v1/downloads.json. */

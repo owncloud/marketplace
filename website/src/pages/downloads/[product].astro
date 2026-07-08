@@ -2,7 +2,12 @@
 import Base from "../../layouts/Base.astro";
 import ExternalLink from "../../components/ExternalLink.astro";
 import RepoInstall from "../../components/RepoInstall.astro";
-import { loadDownloads, withBase, type DownloadSurface } from "../../lib/catalog.ts";
+import {
+  loadDownloads,
+  withBase,
+  type DownloadSurface,
+  type DownloadRelease,
+} from "../../lib/catalog.ts";
 import { SURFACES, type SurfaceMeta } from "../../lib/downloads.ts";
 
 export async function getStaticPaths() {
@@ -28,6 +33,35 @@ const fmtDate = (iso: string): string => {
 
 const fmtCount = (n: number) => n.toLocaleString("en-US");
 const fmtDownloads = (n: number) => `${fmtCount(n)} download${n === 1 ? "" : "s"}`;
+
+// When a surface exposes major-version lines (desktop client), group its release
+// history under one heading per major — one section per line (newest first),
+// then a trailing "Older releases" bucket for anything below the lowest line so
+// nothing is dropped. Surfaces without lines get a single unlabelled group, so
+// the template renders one uniform loop either way.
+interface ReleaseGroup {
+  label: string | null;
+  releases: DownloadRelease[];
+}
+const majorOf = (version: string) => Number.parseInt(version, 10);
+const buildReleaseGroups = (s: DownloadSurface): ReleaseGroup[] => {
+  if (!s.lines || s.lines.length === 0) {
+    return [{ label: null, releases: s.releases }];
+  }
+  const majors = s.lines.map((l) => l.major);
+  const floor = Math.min(...majors);
+  const groups: ReleaseGroup[] = s.lines.map((line) => ({
+    label: line.label,
+    releases: s.releases.filter((r) => majorOf(r.version) === line.major),
+  }));
+  const older = s.releases.filter((r) => {
+    const m = majorOf(r.version);
+    return Number.isNaN(m) || m < floor;
+  });
+  if (older.length > 0) groups.push({ label: "Older releases", releases: older });
+  return groups;
+};
+const releaseGroups = surface ? buildReleaseGroups(surface) : [];
 ---
 <Base
   title={`${meta.name} releases: ownCloud`}
@@ -89,42 +123,47 @@ const fmtDownloads = (n: number) => `${fmtCount(n)} download${n === 1 ? "" : "s"
     {surface ? (
       <section class="panel">
         <h2>Release history</h2>
-        <ul class="releases">
-          {surface.releases.map((r, i) => (
-            <li class="release">
-              <div class="release__head">
-                <ExternalLink class="release__version" href={r.releaseUrl}>
-                  v{r.version}
-                </ExternalLink>
-                {i === 0 && <span class="release__badge">Latest</span>}
-                <span class="release__date">{fmtDate(r.publishedAt)}</span>
-              </div>
-              {r.downloads > 0 && (
-                <div class="release__facts">
-                  <span>{fmtDownloads(r.downloads)}</span>
-                </div>
-              )}
-              {r.binaries.length > 0 ? (
-                <ul class="downloads">
-                  {r.binaries.map((b) => (
-                    <li>
-                      <a class="download" href={b.url} rel="noopener">
-                        <span class="download__os">{b.os}</span>
-                        {b.arch && <span class="download__arch">{b.arch}</span>}
-                        <span class="download__size">{b.size}</span>
-                      </a>
-                    </li>
-                  ))}
-                </ul>
-              ) : (
-                <p class="release__fallback">
-                  No direct binaries listed.{" "}
-                  <ExternalLink href={r.releaseUrl}>Browse this release on GitHub →</ExternalLink>
-                </p>
-              )}
-            </li>
-          ))}
-        </ul>
+        {releaseGroups.map((group) => (
+          <>
+            {group.label && <h3 class="release-group">{group.label}</h3>}
+            <ul class="releases">
+              {group.releases.map((r) => (
+                <li class="release">
+                  <div class="release__head">
+                    <ExternalLink class="release__version" href={r.releaseUrl}>
+                      v{r.version}
+                    </ExternalLink>
+                    {r === surface.releases[0] && <span class="release__badge">Latest</span>}
+                    <span class="release__date">{fmtDate(r.publishedAt)}</span>
+                  </div>
+                  {r.downloads > 0 && (
+                    <div class="release__facts">
+                      <span>{fmtDownloads(r.downloads)}</span>
+                    </div>
+                  )}
+                  {r.binaries.length > 0 ? (
+                    <ul class="downloads">
+                      {r.binaries.map((b) => (
+                        <li>
+                          <a class="download" href={b.url} rel="noopener">
+                            <span class="download__os">{b.os}</span>
+                            {b.arch && <span class="download__arch">{b.arch}</span>}
+                            <span class="download__size">{b.size}</span>
+                          </a>
+                        </li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <p class="release__fallback">
+                      No direct binaries listed.{" "}
+                      <ExternalLink href={r.releaseUrl}>Browse this release on GitHub →</ExternalLink>
+                    </p>
+                  )}
+                </li>
+              ))}
+            </ul>
+          </>
+        ))}
       </section>
     ) : (
       <section class="panel">
@@ -292,6 +331,14 @@ const fmtDownloads = (n: number) => `${fmtCount(n)} download${n === 1 ? "" : "s"
     font-weight: 600;
     color: var(--oc-brand);
     font-size: 0.92rem;
+  }
+  .release-group {
+    font-size: 1.02rem;
+    color: var(--oc-brand);
+    margin: 26px 0 14px;
+  }
+  .release-group:first-of-type {
+    margin-top: 4px;
   }
   .releases {
     list-style: none;

@@ -115,7 +115,41 @@ const generated = downloads ? fmtDate(downloads.generatedAt) : null;
             </ExternalLink>
           )}
 
-          {surface && surface.binaries.length > 0 ? (
+          {surface?.lines && surface.lines.length > 0 ? (
+            surface.lines.map((line) => (
+              <div class="surface__line">
+                <p class="surface__line-head">
+                  <ExternalLink class="surface__line-name" href={line.releaseUrl}>
+                    <span>{line.label}</span>
+                    {" "}
+                    <span class="surface__line-version">v{line.version}</span>
+                  </ExternalLink>
+                  <span class="surface__line-date">{fmtDate(line.publishedAt)}</span>
+                  {line.downloads > 0 && (
+                    <span class="surface__line-downloads">{fmtDownloads(line.downloads)}</span>
+                  )}
+                </p>
+                {line.binaries.length > 0 ? (
+                  <ul class="downloads">
+                    {line.binaries.map((b) => (
+                      <li>
+                        <a class="download" href={b.url} rel="noopener">
+                          <span class="download__os">{b.os}</span>
+                          {b.arch && <span class="download__arch">{b.arch}</span>}
+                          <span class="download__size">{b.size}</span>
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <p class="surface__fallback">
+                    No direct binaries listed for this release.{" "}
+                    <ExternalLink href={line.releaseUrl}>Browse this release on GitHub →</ExternalLink>
+                  </p>
+                )}
+              </div>
+            ))
+          ) : surface && surface.binaries.length > 0 ? (
             <>
               {surface.store && <p class="downloads__label">Direct download</p>}
               <ul class={surface.store ? "downloads downloads--secondary" : "downloads"}>
@@ -346,6 +380,31 @@ const generated = downloads ? fmtDate(downloads.generatedAt) : null;
     margin-top: 18px;
     font-weight: 600;
     font-size: 0.92rem;
+  }
+
+  /* ---------- Version-line sub-blocks (desktop client) ---------- */
+  .surface__line + .surface__line {
+    margin-top: 22px;
+  }
+  .surface__line-head {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 8px 12px;
+    margin: 0 0 12px;
+  }
+  .surface__line-name {
+    font-weight: 700;
+    color: var(--oc-brand);
+  }
+  .surface__line-version {
+    font-family: var(--font-mono);
+    font-weight: 500;
+  }
+  .surface__line-date,
+  .surface__line-downloads {
+    font-size: 0.86rem;
+    color: var(--oc-text-muted);
   }
 
   /* ---------- Binary download buttons ---------- */

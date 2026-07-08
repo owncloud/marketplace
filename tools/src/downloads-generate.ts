@@ -8,6 +8,7 @@ import type {
   DownloadBinary,
   DownloadRelease,
   DownloadSurface,
+  DownloadLine,
   Downloads,
   StoreStats,
 } from "./downloads-types.js";
@@ -125,6 +126,73 @@ export function matchClassicArchives(assets: RawAsset[]): DownloadBinary[] {
 }
 
 /**
+ * Resolve the desktop client's assets into download rows. The client publishes
+ * one file per platform+format under its own naming scheme (identical across the
+ * 5.x/6.x/7.x lines), which the OS/arch RULES do not match, so it gets its own
+ * fixed, ordered matcher. Each row's platform leads (the bold `os` field) and
+ * the package format / CPU arch fills the muted `arch` field, mirroring how the
+ * GitHub-surface buttons use the two slots.
+ *
+ * The regexes are anchored on the true terminal extension, which intrinsically
+ * drops every sidecar (`.AppImage.sha256`, `.AppImage.zsync`, `.pkg.tbz` and its
+ * `.sig`/`.eddsa.sig`) and the enterprise `…​.x64.GPO.msi` (its `.GPO` segment
+ * sits between `.x64` and `.msi`, so `/\.x64\.msi$/` does not match). Returns
+ * rows in the order below; assets matching no rule are dropped.
+ */
+export function matchClientPackages(assets: RawAsset[]): DownloadBinary[] {
+  const RULES: Rule[] = [
+    { os: "Linux", arch: "AppImage", re: /-x86_64\.AppImage$/i },
+    { os: "Linux", arch: ".deb", re: /_amd64\.deb$/i },
+    { os: "Linux", arch: ".rpm", re: /_x86_64\.rpm$/i },
+    { os: "Windows", arch: ".msi", re: /\.x64\.msi$/i },
+    { os: "macOS", arch: "Intel", re: /-x86_64\.pkg$/i },
+    { os: "macOS", arch: "Apple Silicon", re: /-arm64\.pkg$/i },
+  ];
+  const rows: DownloadBinary[] = [];
+  for (const rule of RULES) {
+    const hit = assets.find((a) => rule.re.test(a.name));
+    if (hit) {
+      rows.push({
+        os: rule.os,
+        arch: rule.arch,
+        size: formatSize(hit.size),
+        url: hit.browser_download_url,
+      });
+    }
+  }
+  return rows;
+}
+
+/** The lowest desktop-client major version surfaced as its own line. */
+const CLIENT_LINE_FLOOR = 6;
+
+/**
+ * Group a client's release history into one line per major version (>= the
+ * floor), keeping the newest release of each major. `history` is already
+ * newest-first, so the first release seen for a major is its newest. Older
+ * majors (e.g. 5.x) stay in the full `releases` history but do not get a line.
+ * Returns lines newest-major-first. Pure.
+ */
+export function buildClientLines(history: DownloadRelease[]): DownloadLine[] {
+  const byMajor = new Map<number, DownloadLine>();
+  for (const r of history) {
+    const major = Number.parseInt(r.version, 10);
+    if (Number.isNaN(major) || major < CLIENT_LINE_FLOOR) continue;
+    if (byMajor.has(major)) continue; // history is newest-first: first wins
+    byMajor.set(major, {
+      label: `ownCloud ${major}`,
+      major,
+      version: r.version,
+      releaseUrl: r.releaseUrl,
+      publishedAt: r.publishedAt,
+      downloads: r.downloads,
+      binaries: r.binaries,
+    });
+  }
+  return [...byMajor.values()].sort((a, b) => b.major - a.major);
+}
+
+/**
  * Build a surface from its raw releases: normalize each into the full history
  * (newest-first), promote the newest release's fields to the surface headline
  * (what the landing page shows), and total downloads across every release.
@@ -154,14 +222,15 @@ export function buildSurface(
  * Normalize the raw, committed downloads data into the published shape: each
  * surface's full release history (newest-first) with its all-time download
  * total, or null when a surface has no releases, carrying the generation
- * timestamp. The classic server resolves its archives via matchClassicArchives.
+ * timestamp. The classic server resolves its archives via matchClassicArchives;
+ * the desktop client uses matchClientPackages and gains per-major-version lines.
  */
 export function normalizeDownloads(raw: RawDownloads): Downloads {
   return {
     generatedAt: raw.generated_at,
     ocis: buildSurface(raw.ocis),
     server: buildSurface(raw.server ?? [], matchClassicArchives),
-    client: buildSurface(raw.client),
+    client: withClientLines(buildSurface(raw.client, matchClientPackages)),
     android: withStore(buildSurface(raw.android), raw.stores?.android),
     ios: withStore(buildSurface(raw.ios), raw.stores?.ios),
   };
@@ -178,6 +247,18 @@ export function withStore(
 ): DownloadSurface | null {
   if (!surface || !store) return surface;
   return { ...surface, store };
+}
+
+/**
+ * Attach per-major-version lines (see buildClientLines) to the desktop client
+ * surface, so the landing page can show the 7.x and 6.x latest together. Pure:
+ * returns a new surface, or the unchanged input / null. Omits `lines` when the
+ * computed array is empty, matching the "absent when N/A" convention.
+ */
+export function withClientLines(surface: DownloadSurface | null): DownloadSurface | null {
+  if (!surface) return surface;
+  const lines = buildClientLines(surface.releases);
+  return lines.length > 0 ? { ...surface, lines } : surface;
 }
 
 /**

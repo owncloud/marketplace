@@ -5,6 +5,8 @@ import { join } from "node:path";
 import {
   formatSize,
   matchBinaries,
+  matchClientPackages,
+  buildClientLines,
   releaseDownloads,
   normalizeFullRelease,
   buildSurface,
@@ -12,7 +14,12 @@ import {
   mergeAppCounts,
   readDownloadsBaseline,
 } from "../src/downloads-generate.js";
-import type { RawAsset, RawRelease, RawDownloads } from "../src/downloads-types.js";
+import type {
+  RawAsset,
+  RawRelease,
+  RawDownloads,
+  DownloadRelease,
+} from "../src/downloads-types.js";
 
 // Default size is 2 MiB so matched rows render as "2.0 MB" deterministically.
 const asset = (name: string, size = 2 * 1024 * 1024, download_count = 0): RawAsset => ({
@@ -75,6 +82,107 @@ describe("matchBinaries", () => {
 
   it("returns [] when no assets match the matrix", () => {
     expect(matchBinaries([asset("README.md"), asset("source.zip")])).toEqual([]);
+  });
+});
+
+// The full desktop-client asset set for one build, using the real naming
+// scheme (identical across 5.x/6.x/7.x), including every sidecar we must drop.
+const clientAssets = (build: string): RawAsset[] => [
+  asset(`ownCloud-${build}-arm64.pkg`),
+  asset(`ownCloud-${build}-arm64.pkg.tbz`),
+  asset(`ownCloud-${build}-arm64.pkg.tbz.eddsa.sig`),
+  asset(`ownCloud-${build}-arm64.pkg.tbz.sig`),
+  asset(`ownCloud-${build}-x86_64.AppImage`),
+  asset(`ownCloud-${build}-x86_64.AppImage.sha256`),
+  asset(`ownCloud-${build}-x86_64.AppImage.zsync`),
+  asset(`ownCloud-${build}-x86_64.pkg`),
+  asset(`ownCloud-${build}-x86_64.pkg.tbz`),
+  asset(`ownCloud-${build}-x86_64.pkg.tbz.eddsa.sig`),
+  asset(`ownCloud-${build}-x86_64.pkg.tbz.sig`),
+  asset(`ownCloud-${build}.x64.GPO.msi`),
+  asset(`ownCloud-${build}.x64.msi`),
+  asset(`owncloud-client_${build}_amd64.deb`),
+  asset(`owncloud-client_${build}_x86_64.rpm`),
+];
+
+// A DownloadRelease (post-normalization) for buildClientLines tests.
+const clientRelease = (version: string): DownloadRelease => ({
+  version,
+  releaseUrl: `https://github.com/owncloud/client/releases/tag/v${version}`,
+  publishedAt: "2026-01-02T03:04:05Z",
+  downloads: 0,
+  binaries: [],
+});
+
+describe("matchClientPackages", () => {
+  it("resolves the six core variants in order, dropping sidecars and GPO", () => {
+    const rows = matchClientPackages(clientAssets("7.1.0.19041"));
+    expect(rows.map((r) => `${r.os}/${r.arch}`)).toEqual([
+      "Linux/AppImage",
+      "Linux/.deb",
+      "Linux/.rpm",
+      "Windows/.msi",
+      "macOS/Intel",
+      "macOS/Apple Silicon",
+    ]);
+    expect(rows[0].url).toBe("https://example.com/ownCloud-7.1.0.19041-x86_64.AppImage");
+    expect(rows[0].size).toBe("2.0 MB");
+  });
+
+  it("excludes every sidecar when no primary artifact is present", () => {
+    const sidecars = [
+      asset("ownCloud-7.1.0.19041-x86_64.AppImage.sha256"),
+      asset("ownCloud-7.1.0.19041-x86_64.AppImage.zsync"),
+      asset("ownCloud-7.1.0.19041-x86_64.pkg.tbz"),
+      asset("ownCloud-7.1.0.19041-x86_64.pkg.tbz.sig"),
+      asset("ownCloud-7.1.0.19041-arm64.pkg.tbz.eddsa.sig"),
+    ];
+    expect(matchClientPackages(sidecars)).toEqual([]);
+  });
+
+  it("excludes the enterprise GPO msi", () => {
+    expect(matchClientPackages([asset("ownCloud-7.1.0.19041.x64.GPO.msi")])).toEqual([]);
+  });
+
+  it("picks the plain msi, never the GPO msi, when both are present", () => {
+    const rows = matchClientPackages([
+      asset("ownCloud-7.1.0.19041.x64.GPO.msi"),
+      asset("ownCloud-7.1.0.19041.x64.msi"),
+    ]);
+    expect(rows).toHaveLength(1);
+    expect(rows[0].url).toBe("https://example.com/ownCloud-7.1.0.19041.x64.msi");
+  });
+
+  it("returns [] for unrelated assets", () => {
+    expect(matchClientPackages([asset("README.md"), asset("source.tar.gz")])).toEqual([]);
+  });
+});
+
+describe("buildClientLines", () => {
+  it("keeps the newest release per major >= 6, newest major first, excluding 5.x", () => {
+    const lines = buildClientLines([
+      clientRelease("7.1.0"),
+      clientRelease("7.0.0"),
+      clientRelease("6.0.3"),
+      clientRelease("6.0.0"),
+      clientRelease("5.3.2"),
+    ]);
+    expect(lines.map((l) => `${l.major}:${l.version}`)).toEqual(["7:7.1.0", "6:6.0.3"]);
+    expect(lines[0].label).toBe("ownCloud 7");
+    expect(lines[1].label).toBe("ownCloud 6");
+  });
+
+  it("returns a single line for a single-major history", () => {
+    const lines = buildClientLines([clientRelease("7.1.0"), clientRelease("7.0.0")]);
+    expect(lines.map((l) => l.version)).toEqual(["7.1.0"]);
+  });
+
+  it("returns [] when nothing meets the floor", () => {
+    expect(buildClientLines([clientRelease("5.3.2"), clientRelease("4.2.0")])).toEqual([]);
+  });
+
+  it("returns [] for an empty history", () => {
+    expect(buildClientLines([])).toEqual([]);
   });
 });
 
@@ -175,6 +283,43 @@ describe("normalizeDownloads", () => {
     expect(out.android).toBeNull();
     expect(out.ios).toBeNull();
     expect(out.server).toBeNull();
+  });
+
+  it("gives the client per-major lines from its package assets", () => {
+    const out = normalizeDownloads({
+      ...raw,
+      client: [
+        {
+          ...release("v7.1.0", clientAssets("7.1.0.19041")),
+          html_url: "https://github.com/owncloud/client/releases/tag/v7.1.0",
+          published_at: "2026-06-19T00:00:00Z",
+        },
+        {
+          ...release("v6.0.3", clientAssets("6.0.3.18040")),
+          html_url: "https://github.com/owncloud/client/releases/tag/v6.0.3",
+          published_at: "2026-01-12T00:00:00Z",
+        },
+      ],
+    });
+    expect(out.client?.lines?.map((l) => `${l.major}:${l.version}`)).toEqual([
+      "7:7.1.0",
+      "6:6.0.3",
+    ]);
+    // Each line carries the six core variants from its own release.
+    expect(out.client?.lines?.[0].binaries.map((b) => `${b.os}/${b.arch}`)).toEqual([
+      "Linux/AppImage",
+      "Linux/.deb",
+      "Linux/.rpm",
+      "Windows/.msi",
+      "macOS/Intel",
+      "macOS/Apple Silicon",
+    ]);
+  });
+
+  it("leaves lines absent on non-client surfaces", () => {
+    const out = normalizeDownloads(raw);
+    expect(out.ocis?.lines).toBeUndefined();
+    expect(out.server?.lines).toBeUndefined();
   });
 
   it("keeps all classic server releases, resolving them via the archive matcher", () => {

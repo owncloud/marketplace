@@ -73,6 +73,8 @@ export interface DownloadLine {
   publishedAt: string;
   downloads: number;
   binaries: DownloadBinary[];
+  /** Which ownCloud servers this line syncs with; absent when unknown. */
+  compatibility?: string;
 }
 export interface DownloadSurface {
   version: string;

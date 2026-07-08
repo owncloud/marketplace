@@ -172,6 +172,12 @@ describe("buildClientLines", () => {
     expect(lines[1].label).toBe("ownCloud 6");
   });
 
+  it("tags each line with its server compatibility (7 = oCIS only, 6 = both)", () => {
+    const lines = buildClientLines([clientRelease("7.1.0"), clientRelease("6.0.3")]);
+    expect(lines[0].compatibility).toBe("Infinite Scale (oCIS) only");
+    expect(lines[1].compatibility).toBe("ownCloud Classic and Infinite Scale (oCIS)");
+  });
+
   it("returns a single line for a single-major history", () => {
     const lines = buildClientLines([clientRelease("7.1.0"), clientRelease("7.0.0")]);
     expect(lines.map((l) => l.version)).toEqual(["7.1.0"]);

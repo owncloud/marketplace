@@ -41,6 +41,7 @@ const fmtDownloads = (n: number) => `${fmtCount(n)} download${n === 1 ? "" : "s"
 // the template renders one uniform loop either way.
 interface ReleaseGroup {
   label: string | null;
+  compatibility?: string;
   releases: DownloadRelease[];
 }
 const majorOf = (version: string) => Number.parseInt(version, 10);
@@ -52,6 +53,7 @@ const buildReleaseGroups = (s: DownloadSurface): ReleaseGroup[] => {
   const floor = Math.min(...majors);
   const groups: ReleaseGroup[] = s.lines.map((line) => ({
     label: line.label,
+    compatibility: line.compatibility,
     releases: s.releases.filter((r) => majorOf(r.version) === line.major),
   }));
   const older = s.releases.filter((r) => {
@@ -125,7 +127,17 @@ const releaseGroups = surface ? buildReleaseGroups(surface) : [];
         <h2>Release history</h2>
         {releaseGroups.map((group) => (
           <>
-            {group.label && <h3 class="release-group">{group.label}</h3>}
+            {group.label && (
+              <div class="release-group">
+                <h3 class="release-group__title">{group.label}</h3>
+                {group.compatibility && (
+                  <p class="compat">
+                    <span class="compat__label">Syncs with</span>
+                    <span class="compat__value">{group.compatibility}</span>
+                  </p>
+                )}
+              </div>
+            )}
             <ul class="releases">
               {group.releases.map((r) => (
                 <li class="release">
@@ -333,12 +345,39 @@ const releaseGroups = surface ? buildReleaseGroups(surface) : [];
     font-size: 0.92rem;
   }
   .release-group {
-    font-size: 1.02rem;
-    color: var(--oc-brand);
     margin: 26px 0 14px;
   }
   .release-group:first-of-type {
     margin-top: 4px;
+  }
+  .release-group__title {
+    font-size: 1.02rem;
+    color: var(--oc-brand);
+    margin: 0 0 8px;
+  }
+  /* ---------- Compatibility chip (shared look with the downloads landing) ---------- */
+  .compat {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0;
+    padding: 5px 12px 5px 10px;
+    border: 1px solid var(--oc-border);
+    border-left: 3px solid var(--oc-primary);
+    border-radius: var(--radius-sm);
+    background: var(--oc-bg-highlight);
+    font-size: 0.9rem;
+  }
+  .compat__label {
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-size: 0.72rem;
+    color: var(--oc-primary);
+  }
+  .compat__value {
+    font-weight: 600;
+    color: var(--oc-text);
   }
   .releases {
     list-style: none;

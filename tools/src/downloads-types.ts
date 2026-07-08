@@ -105,6 +105,11 @@ export interface DownloadLine {
   /** That release's own download count (0 when none recorded). */
   downloads: number;
   binaries: DownloadBinary[];
+  /**
+   * Which ownCloud servers this line syncs with, e.g. "ownCloud Classic and
+   * Infinite Scale (oCIS)". Absent when not known for the major.
+   */
+  compatibility?: string;
 }
 
 /**

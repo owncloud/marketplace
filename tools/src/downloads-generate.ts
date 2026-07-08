@@ -167,6 +167,16 @@ export function matchClientPackages(assets: RawAsset[]): DownloadBinary[] {
 const CLIENT_LINE_FLOOR = 6;
 
 /**
+ * Which ownCloud servers each desktop-client major line syncs with. The 6.x
+ * line works with both classic ownCloud Server and Infinite Scale; 7.x targets
+ * Infinite Scale only. Majors absent here render no compatibility note.
+ */
+const CLIENT_COMPATIBILITY: Record<number, string> = {
+  6: "ownCloud Classic and Infinite Scale (oCIS)",
+  7: "Infinite Scale (oCIS) only",
+};
+
+/**
  * Group a client's release history into one line per major version (>= the
  * floor), keeping the newest release of each major. `history` is already
  * newest-first, so the first release seen for a major is its newest. Older
@@ -187,6 +197,7 @@ export function buildClientLines(history: DownloadRelease[]): DownloadLine[] {
       publishedAt: r.publishedAt,
       downloads: r.downloads,
       binaries: r.binaries,
+      ...(CLIENT_COMPATIBILITY[major] && { compatibility: CLIENT_COMPATIBILITY[major] }),
     });
   }
   return [...byMajor.values()].sort((a, b) => b.major - a.major);

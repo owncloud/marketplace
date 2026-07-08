@@ -129,6 +129,12 @@ const generated = downloads ? fmtDate(downloads.generatedAt) : null;
                     <span class="surface__line-downloads">{fmtDownloads(line.downloads)}</span>
                   )}
                 </p>
+                {line.compatibility && (
+                  <p class="compat">
+                    <span class="compat__label">Syncs with</span>
+                    <span class="compat__value">{line.compatibility}</span>
+                  </p>
+                )}
                 {line.binaries.length > 0 ? (
                   <ul class="downloads">
                     {line.binaries.map((b) => (
@@ -405,6 +411,30 @@ const generated = downloads ? fmtDate(downloads.generatedAt) : null;
   .surface__line-downloads {
     font-size: 0.86rem;
     color: var(--oc-text-muted);
+  }
+  /* ---------- Compatibility chip (desktop client lines) ---------- */
+  .compat {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0 0 14px;
+    padding: 5px 12px 5px 10px;
+    border: 1px solid var(--oc-border);
+    border-left: 3px solid var(--oc-primary);
+    border-radius: var(--radius-sm);
+    background: var(--oc-bg-highlight);
+    font-size: 0.9rem;
+  }
+  .compat__label {
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-size: 0.72rem;
+    color: var(--oc-primary);
+  }
+  .compat__value {
+    font-weight: 600;
+    color: var(--oc-text);
   }
 
   /* ---------- Binary download buttons ---------- */

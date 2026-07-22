@@ -27,6 +27,9 @@ jobs:
           # base". checkout already used fetch-depth: 0, so this stays unshallow.
           git fetch origin "${{ github.base_ref }}"
           npx tsx src/cli/check-changeset.ts "origin/${{ github.base_ref }}"
+      - name: Verify code-signing signatures on new releases
+        working-directory: tools
+        run: npx tsx src/cli/check-signatures.ts "origin/${{ github.base_ref }}"
       - name: Validate all releases
         working-directory: tools
         run: npx tsx src/cli/validate.ts ../apps ../extensions

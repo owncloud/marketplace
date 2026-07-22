@@ -61,7 +61,7 @@ export async function verifyReleaseSignature(
   const parsed = parseSignatureJson(sigEntry.bytes.toString("utf8"));
 
   // Gate 2: the manifest must match the tarball's files exactly.
-  verifyManifest(entries, rootPrefix, parsed.hashes);
+  verifyManifest(entries, rootPrefix, parsed.hashes, parsed.kind);
 
   // Gate 3: the signature must verify and the cert must chain to a trusted root.
   await verifyCryptographically(parsed, opts.trustRootsDir ?? TRUST_ROOTS_DIR);
@@ -72,10 +72,14 @@ function verifyManifest(
   entries: TarballEntry[],
   rootPrefix: string,
   hashes: Record<string, string>,
+  kind: ParsedSignature["kind"],
 ): void {
   const onDisk = new Map<string, Buffer>();
   for (const e of entries) {
     if (!e.path.startsWith(rootPrefix)) continue;
+    // The legacy v1 signer followed symlinks and hashed their target content;
+    // ocsign (v2) never follows symlinks, so they are not in a v2 manifest.
+    if (e.isSymlink && kind === "v2") continue;
     const key = e.path.slice(rootPrefix.length);
     if (key === SIGNATURE_JSON_KEY) continue; // excluded from its own manifest
     if (isCruft(key)) continue;

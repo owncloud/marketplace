@@ -1,7 +1,7 @@
 import { describe, it, expect, afterEach, afterAll } from "vitest";
-import { mkdtemp, mkdir, writeFile, rm } from "node:fs/promises";
+import { mkdtemp, mkdir, writeFile, rm, symlink } from "node:fs/promises";
 import { tmpdir } from "node:os";
-import { join } from "node:path";
+import { join, relative } from "node:path";
 import crypto from "node:crypto";
 import * as tar from "tar";
 import { verifyReleaseSignature } from "../src/signing/verify-signature.js";
@@ -37,10 +37,15 @@ function manifestOf(files: Record<string, string>): Hashes {
 
 /**
  * Build an app tarball under a temp dir: writes `files` plus
- * `appinfo/signature.json` (= signatureJson) under `<APP_ID>/`, tars it, and
- * returns the tarball path. Registers cleanup.
+ * `appinfo/signature.json` (= signatureJson) under `<APP_ID>/`, optionally adds
+ * symlinks (`symlinks`: link path -> target path, both relative to the app
+ * root), tars it, and returns the tarball path. Registers cleanup.
  */
-async function buildTarball(files: Record<string, string>, signatureJson: string): Promise<string> {
+async function buildTarball(
+  files: Record<string, string>,
+  signatureJson: string,
+  symlinks: Record<string, string> = {},
+): Promise<string> {
   const staging = await mkdtemp(join(tmpdir(), "sig-stage-"));
   cleanups.push(() => rm(staging, { recursive: true, force: true }));
   const appDir = join(staging, APP_ID);
@@ -48,6 +53,13 @@ async function buildTarball(files: Record<string, string>, signatureJson: string
     const full = join(appDir, rel);
     await mkdir(join(full, ".."), { recursive: true });
     await writeFile(full, content);
+  }
+  for (const [linkRel, targetRel] of Object.entries(symlinks)) {
+    const linkFull = join(appDir, linkRel);
+    await mkdir(join(linkFull, ".."), { recursive: true });
+    // Relative link target, resolved against the link's own directory.
+    const rel = relative(join(linkFull, ".."), join(appDir, targetRel));
+    await symlink(rel, linkFull);
   }
   await mkdir(join(appDir, "appinfo"), { recursive: true });
   await writeFile(join(appDir, "appinfo", "signature.json"), signatureJson);
@@ -82,6 +94,29 @@ describe("verifyReleaseSignature — positive", () => {
     const sig = pki.signV1(manifestOf(FILES));
     const withCruft = { ...FILES, ".DS_Store": "junk", "foo/Thumbs.db": "junk" };
     const tarball = await buildTarball(withCruft, sig);
+    await expect(verifyReleaseSignature(tarball, opts())).resolves.toBeUndefined();
+  });
+
+  it("accepts a v1 signature that hashes a symlink's target content (legacy signer followed symlinks)", async () => {
+    // Real classic apps ship e.g. vendor/bin/phpunit -> ../phpunit/.../phpunit.
+    // The v1 signer followed the link and hashed the TARGET file's bytes under
+    // the link's path, so the manifest key is the link but its hash is the
+    // target content.
+    const target = "vendor/phpunit/phpunit/phpunit";
+    const files = { ...FILES, [target]: "#!/usr/bin/env php\n<?php // phpunit\n" };
+    const manifest = manifestOf(files);
+    // Add the symlink entry: same content hash as the target.
+    manifest["vendor/bin/phpunit"] = manifest[target];
+    const sig = pki.signV1(manifest);
+    const tarball = await buildTarball(files, sig, { "vendor/bin/phpunit": target });
+    await expect(verifyReleaseSignature(tarball, opts())).resolves.toBeUndefined();
+  });
+
+  it("ignores symlinks for v2 (ocsign never follows them)", async () => {
+    // A v2 manifest does not list symlinks; a symlink present in the package
+    // must not be treated as an extra unlisted file.
+    const sig = pki.signV2(manifestOf(FILES), "ecdsa-p384-sha384");
+    const tarball = await buildTarball(FILES, sig, { "vendor/bin/phpunit": "js/app.js" });
     await expect(verifyReleaseSignature(tarball, opts())).resolves.toBeUndefined();
   });
 });

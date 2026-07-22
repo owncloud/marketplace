@@ -13,15 +13,25 @@ export type Hashes = Record<string, string>;
 
 /**
  * Legacy (schema v1 / "G1") encoding — what PHP `json_encode($hashes)` emits in
- * `occ integrity:sign-app`: compact (no whitespace), keys in insertion order,
- * and forward slashes escaped as `\/` (PHP's default). We reconstruct it from
- * the parsed map, so key order must match the order the keys appear in the
- * signature.json file — see parseSignatureJson, which preserves it.
+ * `occ integrity:sign-app`: compact (no whitespace), keys in the array's
+ * insertion order, and forward slashes escaped as `\/` (PHP's default).
+ *
+ * `keyOrder`, when given, fixes the emission order of the keys — it must be the
+ * order the keys appear in the signature.json file. This matters because PHP
+ * preserves array order, but a plain JS object (and `JSON.stringify` over it)
+ * reorders integer-like keys ("0", "2", "10", …) ahead of the rest in ascending
+ * numeric order. Relying on object iteration would therefore diverge from PHP
+ * for any manifest containing a pure-integer file path (e.g. a file named "2").
+ * When omitted, own-key iteration order is used (fine when no integer-like keys
+ * are present).
  */
-export function legacyEncodeV1(hashes: Hashes): Buffer {
-  // JSON.stringify preserves own-enumerable string-key insertion order, which we
-  // seeded from the file's key order. Then escape "/" the way PHP does.
-  const compact = JSON.stringify(hashes).replace(/\//g, "\\/");
+export function legacyEncodeV1(hashes: Hashes, keyOrder?: readonly string[]): Buffer {
+  const keys = keyOrder ?? Object.keys(hashes);
+  // Encode each "key":value pair with JSON string escaping, then escape "/" the
+  // way PHP does. Assembling by hand (rather than JSON.stringify(hashes)) lets us
+  // honour keyOrder exactly, including integer-like keys.
+  const body = keys.map((k) => `${JSON.stringify(k)}:${JSON.stringify(hashes[k])}`).join(",");
+  const compact = `{${body}}`.replace(/\//g, "\\/");
   return Buffer.from(compact, "utf8");
 }
 

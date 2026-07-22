@@ -48,14 +48,23 @@ export async function verifyReleaseSignature(
 ): Promise<void> {
   const entries = await readTarballEntries(tarballPath);
 
-  // Gate 1: locate the signature file.
-  const sigEntry = entries.find((e) => SIGNATURE_JSON_RE.test(e.path));
-  if (sigEntry === undefined) {
+  // Gate 1: locate the signature file. There must be exactly one — a package
+  // with two signed app roots is ambiguous (which manifest governs which
+  // subtree?), and picking one by scan order would leave the other unscoped.
+  const sigEntries = entries.filter((e) => SIGNATURE_JSON_RE.test(e.path));
+  if (sigEntries.length === 0) {
     throw new ValidationError(
       "package is not signed: no appinfo/signature.json found (sign the app with " +
         "ocsign or `occ integrity:sign-app` before submitting)",
     );
   }
+  if (sigEntries.length > 1) {
+    throw new ValidationError(
+      "package contains multiple appinfo/signature.json files; a release must contain exactly " +
+        "one signed app root",
+    );
+  }
+  const sigEntry = sigEntries[0];
   const rootPrefix = sigEntry.path.slice(0, sigEntry.path.length - SIGNATURE_JSON_KEY.length);
 
   const parsed = parseSignatureJson(sigEntry.bytes.toString("utf8"));
@@ -76,7 +85,16 @@ function verifyManifest(
 ): void {
   const onDisk = new Map<string, Buffer>();
   for (const e of entries) {
-    if (!e.path.startsWith(rootPrefix)) continue;
+    // Every file must live under the signed app root. A file outside rootPrefix
+    // is not covered by the manifest, so it would ride along unsigned; reject
+    // rather than silently skip (unless it is tolerated OS cruft anywhere).
+    if (!e.path.startsWith(rootPrefix)) {
+      if (isCruft(e.path)) continue;
+      throw new ValidationError(
+        `signature manifest mismatch: file "${e.path}" is outside the signed app root and is ` +
+          `not covered by appinfo/signature.json (the package was modified after signing)`,
+      );
+    }
     // The legacy v1 signer followed symlinks and hashed their target content;
     // ocsign (v2) never follows symlinks, so they are not in a v2 manifest.
     if (e.isSymlink && kind === "v2") continue;
@@ -87,7 +105,10 @@ function verifyManifest(
   }
 
   for (const key of onDisk.keys()) {
-    if (!(key in hashes)) {
+    // hasOwnProperty, not `key in hashes`: the latter also matches inherited
+    // Object.prototype members ("toString", "constructor", "__proto__", …), which
+    // would let a file with one of those names pass as if it were in the manifest.
+    if (!Object.prototype.hasOwnProperty.call(hashes, key)) {
       throw new ValidationError(
         `signature manifest mismatch: file "${key}" is present in the package but not in ` +
           `appinfo/signature.json (the package was modified after signing)`,
@@ -121,7 +142,7 @@ async function verifyCryptographically(
 
   if (parsed.kind === "v1") {
     const leaf = parseCert(parsed.certificate, "leaf certificate");
-    const message = legacyEncodeV1(parsed.hashes);
+    const message = legacyEncodeV1(parsed.hashes, parsed.keyOrder);
     const ok = verifyRsaPssMixed(leaf.publicKey, message, Buffer.from(parsed.signature, "base64"), {
       messageHash: "sha1",
       mgf1Hash: "sha512",
@@ -212,8 +233,10 @@ function verifyChain(
   if (opts.checkTime && !inWindow(leaf)) {
     throw new ValidationError("signing certificate is expired or not yet valid");
   }
-  // leaf -> intermediate
-  const issuer = intermediates.find((i) => leaf.verify(i.publicKey) && leaf.checkIssued(i));
+  // leaf -> intermediate. The issuer must itself be a CA — defence in depth so a
+  // valid end-entity leaf can never be repurposed as an intermediate if the
+  // chain walk is ever generalised beyond this fixed three-hop model.
+  const issuer = intermediates.find((i) => i.ca && leaf.verify(i.publicKey) && leaf.checkIssued(i));
   if (issuer === undefined) {
     throw new ValidationError(
       "signing certificate does not chain to a trusted ownCloud code-signing authority",
@@ -224,7 +247,7 @@ function verifyChain(
   }
   // intermediate -> trusted root
   const root = roots.find(
-    (r) => issuer.verify(r.publicKey) && issuer.checkIssued(r) && r.checkIssued(r),
+    (r) => r.ca && issuer.verify(r.publicKey) && issuer.checkIssued(r) && r.checkIssued(r),
   );
   if (root === undefined) {
     throw new ValidationError(

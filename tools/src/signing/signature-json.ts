@@ -20,6 +20,13 @@ export type ParsedSignature =
   | {
       kind: "v1";
       hashes: Hashes;
+      /**
+       * The hash keys in the exact order they appear in signature.json. The v1
+       * signed message is a reconstruction of PHP's `json_encode($hashes)`, which
+       * preserves array order; a plain parsed object reorders integer-like keys,
+       * so we carry the file's literal order to reproduce the signed bytes.
+       */
+      keyOrder: string[];
       /** base64 RSA-PSS signature. */
       signature: string;
       /** PEM leaf certificate. */
@@ -63,14 +70,86 @@ export function parseSignatureJson(text: string): ParsedSignature {
   if ("v" in obj || "certificates" in obj || "alg" in obj) {
     return parseV2(obj);
   }
-  return parseV1(obj);
+  return parseV1(obj, text);
 }
 
-function parseV1(obj: Record<string, unknown>): ParsedSignature {
+function parseV1(obj: Record<string, unknown>, text: string): ParsedSignature {
   const hashes = requireHashes(obj.hashes);
   const signature = requireNonEmptyString(obj.signature, "signature");
   const certificate = requireNonEmptyString(obj.certificate, "certificate");
-  return { kind: "v1", hashes, signature, certificate };
+  // Recover the file's literal key order (see ParsedSignature.keyOrder). Fall
+  // back to parsed-object order if the scan can't line up with the parsed keys.
+  const scanned = scanHashKeyOrder(text);
+  const keyOrder =
+    scanned !== undefined && sameKeySet(scanned, hashes) ? scanned : Object.keys(hashes);
+  return { kind: "v1", hashes, keyOrder, signature, certificate };
+}
+
+/**
+ * Return the keys of the top-level `hashes` object in the order they appear in
+ * the raw JSON text, or undefined if the structure can't be located. Needed
+ * because JSON.parse reorders integer-like keys, but the v1 signed message
+ * follows PHP's array (insertion) order. String-aware so braces/quotes inside
+ * key or value strings don't confuse the scan.
+ */
+function scanHashKeyOrder(text: string): string[] | undefined {
+  const marker = /"hashes"\s*:\s*\{/g;
+  const m = marker.exec(text);
+  if (m === null) return undefined;
+  let i = m.index + m[0].length; // first byte after the opening "{"
+  const keys: string[] = [];
+  let expectKey = true;
+  while (i < text.length) {
+    const ch = text[i];
+    if (ch === "}") break; // end of the hashes object
+    if (ch === '"') {
+      const { value, end } = readJsonString(text, i);
+      if (end === -1) return undefined; // unterminated string → give up
+      if (expectKey) keys.push(value);
+      i = end;
+      continue;
+    }
+    if (ch === ":") expectKey = false;
+    else if (ch === ",") expectKey = true;
+    i++;
+  }
+  return keys;
+}
+
+/**
+ * Read a JSON string starting at the opening quote `text[start]`. Returns the
+ * unescaped value and the index just past the closing quote (`end`), or
+ * `end === -1` if the string is unterminated.
+ */
+function readJsonString(text: string, start: number): { value: string; end: number } {
+  let i = start + 1;
+  let raw = '"';
+  while (i < text.length) {
+    const ch = text[i];
+    raw += ch;
+    if (ch === "\\") {
+      // Copy the escaped char verbatim; JSON.parse below un-escapes it.
+      if (i + 1 < text.length) raw += text[i + 1];
+      i += 2;
+      continue;
+    }
+    if (ch === '"') {
+      try {
+        return { value: JSON.parse(raw) as string, end: i + 1 };
+      } catch {
+        return { value: "", end: -1 };
+      }
+    }
+    i++;
+  }
+  return { value: "", end: -1 };
+}
+
+function sameKeySet(order: string[], hashes: Hashes): boolean {
+  const keys = Object.keys(hashes);
+  if (order.length !== keys.length) return false;
+  const set = new Set(order);
+  return set.size === order.length && keys.every((k) => set.has(k));
 }
 
 function parseV2(obj: Record<string, unknown>): ParsedSignature {

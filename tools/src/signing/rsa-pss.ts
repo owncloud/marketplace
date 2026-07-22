@@ -49,12 +49,17 @@ export function verifyRsaPssMixed(
   const maskedDB = EM.subarray(0, EM.length - hLen - 1);
   const H = EM.subarray(EM.length - hLen - 1, EM.length - 1);
 
+  // RFC 8017 §9.1.2 step 6: the leftmost (8*emLen - emBits) bits of the leftmost
+  // maskedDB byte must be zero; a malformed encoding is rejected here rather than
+  // silently masked away.
+  const zeroBits = 8 * emLen - emBits;
+  if (zeroBits > 0 && (maskedDB[0] & ((0xff << (8 - zeroBits)) & 0xff)) !== 0) return false;
+
   const dbMask = mgf1(H, maskedDB.length, params.mgf1Hash);
   const DB = Buffer.from(maskedDB);
   for (let i = 0; i < DB.length; i++) DB[i] ^= dbMask[i];
 
-  // Zero the leftmost (8*emLen - emBits) bits of DB.
-  const zeroBits = 8 * emLen - emBits;
+  // Zero the leftmost (8*emLen - emBits) bits of DB (step 9).
   DB[0] &= 0xff >> zeroBits;
 
   const psLen = DB.length - sLen - 1;

@@ -14,6 +14,27 @@ describe("parseSignatureJson", () => {
     }
   });
 
+  it("recovers the v1 hash key order from the raw text (integer-like keys)", () => {
+    // JSON.parse would reorder "2"/"10" ahead of "a"; keyOrder must reflect the
+    // file's literal order so the reconstructed v1 signed message matches PHP.
+    const text = '{"hashes":{"a":"1","2":"2","10":"3"},"signature":"c2ln","certificate":"PEM"}';
+    const parsed = parseSignatureJson(text);
+    expect(parsed.kind).toBe("v1");
+    if (parsed.kind === "v1") {
+      expect(parsed.keyOrder).toEqual(["a", "2", "10"]);
+    }
+  });
+
+  it("is not confused by braces or quotes inside key/value strings", () => {
+    const text = '{"hashes":{"a/b}c":"h1","d\\"e":"h2"},"signature":"c2ln","certificate":"PEM"}';
+    const parsed = parseSignatureJson(text);
+    if (parsed.kind === "v1") {
+      expect(parsed.keyOrder).toEqual(["a/b}c", 'd"e']);
+    } else {
+      throw new Error("expected v1");
+    }
+  });
+
   it("detects the v2 shape and parses the chain", () => {
     const parsed = parseSignatureJson(
       JSON.stringify({

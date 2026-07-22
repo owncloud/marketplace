@@ -41,4 +41,14 @@ describe("legacyEncodeV1", () => {
     const out = legacyEncodeV1({ z: "1", a: "2" }).toString("utf8");
     expect(out).toBe('{"z":"1","a":"2"}');
   });
+
+  it("honours an explicit keyOrder for integer-like keys (PHP array order)", () => {
+    // A plain object / JSON.stringify would reorder "2","10" ahead of "a" in
+    // ascending numeric order; PHP json_encode keeps array order. keyOrder pins it.
+    const hashes = { a: "1", "2": "2", "10": "3" };
+    const out = legacyEncodeV1(hashes, ["a", "2", "10"]).toString("utf8");
+    expect(out).toBe('{"a":"1","2":"2","10":"3"}');
+    // Without keyOrder, object iteration puts integer keys first — the divergence.
+    expect(legacyEncodeV1(hashes).toString("utf8")).toBe('{"2":"2","10":"3","a":"1"}');
+  });
 });

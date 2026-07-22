@@ -205,3 +205,93 @@ describe("verifyReleaseSignature — Gate 3 (crypto)", () => {
     await expect(verifyReleaseSignature(tarball, opts())).rejects.toThrow(/unsupported alg/i);
   });
 });
+
+describe("verifyReleaseSignature — Gate 2 (scope / smuggling)", () => {
+  /** Tar an arbitrary staging tree (top-level entries under `roots`). */
+  async function tarStaging(build: (staging: string) => Promise<string[]>): Promise<string> {
+    const staging = await mkdtemp(join(tmpdir(), "sig-scope-"));
+    cleanups.push(() => rm(staging, { recursive: true, force: true }));
+    const roots = await build(staging);
+    const out = join(staging, "package.tar.gz");
+    await tar.c({ gzip: true, file: out, cwd: staging }, roots);
+    return out;
+  }
+
+  async function writeTree(dir: string, files: Record<string, string>): Promise<void> {
+    for (const [rel, content] of Object.entries(files)) {
+      const full = join(dir, rel);
+      await mkdir(join(full, ".."), { recursive: true });
+      await writeFile(full, content);
+    }
+  }
+
+  it("rejects a file outside the signed app root (smuggled unsigned file)", async () => {
+    const sig = pki.signV1(manifestOf(FILES));
+    const tarball = await tarStaging(async (staging) => {
+      await writeTree(join(staging, APP_ID), FILES);
+      await writeFile(join(staging, APP_ID, "appinfo", "signature.json"), sig);
+      // Unsigned file at the archive top level, outside "testapp/".
+      await writeFile(join(staging, "evil.php"), "<?php system($_GET['c']);\n");
+      return [APP_ID, "evil.php"];
+    });
+    await expect(verifyReleaseSignature(tarball, opts())).rejects.toThrow(
+      /outside the signed app root|manifest mismatch/i,
+    );
+  });
+
+  it("rejects a sibling app-root tree outside the signed root", async () => {
+    const sig = pki.signV1(manifestOf(FILES));
+    const tarball = await tarStaging(async (staging) => {
+      await writeTree(join(staging, APP_ID), FILES);
+      await writeFile(join(staging, APP_ID, "appinfo", "signature.json"), sig);
+      await writeTree(join(staging, `${APP_ID}-extra`), { "lib/evil.php": "<?php // evil\n" });
+      return [APP_ID, `${APP_ID}-extra`];
+    });
+    await expect(verifyReleaseSignature(tarball, opts())).rejects.toThrow(
+      /outside the signed app root|manifest mismatch/i,
+    );
+  });
+
+  it("rejects a package with more than one appinfo/signature.json", async () => {
+    const sig = pki.signV1(manifestOf(FILES));
+    const tarball = await tarStaging(async (staging) => {
+      await writeTree(join(staging, APP_ID), FILES);
+      await writeFile(join(staging, APP_ID, "appinfo", "signature.json"), sig);
+      // A second signed root — ambiguous which manifest governs which subtree.
+      await writeTree(join(staging, `${APP_ID}2`), FILES);
+      await writeFile(join(staging, `${APP_ID}2`, "appinfo", "signature.json"), sig);
+      return [APP_ID, `${APP_ID}2`];
+    });
+    await expect(verifyReleaseSignature(tarball, opts())).rejects.toThrow(
+      /multiple appinfo\/signature\.json/i,
+    );
+  });
+
+  it("rejects a file named after an Object.prototype member (no `in` bypass)", async () => {
+    // "toString"/"constructor"/"__proto__" are inherited on a plain object, so a
+    // `key in hashes` test would treat such a file as manifest-listed. It must not.
+    const sig = pki.signV1(manifestOf(FILES));
+    for (const name of ["toString", "constructor", "__proto__"]) {
+      const tarball = await tarStaging(async (staging) => {
+        await writeTree(join(staging, APP_ID), FILES);
+        await writeFile(join(staging, APP_ID, "appinfo", "signature.json"), sig);
+        await writeFile(join(staging, APP_ID, name), "<?php // smuggled\n");
+        return [APP_ID];
+      });
+      await expect(verifyReleaseSignature(tarball, opts())).rejects.toThrow(
+        /present in the package but not in/i,
+      );
+    }
+  });
+
+  it("still tolerates OS cruft outside the signed root", async () => {
+    const sig = pki.signV1(manifestOf(FILES));
+    const tarball = await tarStaging(async (staging) => {
+      await writeTree(join(staging, APP_ID), FILES);
+      await writeFile(join(staging, APP_ID, "appinfo", "signature.json"), sig);
+      await writeFile(join(staging, ".DS_Store"), "junk");
+      return [APP_ID, ".DS_Store"];
+    });
+    await expect(verifyReleaseSignature(tarball, opts())).resolves.toBeUndefined();
+  });
+});

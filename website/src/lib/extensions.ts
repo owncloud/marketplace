@@ -46,12 +46,16 @@ export interface CatalogExtension {
  * _site output, or [] when it is absent — the API generator produces it, so a
  * build before that step has run legitimately has no extensions and the pages
  * degrade gracefully.
+ *
+ * The feed is `{ "apps": [...] }` (oCIS Web's RawAppListSchema shape), not a
+ * bare array.
  */
 export async function loadExtensions(): Promise<CatalogExtension[]> {
   try {
-    return JSON.parse(
+    const doc = JSON.parse(
       await readFile(resolve(ocisApiDir, "apps.json"), "utf8"),
-    ) as CatalogExtension[];
+    ) as { apps: CatalogExtension[] };
+    return doc.apps;
   } catch (err) {
     if ((err as NodeJS.ErrnoException).code === "ENOENT") return [];
     throw err;

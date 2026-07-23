@@ -116,9 +116,13 @@ async function writeJson(path: string, data: unknown): Promise<void> {
  * A single feed (no platform-version fan-out): oCIS filters on each version's
  * minOCIS client-side. The classic api/v1 tree is written separately and is
  * untouched by this function.
+ *
+ * oCIS Web's RawAppListSchema (owncloud/ocis → web/packages/web-app-app-store/src/types.ts)
+ * expects `{ "apps": [...] }`, not a bare array — matching awesome-ocis's
+ * webApps/apps.json, which this feed replaces.
  */
 export async function writeOcisApi(outDir: string, exts: OcisApp[]): Promise<void> {
-  await writeJson(join(outDir, "api", "ocis", "v1", "apps.json"), exts);
+  await writeJson(join(outDir, "api", "ocis", "v1", "apps.json"), { apps: exts });
 }
 
 // Re-exported so callers (cli/generate-api) can pass the shared providers without

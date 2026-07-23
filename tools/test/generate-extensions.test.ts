@@ -193,7 +193,7 @@ describe("writeOcisApi", () => {
     if (out) await rm(out, { recursive: true, force: true });
   });
 
-  it("writes api/ocis/v1/apps.json as an array", async () => {
+  it("writes api/ocis/v1/apps.json as { apps: [...] }, matching oCIS's RawAppListSchema", async () => {
     out = await mkdtemp(join(tmpdir(), "ocis-api-"));
     const app = buildExtension(
       "draw-io",
@@ -205,8 +205,8 @@ describe("writeOcisApi", () => {
     );
     await writeOcisApi(out, [app]);
     const written = JSON.parse(await readFile(join(out, "api/ocis/v1/apps.json"), "utf8"));
-    expect(Array.isArray(written)).toBe(true);
-    expect(written[0].id).toBe("com.example.draw-io");
+    expect(Array.isArray(written.apps)).toBe(true);
+    expect(written.apps[0].id).toBe("com.example.draw-io");
   });
 
   it("is deterministic: re-running yields byte-identical apps.json", async () => {

@@ -8,15 +8,15 @@ authors:
       url: https://owncloud.com
 tags:
     - search
-    - viewer
+    - filter
     - photo
-    - productivity
+    - metadata
 minOCIS: 7.3.1
 resources:
     - label: GitHub
       icon: github
       url: https://github.com/owncloud/web-extensions/tree/main/packages/web-app-advanced-search
 screenshotCaptions:
-    - Narrow down photo search results by camera make, ISO, and aperture
-    - Search results displayed in a clean visual grid view
-    - Previously saved searches are one click away in the sidebar panel
+    - EXIF-powered photo search finds shots by camera make, ISO, and aperture
+    - Search results shown in a sortable table with type, size, and modified date
+    - Save a search once and reload it instantly from the sidebar

@@ -1,0 +1,22 @@
+id: com.github.owncloud.web-extensions.advanced-search
+name: Advanced Search
+subtitle: Advanced search extension for ownCloud with photo EXIF metadata filters
+license: Apache-2.0
+version: 0.3.1
+authors:
+    - name: ownCloud GmbH
+      url: https://owncloud.com
+tags:
+    - search
+    - filter
+    - photo
+    - metadata
+minOCIS: 7.3.1
+resources:
+    - label: GitHub
+      icon: github
+      url: https://github.com/owncloud/web-extensions/tree/main/packages/web-app-advanced-search
+screenshotCaptions:
+    - Photo search results appear as a visual thumbnail grid
+    - Search results for everyday documents are displayed in a sortable table
+    - EXIF camera and lens filters narrow a search, shown as active filter chips

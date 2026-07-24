@@ -1,0 +1,21 @@
+id: com.github.owncloud.web-extensions.importer
+name: Importer
+subtitle: ownCloud Web importer
+license: Apache-2.0
+version: 0.3.0
+authors:
+    - name: ownCloud GmbH
+      url: https://owncloud.com
+tags:
+    - importer
+    - migration
+    - cloud-integration
+    - productivity
+minOCIS: 6.5.0
+resources:
+    - label: GitHub
+      icon: github
+      url: https://github.com/owncloud/web-extensions/tree/main/packages/web-app-importer
+screenshotCaptions:
+    - Import panel offers Google Drive, OneDrive, and WebDAV as file sources
+    - Browsing files on a connected WebDAV server, ready to import

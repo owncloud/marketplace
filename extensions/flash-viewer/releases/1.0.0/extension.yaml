@@ -1,0 +1,23 @@
+id: com.github.donmor.flash-viewer
+name: Flash Viewer
+subtitle: Flash (SWF) viewer for ownCloud
+description: ownCloud oCIS web extension for viewing Adobe Flash (.swf) files, powered by Ruffle. Note that you need `wasm-unsafe-eval` in the `script-src` CSP directive to use Ruffle in oCIS.
+license: AGPL-3.0
+version: 1.0.0
+authors:
+  - name: donmor
+    url: https://github.com/donmor/
+tags:
+  - flash
+  - viewer
+resources:
+  - label: GitHub
+    icon: github
+    url: https://github.com/donmor/web-app-flash-viewer
+  - label: Ruffle
+    icon: global
+    url: https://ruffle.rs/
+cover: true
+screenshotCaptions:
+  - View Flash file in ownCloud Web
+  - Running a Flash game in Ruffle

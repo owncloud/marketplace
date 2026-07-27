@@ -1,0 +1,22 @@
+id: com.github.owncloud.web-extensions.photo-addon
+name: Photo Addon
+subtitle: Photo gallery extension for ownCloud with timeline view, EXIF metadata, and map display
+license: Apache-2.0
+version: 0.3.0
+authors:
+    - name: ownCloud GmbH
+      url: https://owncloud.com
+tags:
+    - gallery
+    - viewer
+    - media
+    - map
+minOCIS: 7.3.1
+resources:
+    - label: GitHub
+      icon: github
+      url: https://github.com/owncloud/web-extensions/tree/main/packages/web-app-photo-addon
+screenshotCaptions:
+    - Photos are grouped into a chronological timeline with real thumbnail previews
+    - Geotagged photos appear pinned to a world map by their GPS location
+    - Selecting a photo shows its full-size image alongside EXIF and AI-detected tags

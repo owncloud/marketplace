@@ -1,0 +1,18 @@
+id: com.github.owncloud.web-extensions.unzip
+name: Unzip
+subtitle: ownCloud Web unzip
+license: Apache-2.0
+version: 0.4.0
+authors:
+    - name: ownCloud GmbH
+      url: https://owncloud.com
+tags:
+    - file-management
+    - file-action
+minOCIS: 6.2.0
+resources:
+    - label: GitHub
+      icon: github
+      url: https://github.com/owncloud/web-extensions/tree/main/packages/web-app-unzip
+screenshotCaptions:
+    - Zip contents appear as ready-to-use files in a new folder

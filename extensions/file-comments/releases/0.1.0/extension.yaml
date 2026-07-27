@@ -1,0 +1,21 @@
+id: com.github.owncloud.web-extensions.file-comments
+name: File Comments
+subtitle: Markdown file comments stored in oCIS WebDAV metadata
+license: Apache-2.0
+version: 0.1.0
+authors:
+    - name: ownCloud GmbH
+      url: https://owncloud.com
+tags:
+    - comments
+    - collaboration
+    - markdown
+    - permissions
+minOCIS: 8.0.4
+resources:
+    - label: GitHub
+      icon: github
+      url: https://github.com/owncloud/web-extensions/tree/main/packages/web-app-file-comments
+screenshotCaptions:
+    - Team discussions with rich Markdown formatting appear right in the file sidebar
+    - Editing your own comment opens an inline editor with Save and Cancel

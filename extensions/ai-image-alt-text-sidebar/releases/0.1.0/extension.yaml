@@ -1,0 +1,20 @@
+id: com.github.owncloud.web-extensions.ai-image-alt-text-sidebar
+name: Ai Image Alt Text Sidebar
+subtitle: AI Image Alt-Text Generator — sidebarPanel + context-action extension
+license: Apache-2.0
+version: 0.1.0
+authors:
+    - name: ownCloud GmbH
+      url: https://owncloud.com
+tags:
+    - ai
+    - accessibility
+    - image
+    - sidebar
+minOCIS: 8.0.5
+resources:
+    - label: GitHub
+      icon: github
+      url: https://github.com/owncloud/web-extensions/tree/main/packages/web-app-ai-image-alt-text-sidebar
+screenshotCaptions:
+    - AI-generated alt text for an image appears ready to copy, regenerate, or save

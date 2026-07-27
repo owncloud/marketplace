@@ -1,0 +1,19 @@
+id: com.github.owncloud.web-extensions.progress-bars
+name: Progress Bars
+subtitle: ownCloud Progress Bars
+license: Apache-2.0
+version: 0.3.0
+authors:
+    - name: ownCloud GmbH
+      url: https://owncloud.com
+tags:
+    - design
+    - fun
+minOCIS: 6.2.0
+resources:
+    - label: GitHub
+      icon: github
+      url: https://github.com/owncloud/web-extensions/tree/main/packages/web-app-progress-bars
+screenshotCaptions:
+    - Choose the Nyan Cat progress bar from your account preferences
+    - Nyan Cat races across the top of the screen during a background task

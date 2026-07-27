@@ -1,0 +1,21 @@
+id: com.github.owncloud.web-extensions.ai-folder-brief-sidebar
+name: Ai Folder Brief Sidebar
+subtitle: AI Folder Brief Sidebar — sidebarPanel extension that summarises folder contents
+license: Apache-2.0
+version: 0.1.0
+authors:
+    - name: ownCloud GmbH
+      url: https://owncloud.com
+tags:
+    - ai
+    - sidebar
+    - summarization
+    - productivity
+minOCIS: 8.0.5
+resources:
+    - label: GitHub
+      icon: github
+      url: https://github.com/owncloud/web-extensions/tree/main/packages/web-app-ai-folder-brief-sidebar
+screenshotCaptions:
+    - AI-generated brief summarizes a marketing campaign folder in the sidebar
+    - Instant file-type breakdown appears automatically when no AI endpoint is configured

@@ -1,0 +1,21 @@
+id: com.github.owncloud.web-extensions.chat-with-file
+name: Chat With File
+subtitle: Chat with an LLM using a specific file as context.
+license: Apache-2.0
+version: 0.1.0
+authors:
+    - name: ownCloud GmbH
+      url: https://owncloud.com
+tags:
+    - ai
+    - chat
+    - productivity
+    - document
+minOCIS: 8.0.4
+resources:
+    - label: GitHub
+      icon: github
+      url: https://github.com/owncloud/web-extensions/tree/main/packages/web-app-chat-with-file
+screenshotCaptions:
+    - AI-generated answers about an uploaded document appear right in the sidebar
+    - AI-proposed file edits appear as a reviewable line-by-line diff before saving

@@ -1,0 +1,21 @@
+id: com.github.owncloud.web-extensions.group-management
+name: Group Management
+subtitle: Group management full-app extension for ownCloud Web
+license: Apache-2.0
+version: 0.1.0
+authors:
+    - name: ownCloud GmbH
+      url: https://owncloud.com
+tags:
+    - admin
+    - users
+    - groups
+    - management
+minOCIS: 8.0.4
+resources:
+    - label: GitHub
+      icon: github
+      url: https://github.com/owncloud/web-extensions/tree/main/packages/web-app-group-management
+screenshotCaptions:
+    - A group and its members side by side, ready to manage
+    - Searching for a colleague to add to a group

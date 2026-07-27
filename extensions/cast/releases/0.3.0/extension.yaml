@@ -1,0 +1,19 @@
+id: com.github.owncloud.web-extensions.cast
+name: Cast
+subtitle: ownCloud Cast Integration
+license: Apache-2.0
+version: 0.3.0
+authors:
+    - name: ownCloud GmbH
+      url: https://owncloud.com
+tags:
+    - cast
+    - media
+    - streaming
+minOCIS: 4.0.3
+resources:
+    - label: GitHub
+      icon: github
+      url: https://github.com/owncloud/web-extensions/tree/main/packages/web-app-cast
+screenshotCaptions:
+    - Cast files straight to your TV or Chromecast device from the file context menu

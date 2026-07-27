@@ -1,0 +1,21 @@
+id: com.github.owncloud.web-extensions.ai-sensitive-data-scanner
+name: Ai Sensitive Data Scanner
+subtitle: AI Sensitive Data Scanner (Batch) — batch-action extension for scanning files for PII, credentials, and confidential text
+license: Apache-2.0
+version: 0.1.0
+authors:
+    - name: ownCloud GmbH
+      url: https://owncloud.com
+tags:
+    - security
+    - ai
+    - scanner
+    - compliance
+minOCIS: 8.0.5
+resources:
+    - label: GitHub
+      icon: github
+      url: https://github.com/owncloud/web-extensions/tree/main/packages/web-app-ai-sensitive-data-scanner
+screenshotCaptions:
+    - AI scan flags PII, credentials, and confidential details across multiple documents
+    - A plain-language AI summary appears when the model returns unstructured text

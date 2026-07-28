@@ -6,6 +6,7 @@
   "description": "The company behind ownCloud — open-source content collaboration and file sync & share.",
   "logo": "logo.png",
   "apps": [
+    "contacts",
     "migrate_to_kiteworks",
     "migrate_to_ocis"
   ],

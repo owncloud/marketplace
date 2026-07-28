@@ -89,9 +89,26 @@ export function buildApp(
   };
 }
 
+/**
+ * Widen a partial `max-version` to the end of the line it names, the way the
+ * legacy marketplace backend did (it stored a bare `10` as `10.9999.9999`).
+ *
+ * info.xml conventionally declares the oc10 ceiling as `max-version="10"`,
+ * meaning "all of 10.x". Coercing that literally yields `10.0.0`, which would
+ * exclude the app from every `platform/10.15.x` feed — i.e. from the App Store
+ * inside a current server. A bare major widens to `<major>.9999.9999` and a
+ * `major.minor` to `<major>.<minor>.9999`; a full version stays exact.
+ */
+function platformCeiling(platformMax: string): semver.SemVer {
+  const parts = platformMax.trim().split(".");
+  if (parts.length >= 3) return coerce(platformMax);
+  const padded = [...parts, ...Array(3 - parts.length).fill("9999")].join(".");
+  return coerce(padded);
+}
+
 function releaseCoversVersion(rel: ApiRelease, version: string): boolean {
   const v = coerce(version);
-  return semver.gte(v, coerce(rel.platformMin)) && semver.lte(v, coerce(rel.platformMax));
+  return semver.gte(v, coerce(rel.platformMin)) && semver.lte(v, platformCeiling(rel.platformMax));
 }
 
 /**

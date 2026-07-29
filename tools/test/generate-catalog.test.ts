@@ -129,4 +129,53 @@ describe("appsForPlatformVersion", () => {
     const [app] = appsForPlatformVersion([multi], "10.5.0");
     expect(app.releases.map((r) => r.version)).toEqual(["1.0.0"]);
   });
+
+  // info.xml conventionally writes the oc10 ceiling as max-version="10", meaning
+  // "all of 10.x". Taken literally that is 10.0.0 and the app would vanish from
+  // every platform/10.15.x feed — the App Store inside a current server.
+  const forMax = (platformMax: string, version: string): string[] => {
+    const app = buildApp(
+      "calendar",
+      [{ ...base, platformMin: "10.0.0", platformMax }],
+      created,
+      noScreenshots,
+      "https://site",
+    );
+    return appsForPlatformVersion([app], version).map((a) => a.id);
+  };
+
+  it("treats a bare major max-version as covering the whole line", () => {
+    expect(forMax("10", "10.15.0")).toEqual(["calendar"]);
+    expect(forMax("10", "10.16.3")).toEqual(["calendar"]);
+    // ...but not the next major.
+    expect(forMax("10", "11.0.0")).toEqual([]);
+  });
+
+  it("treats a major.minor max-version as covering that minor's patches", () => {
+    expect(forMax("10.15", "10.15.3")).toEqual(["calendar"]);
+    expect(forMax("10.15", "10.16.0")).toEqual([]);
+  });
+
+  it("keeps a full three-part max-version exact", () => {
+    expect(forMax("10.15.0", "10.15.0")).toEqual(["calendar"]);
+    expect(forMax("10.15.0", "10.15.1")).toEqual([]);
+  });
+
+  it("still honours the legacy sentinel and a bare next major", () => {
+    expect(forMax("10.9999.9999", "10.16.3")).toEqual(["calendar"]);
+    expect(forMax("11", "11.0.0")).toEqual(["calendar"]);
+  });
+
+  it("does not widen the lower bound", () => {
+    // min-version="10.11" is a floor of 10.11.0, so 10.10.x stays excluded.
+    const app = buildApp(
+      "calendar",
+      [{ ...base, platformMin: "10.11", platformMax: "10" }],
+      created,
+      noScreenshots,
+      "https://site",
+    );
+    expect(appsForPlatformVersion([app], "10.10.0")).toEqual([]);
+    expect(appsForPlatformVersion([app], "10.11.0").map((a) => a.id)).toEqual(["calendar"]);
+  });
 });

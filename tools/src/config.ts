@@ -45,19 +45,34 @@ export function extAssetUrl(extId: string, version: string): string {
 }
 
 /**
- * ownCloud platform versions for which a per-version apps.json is generated.
- * Covers the supported classic Server lines (every 10.15.x and 10.16.x patch)
- * plus the forward-looking 11.0.0 endpoint. A client asks for the apps
- * compatible with its exact running version; extend as newer releases ship.
+ * Supported classic Server lines, as `major.minor` → highest patch to generate.
+ *
+ * The Market app fetches `/api/v1/platform/<its exact 3-part version>/apps.json`
+ * (`VersionHelper->getPlatformVersion(3)`) and has NO fallback: a version we did
+ * not generate is a 404 that makes `occ market:list` and the in-server App Store
+ * fail outright. Core ships patch releases without any marketplace change, so an
+ * exact enumeration of shipped versions goes stale the day core tags a new patch
+ * (owncloud/core#41773: 10.16.4 released, feed 404s).
+ *
+ * Each line is therefore generated with headroom past its newest release rather
+ * than tracking it exactly. The feeds are pure filtered projections of the same
+ * catalog (~115 KB each, byte-identical across a line), so unreleased patches
+ * cost only disk on the published site and cannot serve anything wrong.
+ * Raise a ceiling when core approaches it; add a line when one opens.
+ */
+const PLATFORM_LINE_MAX_PATCH: Record<string, number> = {
+  "10.15": 9,
+  "10.16": 9,
+};
+
+/**
+ * ownCloud platform versions for which a per-version apps.json is generated:
+ * every patch of each supported classic line (see PLATFORM_LINE_MAX_PATCH) plus
+ * the forward-looking 11.0.0 endpoint. Ascending order.
  */
 export const KNOWN_PLATFORM_VERSIONS = [
-  "10.15.0",
-  "10.15.1",
-  "10.15.2",
-  "10.15.3",
-  "10.16.0",
-  "10.16.1",
-  "10.16.2",
-  "10.16.3",
+  ...Object.entries(PLATFORM_LINE_MAX_PATCH).flatMap(([line, maxPatch]) =>
+    Array.from({ length: maxPatch + 1 }, (_, patch) => `${line}.${patch}`),
+  ),
   "11.0.0",
 ];

@@ -76,6 +76,19 @@ describe("static API is servable", () => {
     expect(app?.releases.map((r) => r.version)).toContain("2.0.0");
   });
 
+  // owncloud/core#41773: 10.16.4 shipped and the feed 404'd, so `occ market:list`
+  // failed with "No marketplace connection". The Market app has no fallback, so
+  // every patch of a supported line must resolve — including ones core has not
+  // tagged yet, since a patch release lands without a marketplace change.
+  it("serves a per-version apps.json for every 10.16.x patch, not just released ones", async () => {
+    for (const version of ["10.16.4", "10.16.5", "10.16.9"]) {
+      const res = await fetch(`http://127.0.0.1:${port}/api/v1/platform/${version}/apps.json`);
+      expect(res.status, `platform/${version}/apps.json`).toBe(200);
+      const apps = (await res.json()) as { id: string }[];
+      expect(apps.find((a) => a.id === "migrate_to_ocis")).toBeTruthy();
+    }
+  });
+
   it("serves categories.json", async () => {
     const res = await fetch(`http://127.0.0.1:${port}/api/v1/categories.json`);
     expect(res.status).toBe(200);

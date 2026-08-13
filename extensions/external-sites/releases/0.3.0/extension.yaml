@@ -1,0 +1,19 @@
+id: com.github.owncloud.web-extensions.external-sites
+name: External Sites
+subtitle: add external sites to the ownCloud Web app menu
+license: Apache-2.0
+version: 0.3.0
+authors:
+    - name: ownCloud GmbH
+      url: https://owncloud.com
+tags:
+    - navigation
+    - app-switcher
+minOCIS: 6.2.0
+resources:
+    - label: GitHub
+      icon: github
+      url: https://github.com/owncloud/web-extensions/tree/main/packages/web-app-external-sites
+screenshotCaptions:
+    - Custom-branded shortcuts to external sites appear right in the app menu
+    - An external site opens embedded directly inside ownCloud Web

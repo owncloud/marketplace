@@ -1,0 +1,21 @@
+id: com.github.owncloud.web-extensions.ai-data-insights-sidebar
+name: Ai Data Insights Sidebar
+subtitle: CANDIDATE
+license: Apache-2.0
+version: 0.1.0
+authors:
+    - name: ownCloud GmbH
+      url: https://owncloud.com
+tags:
+    - ai
+    - data
+    - analytics
+    - sidebar
+minOCIS: 8.0.5
+resources:
+    - label: GitHub
+      icon: github
+      url: https://github.com/owncloud/web-extensions/tree/main/packages/web-app-ai-data-insights-sidebar
+screenshotCaptions:
+    - AI-generated column types, value ranges, and observations for a sales report
+    - A privacy consent prompt appears before file data is sent to the AI service

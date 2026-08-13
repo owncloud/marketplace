@@ -1,0 +1,19 @@
+id: com.github.owncloud.web-extensions.draw-io
+name: Draw Io
+subtitle: ownCloud web draw.io integration
+license: Apache-2.0
+version: 0.3.2
+authors:
+    - name: ownCloud GmbH
+      url: https://owncloud.com
+tags:
+    - editor
+    - viewer
+    - diagram
+minOCIS: 6.2.0
+resources:
+    - label: GitHub
+      icon: github
+      url: https://github.com/owncloud/web-extensions/tree/main/packages/web-app-draw-io
+screenshotCaptions:
+    - Sketch a flowchart right inside oCIS with the built-in Draw.io editor

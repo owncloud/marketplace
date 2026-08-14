@@ -13,7 +13,7 @@
     "test:watch": "vitest"
   },
   "dependencies": {
-    "astro": "^7.1.6",
+    "astro": "^7.2.1",
     "marked": "^18.0.9",
     "sanitize-html": "^2.17.6"
   },

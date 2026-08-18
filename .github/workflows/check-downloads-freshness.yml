@@ -1,0 +1,109 @@
+name: Check downloads freshness
+# Staleness alarm for the "Release data refreshed …" note on /downloads/.
+#
+# fetch-downloads.yml polls the release feeds daily and deploy.yml republishes
+# the site, but until now nothing verified the RESULT. The daily rebuild is an
+# emergent side effect rather than a guarantee: fetch-downloads.yml rewrites
+# `generated_at` on every run, so data/downloads.json always differs and its
+# `git status --porcelain` guard always commits, which is what triggers the
+# deploy. If that ever stops — the fetch starts failing, the schedule gets
+# disabled, someone "optimises" the commit step to only push when release data
+# actually changed, or a deploy never lands — the displayed date silently
+# freezes and no run turns red.
+#
+# This polls the PUBLISHED api/v1/downloads.json rather than the file in the
+# repo, so one check covers every layer of the chain: feed poll → commit →
+# build → deploy → CDN. A failing scheduled run is the alarm.
+on:
+  workflow_dispatch: {}
+  schedule:
+    # Daily at 12:17 UTC, offset from the hour to avoid the cron rush.
+    #
+    # Timing margin: fetch-downloads.yml is scheduled at 06:17 UTC and has been
+    # observed starting up to ~2h late (GitHub queues scheduled runs), with the
+    # deploy landing ~10min after it commits — so a healthy chain has published
+    # by ~08:15 UTC and the age measured here is only ~4-6h. A completely missed
+    # daily refresh puts the age at ~28h, comfortably past MAX_AGE_HOURS.
+    - cron: "17 12 * * *"
+
+permissions:
+  contents: read
+  # Read-only access to the repo's Pages config, to resolve the published URL.
+  pages: read
+
+concurrency:
+  group: check-downloads-freshness
+  cancel-in-progress: false
+
+env:
+  # Must exceed the 24h refresh interval plus the scheduling jitter described
+  # above, so only a genuinely missed refresh trips it.
+  MAX_AGE_HOURS: "26"
+
+jobs:
+  freshness:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Resolve the published site URL
+        id: site
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          # Derive the origin from the running repo instead of hardcoding it, so
+          # the staging fork checks its own deployment and not production —
+          # mirroring how deploy.yml derives its base URL. A repo with Pages
+          # switched off has nothing to check, so skip rather than cry wolf.
+          #
+          # `gh api` prints the error body to STDOUT on a 404 and only signals
+          # the failure through its exit status, so gate on the status and treat
+          # anything that is not an http(s) URL as "no Pages" — otherwise the
+          # error JSON would flow on as the URL and fail confusingly downstream.
+          url=""
+          if resolved="$(gh api "repos/${REPO}/pages" --jq .html_url 2>/dev/null)"; then
+            case "$resolved" in
+              http://*|https://*) url="$resolved" ;;
+            esac
+          fi
+          if [ -z "$url" ]; then
+            echo "::notice::GitHub Pages is not configured for ${REPO}; nothing to check."
+            echo "url=" >> "$GITHUB_OUTPUT"
+          else
+            echo "Published site: ${url}"
+            echo "url=${url%/}" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Assert the published release data is fresh
+        if: steps.site.outputs.url != ''
+        env:
+          SITE_URL: ${{ steps.site.outputs.url }}
+        run: |
+          set -euo pipefail
+          endpoint="${SITE_URL}/api/v1/downloads.json"
+          echo "Checking ${endpoint}"
+
+          # no-cache so we measure what the origin serves, not an edge copy that
+          # a CDN may hold for up to its 10min max-age.
+          generated="$(curl -fsSL -H 'Cache-Control: no-cache' "$endpoint" | jq -r '.generatedAt // empty')"
+          if [ -z "$generated" ]; then
+            echo "::error::${endpoint} is missing a generatedAt field. generate-api.ts should always emit one from data/downloads.json's generated_at."
+            exit 1
+          fi
+
+          if ! generated_epoch="$(date -u -d "$generated" +%s 2>/dev/null)"; then
+            echo "::error::Could not parse generatedAt value '${generated}' as a date."
+            exit 1
+          fi
+
+          age_minutes=$(( ( $(date -u +%s) - generated_epoch ) / 60 ))
+          limit_minutes=$(( MAX_AGE_HOURS * 60 ))
+          printf 'generatedAt: %s\nage: %dh%02dm (limit: %sh)\n' \
+            "$generated" "$(( age_minutes / 60 ))" "$(( age_minutes % 60 ))" "$MAX_AGE_HOURS"
+
+          if [ "$age_minutes" -gt "$limit_minutes" ]; then
+            echo "::error::Published release data is $(( age_minutes / 60 ))h old, over the ${MAX_AGE_HOURS}h limit — the daily refresh chain is broken. Check fetch-downloads.yml (does the scheduled run still succeed and commit data/downloads.json?) then deploy.yml (did the resulting push actually rebuild and deploy?)."
+            exit 1
+          fi
+
+          echo "Release data is fresh."

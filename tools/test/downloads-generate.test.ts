@@ -7,6 +7,7 @@ import {
   matchBinaries,
   matchClientPackages,
   buildClientLines,
+  buildClassicLines,
   releaseDownloads,
   normalizeFullRelease,
   buildSurface,
@@ -192,6 +193,33 @@ describe("buildClientLines", () => {
   });
 });
 
+describe("buildClassicLines", () => {
+  it("keeps the newest release per major, newest major first", () => {
+    const lines = buildClassicLines([
+      clientRelease("11.0.0"),
+      clientRelease("10.16.4"),
+      clientRelease("10.16.3"),
+      clientRelease("10.15.3"),
+    ]);
+    expect(lines.map((l) => `${l.major}:${l.version}`)).toEqual(["11:11.0.0", "10:10.16.4"]);
+    expect(lines[0].label).toBe("ownCloud 11");
+    expect(lines[1].label).toBe("ownCloud 10");
+  });
+
+  it("returns a single line while only one major is supported", () => {
+    const lines = buildClassicLines([clientRelease("10.16.4"), clientRelease("10.15.3")]);
+    expect(lines.map((l) => l.version)).toEqual(["10.16.4"]);
+  });
+
+  it("carries no compatibility note (that is a desktop-client concern)", () => {
+    expect(buildClassicLines([clientRelease("11.0.0")])[0].compatibility).toBeUndefined();
+  });
+
+  it("returns [] for an empty history", () => {
+    expect(buildClassicLines([])).toEqual([]);
+  });
+});
+
 describe("releaseDownloads", () => {
   it("sums every asset's download count, including non-binary assets", () => {
     const r = release("v7.1.0", [
@@ -322,10 +350,11 @@ describe("normalizeDownloads", () => {
     ]);
   });
 
-  it("leaves lines absent on non-client surfaces", () => {
+  it("leaves lines absent on the oCIS and mobile surfaces", () => {
     const out = normalizeDownloads(raw);
     expect(out.ocis?.lines).toBeUndefined();
-    expect(out.server?.lines).toBeUndefined();
+    expect(out.android?.lines).toBeUndefined();
+    expect(out.ios?.lines).toBeUndefined();
   });
 
   it("keeps all classic server releases, resolving them via the archive matcher", () => {
@@ -346,6 +375,37 @@ describe("normalizeDownloads", () => {
     // Classic archives lead with the format (in `os`) and leave `arch` empty.
     expect(out.server?.releases[0].binaries[0].os).toBe("tar.bz2");
     expect(out.server?.releases[0].binaries[0].arch).toBe("");
+  });
+
+  // owncloud/marketplace#269: 11.0.x and 10.16.x are supported side by side, so
+  // the newer major must not push the widely-deployed 10.x line off the page.
+  it("gives the classic server per-major lines so 11.x and 10.x show together", () => {
+    const out = normalizeDownloads({
+      ...raw,
+      server: [
+        {
+          ...release("v11.0.0", [asset("owncloud-11.0.0.tar.bz2"), asset("owncloud-11.0.0.zip")]),
+          published_at: "2026-07-30T00:00:00Z",
+        },
+        {
+          ...release("v10.16.4", [asset("owncloud-10.16.4.tar.bz2")]),
+          published_at: "2026-07-29T00:00:00Z",
+        },
+        {
+          ...release("v10.16.3", [asset("owncloud-10.16.3.tar.bz2")]),
+          published_at: "2026-06-16T00:00:00Z",
+        },
+      ],
+    });
+    expect(out.server?.lines?.map((l) => `${l.label}:${l.version}`)).toEqual([
+      "ownCloud 11:11.0.0",
+      "ownCloud 10:10.16.4",
+    ]);
+    // Each line carries its own archive rows, resolved by the classic matcher.
+    expect(out.server?.lines?.[0].binaries.map((b) => b.os)).toEqual(["tar.bz2", "zip"]);
+    expect(out.server?.lines?.[1].binaries.map((b) => b.os)).toEqual(["tar.bz2"]);
+    // The full history is still available for the release-history subpage.
+    expect(out.server?.releases.map((r) => r.version)).toEqual(["11.0.0", "10.16.4", "10.16.3"]);
   });
 });
 

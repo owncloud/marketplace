@@ -34,14 +34,35 @@ type Surface = keyof typeof SURFACE_REPOS;
 
 /**
  * Classic ownCloud Server is tracked on owncloud/core, not in SURFACE_REPOS,
- * because we only surface the supported classic lines (10.15.x and 10.16.x)
- * rather than its newest release overall. Its archives are distributed as
- * GitHub release assets (mirrored from download.owncloud.com), so the same
- * release-based fetch the other surfaces use applies.
+ * because we only surface the still-supported classic versions rather than its
+ * newest release overall — core's release list reaches back to 10.0. Its
+ * archives are distributed as GitHub release assets (mirrored from
+ * download.owncloud.com), so the same release-based fetch the other surfaces
+ * use applies.
  */
 export const CLASSIC_REPO = "owncloud/core";
-/** The supported classic Server lines: a tag must match to be surfaced. */
-export const CLASSIC_TAG_RE = /^v10\.(15|16)\.(\d+)$/;
+
+/**
+ * A classic Server version tag: `vMAJOR.MINOR.PATCH` exactly. Anchored and
+ * three-part, so core's non-version tags (`daily`) and its prerelease tags
+ * (`v11.0.0-rc1`) never match.
+ */
+export const CLASSIC_TAG_RE = /^v(\d+)\.(\d+)\.(\d+)$/;
+
+/**
+ * Lowest classic Server version still surfaced, as [major, minor, patch].
+ * Everything below it is EOL and stays out of the downloads page.
+ *
+ * This is a floor rather than an enumeration of supported lines on purpose. The
+ * enumeration it replaces (`/^v10\.(15|16)\.(\d+)$/`) went stale three days
+ * after it was written: core tagged 11.0.0 and the release was silently dropped,
+ * so ownCloud Classic 11 never appeared on the downloads page at all
+ * (owncloud/marketplace#269 — the same staleness trap as owncloud/core#41773,
+ * documented on PLATFORM_LINE_MAX_PATCH in config.ts). With a floor, a new
+ * patch, minor or major from core is surfaced the next time the fetch runs;
+ * raise the floor when a line goes EOL.
+ */
+export const CLASSIC_FLOOR: readonly [number, number, number] = [10, 15, 0];
 
 /**
  * Map GitHub releases to the trimmed RawRelease shape, dropping drafts and
@@ -120,19 +141,37 @@ function buildAssetCounts(releases: GhRelease[], suffix: string): AppDownloadCou
 }
 
 /**
+ * Parse a classic Server tag into [major, minor, patch], or null when the tag is
+ * not a plain three-part version (core's `daily` and `-rc` tags).
+ */
+function classicVersion(tag: string): [number, number, number] | null {
+  const m = CLASSIC_TAG_RE.exec(tag);
+  return m ? [Number(m[1]), Number(m[2]), Number(m[3])] : null;
+}
+
+/** Compare two [major, minor, patch] tuples componentwise (negative → a < b). */
+function compareVersions(a: readonly number[], b: readonly number[]): number {
+  return a[0] - b[0] || a[1] - b[1] || a[2] - b[2];
+}
+
+/**
  * Select all classic Server releases from owncloud/core's releases, newest-first.
- * Keeps only stable (non-draft, non-prerelease) releases whose tag matches a
- * supported classic line (10.15.x / 10.16.x), sorted by numeric version compare.
- * Returns [] when none qualify, so the surface is simply absent rather than
- * linking a release that does not exist yet. The full list (not just the newest)
- * is kept so the release-history subpage can show every supported version.
+ * Keeps only stable (non-draft, non-prerelease) releases whose tag is a plain
+ * version at or above CLASSIC_FLOOR, sorted by numeric version compare (so
+ * 10.16.10 outranks 10.16.9 and 11.0.0 outranks both). Returns [] when none
+ * qualify, so the surface is simply absent rather than linking a release that
+ * does not exist yet. The full list (not just the newest) is kept so the
+ * release-history subpage can show every supported version.
  */
 export function selectClassicReleases(releases: GhRelease[]): GhRelease[] {
   return releases
     .filter((r) => !r.draft && !r.prerelease)
-    .map((r) => ({ release: r, m: CLASSIC_TAG_RE.exec(r.tag_name) }))
-    .filter((x): x is { release: GhRelease; m: RegExpExecArray } => x.m !== null)
-    .sort((a, b) => Number(b.m[1]) - Number(a.m[1]) || Number(b.m[2]) - Number(a.m[2]))
+    .map((r) => ({ release: r, version: classicVersion(r.tag_name) }))
+    .filter(
+      (x): x is { release: GhRelease; version: [number, number, number] } => x.version !== null,
+    )
+    .filter((x) => compareVersions(x.version, CLASSIC_FLOOR) >= 0)
+    .sort((a, b) => compareVersions(b.version, a.version))
     .map((x) => x.release);
 }
 
@@ -176,17 +215,19 @@ function sleep(ms: number): Promise<void> {
 
 /**
  * Resolve the classic server surface from owncloud/core's GitHub releases: keep
- * every supported release (10.15.x / 10.16.x), newest-first, retaining only the
- * archive assets (.tar.bz2 / .zip) of each. Releases left with no archive assets
- * are dropped. Returns [] (and logs) on any failure or when none qualify, so the
- * surface is simply absent rather than failing the four GitHub surfaces.
+ * every still-supported release (at or above CLASSIC_FLOOR), newest-first,
+ * retaining only the archive assets (.tar.bz2 / .zip) of each. Releases left with
+ * no archive assets are dropped. Returns [] (and logs) on any failure or when
+ * none qualify, so the surface is simply absent rather than failing the four
+ * GitHub surfaces.
  */
 export async function fetchClassic(): Promise<RawRelease[]> {
   try {
     const releases = selectClassicReleases(await fetchReleases(CLASSIC_REPO));
     if (releases.length === 0) {
       console.warn(
-        `No supported 10.15/10.16 release found for ${CLASSIC_REPO}; skipping classic server.`,
+        `No release at or above ${CLASSIC_FLOOR.join(".")} found for ${CLASSIC_REPO}; ` +
+          `skipping classic server.`,
       );
       return [];
     }

@@ -182,7 +182,7 @@ describe("selectClassicReleases", () => {
   const classic = (tag_name: string, overrides: Partial<GhRelease> = {}): GhRelease =>
     gh({ tag_name, ...overrides });
 
-  it("keeps all supported 10.15/10.16 releases, newest-first", () => {
+  it("keeps every release at or above the floor, newest-first", () => {
     const picked = selectClassicReleases([
       classic("v10.16.2"),
       classic("v10.16.3"),
@@ -191,24 +191,45 @@ describe("selectClassicReleases", () => {
     expect(picked.map((r) => r.tag_name)).toEqual(["v10.16.3", "v10.16.2", "v10.15.3"]);
   });
 
-  it("compares patch components numerically rather than lexically", () => {
-    const picked = selectClassicReleases([classic("v10.16.9"), classic("v10.16.10")]);
-    expect(picked.map((r) => r.tag_name)).toEqual(["v10.16.10", "v10.16.9"]);
+  // owncloud/marketplace#269: core tagged v11.0.0 three days after the classic
+  // selector was written against a hardcoded 10.15/10.16 allowlist, so the
+  // release was silently dropped and Classic 11 never reached the page.
+  it("keeps a new major line (11.x) without needing a code change", () => {
+    const picked = selectClassicReleases([classic("v10.16.4"), classic("v11.0.0")]);
+    expect(picked.map((r) => r.tag_name)).toEqual(["v11.0.0", "v10.16.4"]);
   });
 
-  it("ignores drafts, prereleases and out-of-range lines", () => {
+  it("compares major, minor and patch components numerically rather than lexically", () => {
     const picked = selectClassicReleases([
-      classic("v10.16.3", { draft: true }),
+      classic("v10.16.9"),
+      classic("v10.16.10"),
+      classic("v11.0.0"),
+      classic("v11.2.0"),
+      classic("v11.10.1"),
+    ]);
+    expect(picked.map((r) => r.tag_name)).toEqual([
+      "v11.10.1",
+      "v11.2.0",
+      "v11.0.0",
+      "v10.16.10",
+      "v10.16.9",
+    ]);
+  });
+
+  it("ignores drafts, prereleases, EOL lines below the floor and non-version tags", () => {
+    const picked = selectClassicReleases([
+      classic("v11.0.0", { draft: true }),
       classic("v10.16.2", { prerelease: true }),
       classic("v10.14.0"),
-      classic("v11.0.0"),
+      classic("v9.1.7"),
+      classic("daily"),
       classic("v10.15.3"),
     ]);
     expect(picked.map((r) => r.tag_name)).toEqual(["v10.15.3"]);
   });
 
   it("returns [] when no supported release is present", () => {
-    expect(selectClassicReleases([classic("v10.14.0"), classic("v11.0.0")])).toEqual([]);
+    expect(selectClassicReleases([classic("v10.14.0"), classic("daily")])).toEqual([]);
     expect(selectClassicReleases([])).toEqual([]);
   });
 });

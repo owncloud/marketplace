@@ -4,6 +4,14 @@ on:
     branches: [main]
   # Manual kick-off of a page regeneration.
   workflow_dispatch: {}
+  schedule:
+    # Daily backstop at 09:17 UTC, by which time fetch-downloads.yml's data
+    # commit has normally landed. Every such commit already triggers the push
+    # build above, so this is pure redundancy: it guarantees the published site
+    # converges on `main` even when no push happened that day, or when a push
+    # build failed and nobody retried it. Checkout is pinned to `main` below,
+    # so a scheduled run publishes exactly what a push build would.
+    - cron: "17 9 * * *"
 
 permissions:
   contents: read

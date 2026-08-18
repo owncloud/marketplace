@@ -177,17 +177,27 @@ const CLIENT_COMPATIBILITY: Record<number, string> = {
 };
 
 /**
- * Group a client's release history into one line per major version (>= the
- * floor), keeping the newest release of each major. `history` is already
- * newest-first, so the first release seen for a major is its newest. Older
- * majors (e.g. 5.x) stay in the full `releases` history but do not get a line.
- * Returns lines newest-major-first. Pure.
+ * The lowest classic Server major surfaced as its own line. Defensive: the fetch
+ * step already floors classic releases at CLASSIC_FLOOR (10.15.0).
  */
-export function buildClientLines(history: DownloadRelease[]): DownloadLine[] {
+const CLASSIC_LINE_FLOOR = 10;
+
+/**
+ * Group a release history into one line per major version (>= `floor`), keeping
+ * the newest release of each major. `history` is already newest-first, so the
+ * first release seen for a major is its newest. Majors below the floor stay in
+ * the full `releases` history but do not get a line. Returns lines
+ * newest-major-first. Pure.
+ */
+function buildMajorLines(
+  history: DownloadRelease[],
+  floor: number,
+  compatibility: Record<number, string> = {},
+): DownloadLine[] {
   const byMajor = new Map<number, DownloadLine>();
   for (const r of history) {
     const major = Number.parseInt(r.version, 10);
-    if (Number.isNaN(major) || major < CLIENT_LINE_FLOOR) continue;
+    if (Number.isNaN(major) || major < floor) continue;
     if (byMajor.has(major)) continue; // history is newest-first: first wins
     byMajor.set(major, {
       label: `ownCloud ${major}`,
@@ -197,10 +207,31 @@ export function buildClientLines(history: DownloadRelease[]): DownloadLine[] {
       publishedAt: r.publishedAt,
       downloads: r.downloads,
       binaries: r.binaries,
-      ...(CLIENT_COMPATIBILITY[major] && { compatibility: CLIENT_COMPATIBILITY[major] }),
+      ...(compatibility[major] && { compatibility: compatibility[major] }),
     });
   }
   return [...byMajor.values()].sort((a, b) => b.major - a.major);
+}
+
+/**
+ * Per-major lines for the desktop client, so the 7.x and 6.x latest show
+ * together with their server-compatibility notes. Older majors (e.g. 5.x) stay
+ * in the full history but get no line.
+ */
+export function buildClientLines(history: DownloadRelease[]): DownloadLine[] {
+  return buildMajorLines(history, CLIENT_LINE_FLOOR, CLIENT_COMPATIBILITY);
+}
+
+/**
+ * Per-major lines for the classic server, so a new major does not push the
+ * previous one off the page: 11.0.x and 10.16.x are supported side by side and
+ * nearly every existing install runs 10.x, but 11.0.0 was published one day
+ * after 10.16.4, so a single newest-release headline would surface only 11 and
+ * bury 10.16.4 in the release history (owncloud/marketplace#269). Carries no
+ * compatibility note — that is a desktop-client concern.
+ */
+export function buildClassicLines(history: DownloadRelease[]): DownloadLine[] {
+  return buildMajorLines(history, CLASSIC_LINE_FLOOR);
 }
 
 /**
@@ -233,15 +264,16 @@ export function buildSurface(
  * Normalize the raw, committed downloads data into the published shape: each
  * surface's full release history (newest-first) with its all-time download
  * total, or null when a surface has no releases, carrying the generation
- * timestamp. The classic server resolves its archives via matchClassicArchives;
- * the desktop client uses matchClientPackages and gains per-major-version lines.
+ * timestamp. The classic server resolves its archives via matchClassicArchives
+ * and the desktop client uses matchClientPackages; both gain per-major-version
+ * lines so each supported major's latest release is shown.
  */
 export function normalizeDownloads(raw: RawDownloads): Downloads {
   return {
     generatedAt: raw.generated_at,
     ocis: buildSurface(raw.ocis),
-    server: buildSurface(raw.server ?? [], matchClassicArchives),
-    client: withClientLines(buildSurface(raw.client, matchClientPackages)),
+    server: withLines(buildSurface(raw.server ?? [], matchClassicArchives), buildClassicLines),
+    client: withLines(buildSurface(raw.client, matchClientPackages), buildClientLines),
     android: withStore(buildSurface(raw.android), raw.stores?.android),
     ios: withStore(buildSurface(raw.ios), raw.stores?.ios),
   };
@@ -261,14 +293,18 @@ export function withStore(
 }
 
 /**
- * Attach per-major-version lines (see buildClientLines) to the desktop client
- * surface, so the landing page can show the 7.x and 6.x latest together. Pure:
- * returns a new surface, or the unchanged input / null. Omits `lines` when the
- * computed array is empty, matching the "absent when N/A" convention.
+ * Attach per-major-version lines to a surface, so the landing page can show each
+ * supported major's latest release together (the desktop client's 7.x/6.x, the
+ * classic server's 11.x/10.x). Pure: returns a new surface, or the unchanged
+ * input / null. Omits `lines` when the computed array is empty, matching the
+ * "absent when N/A" convention.
  */
-export function withClientLines(surface: DownloadSurface | null): DownloadSurface | null {
+export function withLines(
+  surface: DownloadSurface | null,
+  build: (history: DownloadRelease[]) => DownloadLine[],
+): DownloadSurface | null {
   if (!surface) return surface;
-  const lines = buildClientLines(surface.releases);
+  const lines = build(surface.releases);
   return lines.length > 0 ? { ...surface, lines } : surface;
 }
 

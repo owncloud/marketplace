@@ -5,6 +5,20 @@ import SocialLinks from "../components/SocialLinks.astro";
 import MembershipBadges from "../components/MembershipBadges.astro";
 import { withBase } from "../lib/catalog.ts";
 
+// Self-hosted webfonts, bundled into <base>/_assets/ by Vite. These replace a
+// stylesheet request to fonts.googleapis.com, which handed every visitor's IP
+// address to a third party on every page load — the site now makes no automatic
+// off-origin requests at all. Each import pulls in one @font-face per Unicode
+// subset, gated by unicode-range, so a Latin-only page downloads ~60 KB and
+// never fetches the Cyrillic/Greek/Vietnamese cuts. Those non-Latin subsets are
+// kept because app names and descriptions come from third-party publishers.
+// Weights mirror what the old Google Fonts URL requested: Source Sans 3 at
+// 400/600/700 plus 400 italic (covered by the variable axis), mono at 400/500.
+import "@fontsource-variable/source-sans-3/wght.css";
+import "@fontsource-variable/source-sans-3/wght-italic.css";
+import "@fontsource/ibm-plex-mono/400.css";
+import "@fontsource/ibm-plex-mono/500.css";
+
 interface Props {
   title: string;
   description?: string;
@@ -71,12 +85,6 @@ const ogImageUrl = isAbsolute(ogImagePath)
     <link rel="apple-touch-icon" sizes="180x180" href={withBase(base, "apple-touch-icon.png")} />
     <link rel="manifest" href={withBase(base, "site.webmanifest")} />
     <meta name="theme-color" content="#041e42" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Source+Sans+3:ital,wght@0,400;0,600;0,700;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap"
-      rel="stylesheet"
-    />
     <style is:global>
       :root {
         /* ownCloud brand palette — sourced from owncloud/web themes/owncloud/theme.json */
@@ -100,7 +108,10 @@ const ogImageUrl = isAbsolute(ogImagePath)
         --shadow-md: 0 6px 20px -8px rgba(4, 30, 66, 0.18);
         --shadow-lg: 0 24px 60px -24px rgba(4, 30, 66, 0.35);
         --container: 1120px;
-        --font-sans: "Source Sans 3", ui-sans-serif, system-ui, sans-serif;
+        /* "… Variable" is the family name @fontsource-variable registers; the
+           static "Source Sans 3" is kept next in line so a locally installed
+           copy is still preferred over the generic fallbacks. */
+        --font-sans: "Source Sans 3 Variable", "Source Sans 3", ui-sans-serif, system-ui, sans-serif;
         --font-mono: "IBM Plex Mono", ui-monospace, "SF Mono", monospace;
       }
 

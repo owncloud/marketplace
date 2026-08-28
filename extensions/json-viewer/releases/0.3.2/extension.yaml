@@ -1,0 +1,19 @@
+id: com.github.owncloud.web-extensions.json-viewer
+name: JSON Viewer
+subtitle: View JSON files (.json) with syntax highlighting and collapsible nodes.
+license: Apache-2.0
+version: 0.3.2
+authors:
+    - name: ownCloud GmbH
+      url: https://owncloud.com
+tags:
+    - viewer
+minOCIS: 7.2.0
+resources:
+    - label: GitHub
+      icon: github
+      url: https://github.com/owncloud/web-extensions/tree/main/packages/web-app-json-viewer
+cover: true
+screenshotCaptions:
+    - Clean, expandable tree view of a structured JSON document
+    - Instant table view for scanning a list of records at a glance

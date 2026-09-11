@@ -104,6 +104,30 @@ screenshot of the affected page(s) to the pull request.
 does not prove the page looks right. A screenshot lets reviewers confirm layout,
 theming, and content at a glance and creates a visual record on the PR.
 
+## Public copy uses product names, not internal shorthand
+
+Anything a visitor can read — website copy, headings, page titles, meta
+descriptions, and strings that reach the JSON API — must use the published
+product names:
+
+- **ownCloud Classic** for the PHP server. Never `oC10`, `oC11`, `oc10/oc11` or
+  similar version shorthand; the `platform-badge--classic` label is the
+  reference spelling.
+- **ownCloud Infinite Scale** on first mention, **oCIS** thereafter. That
+  abbreviation *is* published, so it is fine in headings.
+
+Internal shorthand, release codenames and issue-tracker prefixes stay out of
+user-facing text — they mean nothing to the publishers and administrators
+reading the catalog. Before opening a website PR:
+
+```
+git grep -niE "oc-?1[01]" -- website/src
+```
+
+**Why:** the marketplace is public and is often a visitor's first contact with
+the product line. Version shorthand also ages badly — a heading that says
+"ownCloud Classic" needs no edit when the next major release ships.
+
 ## Important Constraints
 
 - **Static only:** no backend or database. All output is static JSON + HTML

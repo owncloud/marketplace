@@ -85,7 +85,20 @@ screenshot of the affected page(s) to the pull request.
    `deviceScaleFactor: 2` and `fullPage: true`. For error pages, navigate to a
    route that actually triggers them (e.g. an unknown path for the 404) and
    confirm the real HTTP status.
-3. Attach the image to the PR (drag into the description or a comment).
+3. Attach the image to the PR with `gh` (2.99.0 or newer). `--attach` uploads
+   the file and rewrites a matching reference in the body to the uploaded
+   asset, so an agent can do this without drag-and-drop:
+   ```
+   gh pr comment <number> --attach './hero.png#Hero with the new title' --body-file - <<'MD'
+   ![Hero with the new title](./hero.png)
+   MD
+   ```
+   Repeat `--attach` per file (up to 50 per command). Alt text follows the path
+   after `#`; without it the filename is used. Attached files the body does not
+   reference are appended at the end. The same flag works on `gh pr create`,
+   `gh pr edit`, and `gh issue create`/`gh issue comment`. Verify the upload
+   afterwards: the posted body should point at
+   `https://github.com/user-attachments/assets/…`, not at the local path.
 
 **Why:** the site is the public face of the marketplace; the build succeeding
 does not prove the page looks right. A screenshot lets reviewers confirm layout,

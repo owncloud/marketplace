@@ -1,0 +1,20 @@
+id: com.github.owncloud.web-extensions.external-sites
+name: External Sites
+subtitle: Add links to the app switcher (embedded or external).
+license: Apache-2.0
+version: 0.3.1
+authors:
+    - name: ownCloud GmbH
+      url: https://owncloud.com
+tags:
+    - navigation
+    - app-switcher
+minOCIS: 7.0.0
+resources:
+    - label: GitHub
+      icon: github
+      url: https://github.com/owncloud/web-extensions/tree/main/packages/web-app-external-sites
+cover: true
+screenshotCaptions:
+    - External site shortcuts land right in the app switcher menu
+    - An external website renders directly inside ownCloud Web

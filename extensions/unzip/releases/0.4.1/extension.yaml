@@ -1,0 +1,20 @@
+id: com.github.owncloud.web-extensions.unzip
+name: Unzip
+subtitle: Unzip .zip files to the current folder, directly in your ownCloud.
+license: Apache-2.0
+version: 0.4.1
+authors:
+    - name: ownCloud GmbH
+      url: https://owncloud.com
+tags:
+    - file-management
+    - file-action
+minOCIS: 8.0.0
+resources:
+    - label: GitHub
+      icon: github
+      url: https://github.com/owncloud/web-extensions/tree/main/packages/web-app-unzip
+cover: true
+screenshotCaptions:
+    - An "Extract here" action appears in the context menu for zip archives
+    - Extracting an archive unpacks all of its files into a new folder

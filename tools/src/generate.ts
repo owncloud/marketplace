@@ -71,7 +71,7 @@ export function buildApp(
     downloads: counts[info.version] ?? 0,
   }));
 
-  return {
+  const app: ApiApp = {
     id: appId,
     type: "app",
     name: newest.name,
@@ -87,6 +87,8 @@ export function buildApp(
     publisher: { name: newest.author, url: publisherUrl },
     releases,
   };
+  if (newest.links) app.links = newest.links;
+  return app;
 }
 
 /**

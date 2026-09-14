@@ -1,5 +1,6 @@
 ---
 import Base from "../../layouts/Base.astro";
+import ExternalLink from "../../components/ExternalLink.astro";
 import { loadApps, loadCategories, withBase } from "../../lib/catalog.ts";
 import { loadPublishers, appIdToPublisher } from "../../lib/publishers.ts";
 import { renderDescription } from "../../lib/markdown.ts";
@@ -237,6 +238,37 @@ const jsonLd = {
               {app.categories.map((c) => <span class="tag">{categoryName(c)}</span>)}
             </dd>
           </div>
+          {
+            app.links && (
+              <div>
+                <dt>Links</dt>
+                <dd class="info__links">
+                  {app.links.website && (
+                    <ExternalLink href={app.links.website}>Website</ExternalLink>
+                  )}
+                  {app.links.repository && (
+                    <ExternalLink href={app.links.repository.url}>Source code</ExternalLink>
+                  )}
+                  {app.links.bugs && (
+                    <ExternalLink href={app.links.bugs}>Report an issue</ExternalLink>
+                  )}
+                  {app.links.documentation?.user && (
+                    <ExternalLink href={app.links.documentation.user}>Documentation</ExternalLink>
+                  )}
+                  {app.links.documentation?.admin && (
+                    <ExternalLink href={app.links.documentation.admin}>
+                      Admin documentation
+                    </ExternalLink>
+                  )}
+                  {app.links.documentation?.developer && (
+                    <ExternalLink href={app.links.documentation.developer}>
+                      Developer documentation
+                    </ExternalLink>
+                  )}
+                </dd>
+              </div>
+            )
+          }
         </dl>
       </div>
     </aside>
@@ -498,6 +530,11 @@ const jsonLd = {
     display: flex;
     flex-wrap: wrap;
     gap: 6px;
+  }
+  .info__links {
+    display: grid;
+    gap: 6px;
+    font-weight: 600;
   }
   .app-side {
     position: sticky;

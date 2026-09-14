@@ -1,5 +1,5 @@
 import { XMLParser, XMLValidator } from "fast-xml-parser";
-import { type AppInfo, ValidationError } from "./types.js";
+import { type AppInfo, type AppLinks, ValidationError } from "./types.js";
 
 const parser = new XMLParser({
   ignoreAttributes: false,
@@ -69,6 +69,58 @@ function localizedText(value: unknown): string | undefined {
   return undefined;
 }
 
+/**
+ * Resolve a <repository> to its url + optional type. May be a bare string
+ * (`<repository>url</repository>`) or carry a `type` attribute, in which case
+ * the parser yields `{ "#text": url, "@_type": "git" }`.
+ */
+function parseRepository(value: unknown): AppLinks["repository"] {
+  const url = localizedText(
+    value && typeof value === "object" ? (value as Record<string, unknown>)["#text"] : value,
+  );
+  if (!url) return undefined;
+  const type =
+    value && typeof value === "object" ? (value as Record<string, unknown>)["@_type"] : undefined;
+  return typeof type === "string" ? { url, type } : { url };
+}
+
+/**
+ * Resolve a <documentation> to its per-audience sub-links. May be a bare
+ * string/number (mapped to `user`) or an object with `<user>`/`<admin>`/
+ * `<developer>` sub-elements — read by exact path, never a generic tag search,
+ * so an unrelated `<settings><admin>` (an admin-settings PHP class some apps
+ * declare) is never mistaken for documentation.
+ */
+function parseDocumentation(value: unknown): AppLinks["documentation"] {
+  if (value === undefined || value === null) return undefined;
+  if (typeof value === "string" || typeof value === "number") {
+    const user = localizedText(value);
+    return user ? { user } : undefined;
+  }
+  if (typeof value === "object") {
+    const obj = value as Record<string, unknown>;
+    const doc = {
+      user: localizedText(obj.user),
+      admin: localizedText(obj.admin),
+      developer: localizedText(obj.developer),
+    };
+    return doc.user || doc.admin || doc.developer ? doc : undefined;
+  }
+  return undefined;
+}
+
+function parseLinks(info: Record<string, unknown>): AppLinks | undefined {
+  const links: AppLinks = {
+    website: localizedText(info.website ?? info.homepage),
+    bugs: localizedText(info.bugs),
+    repository: parseRepository(info.repository),
+    documentation: parseDocumentation(info.documentation),
+  };
+  return links.website || links.bugs || links.repository || links.documentation
+    ? links
+    : undefined;
+}
+
 /** Parse and structurally validate an appinfo/info.xml string. */
 export function parseInfoXml(xml: string): AppInfo {
   const wellFormed = XMLValidator.validate(xml);
@@ -98,7 +150,7 @@ export function parseInfoXml(xml: string): AppInfo {
     throw new ValidationError("info.xml <owncloud> is missing max-version");
   }
 
-  return {
+  const result: AppInfo = {
     id: requireString(info.id, "id"),
     name: requireString(localizedText(info.name), "name"),
     summary: localizedText(info.summary) ?? "",
@@ -113,4 +165,7 @@ export function parseInfoXml(xml: string): AppInfo {
     platformMin: String(platformMin).trim(),
     platformMax: String(platformMax).trim(),
   };
+  const links = parseLinks(info);
+  if (links) result.links = links;
+  return result;
 }

@@ -17,6 +17,16 @@ export interface AppInfo {
   screenshots: string[];
   platformMin: string;
   platformMax: string;
+  /** External links declared in info.xml (all optional; parsed best-effort). */
+  links?: AppLinks;
+}
+
+export interface AppLinks {
+  website?: string;
+  bugs?: string;
+  repository?: { url: string; type?: string };
+  /** A bare-string <documentation> maps to `user`. */
+  documentation?: { user?: string; admin?: string; developer?: string };
 }
 
 /** A release entry in generated app JSON (flat platform keys — see plan notes). */
@@ -60,6 +70,7 @@ export interface ApiApp {
   downloadable: boolean;
   publisher: { name: string; url: string };
   releases: ApiRelease[];
+  links?: AppLinks;
 }
 
 /** A category entry in generated categories.json. */

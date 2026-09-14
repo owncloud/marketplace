@@ -101,6 +101,17 @@ describe("buildApp", () => {
     expect(app.description).toBe("newer");
     expect(app.releases.map((r) => r.version)).toEqual(["2.0.0", "1.0.0"]);
   });
+
+  it("copies the newest release's links onto the app", () => {
+    const withLinks: AppInfo = { ...base, links: { website: "https://example.com" } };
+    const app = buildApp("calendar", [withLinks], created, noScreenshots, "https://site");
+    expect(app.links).toEqual({ website: "https://example.com" });
+  });
+
+  it("leaves links absent when the newest release has none", () => {
+    const app = buildApp("calendar", [base], created, noScreenshots, "https://site");
+    expect(app.links).toBeUndefined();
+  });
 });
 
 describe("appsForPlatformVersion", () => {

@@ -1,5 +1,6 @@
 ---
 import Base from "../../layouts/Base.astro";
+import ExternalLink from "../../components/ExternalLink.astro";
 import { withBase } from "../../lib/catalog.ts";
 import { loadExtensions } from "../../lib/extensions.ts";
 import { renderDescriptionInline } from "../../lib/markdown.ts";
@@ -71,7 +72,7 @@ const initial = (name: string) => name.trim().charAt(0).toUpperCase() || "?";
   <!-- ===================== CATALOG ===================== -->
   <section id="catalog" class="catalog container">
     <div class="catalog__head">
-      <h2>Explore extensions</h2>
+      <h2>Explore extensions for ownCloud Infinite Scale (oCIS)</h2>
       <label class="search">
         <svg
           class="search__icon"
@@ -204,6 +205,7 @@ const initial = (name: string) => name.trim().charAt(0).toUpperCase() || "?";
             <p>
               Deploy the downloaded bundle into the oCIS web assets apps
               directory and restart the web service to load it.
+              Read more on the <ExternalLink href="https://doc.owncloud.com/ocis/latest/admin/deployment/webui/webui-customisation.html#extend-web-ui-with-apps">Extend Web UI with Apps documentation page</ExternalLink>.
             </p>
           </div>
         </li>

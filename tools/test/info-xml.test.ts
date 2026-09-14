@@ -171,3 +171,88 @@ describe("parseInfoXml localized text fields", () => {
     expect(info.version).toBe("2");
   });
 });
+
+describe("parseInfoXml links", () => {
+  it("parses website, bugs, and a git repository", () => {
+    const xml = VALID.replace(
+      "</dependencies>",
+      `</dependencies>
+  <website>https://github.com/owncloud/calendar/</website>
+  <bugs>https://github.com/owncloud/calendar/issues</bugs>
+  <repository type="git">https://github.com/owncloud/calendar.git</repository>`,
+    );
+    const info = parseInfoXml(xml);
+    expect(info.links).toEqual({
+      website: "https://github.com/owncloud/calendar/",
+      bugs: "https://github.com/owncloud/calendar/issues",
+      repository: { url: "https://github.com/owncloud/calendar.git", type: "git" },
+    });
+  });
+
+  it("falls back to <homepage> when <website> is absent", () => {
+    const xml = VALID.replace(
+      "</dependencies>",
+      `</dependencies>
+  <homepage>https://example.com/files_opds</homepage>`,
+    );
+    const info = parseInfoXml(xml);
+    expect(info.links?.website).toBe("https://example.com/files_opds");
+  });
+
+  it("parses a repository with no type attribute", () => {
+    const xml = VALID.replace(
+      "</dependencies>",
+      `</dependencies>
+  <repository>https://example.com/cms_pico.git</repository>`,
+    );
+    const info = parseInfoXml(xml);
+    expect(info.links?.repository).toEqual({ url: "https://example.com/cms_pico.git" });
+  });
+
+  it("maps a bare-string <documentation> to documentation.user", () => {
+    const xml = VALID.replace(
+      "</dependencies>",
+      `</dependencies>
+  <documentation>https://github.com/tomneedham/oc-wallpaper</documentation>`,
+    );
+    const info = parseInfoXml(xml);
+    expect(info.links?.documentation).toEqual({
+      user: "https://github.com/tomneedham/oc-wallpaper",
+    });
+  });
+
+  it("parses a <documentation> object with user, admin, and developer links", () => {
+    const xml = VALID.replace(
+      "</dependencies>",
+      `</dependencies>
+  <documentation>
+    <user>https://doc.owncloud.com/user</user>
+    <admin>https://doc.owncloud.com/admin</admin>
+    <developer>https://doc.owncloud.com/dev</developer>
+  </documentation>`,
+    );
+    const info = parseInfoXml(xml);
+    expect(info.links?.documentation).toEqual({
+      user: "https://doc.owncloud.com/user",
+      admin: "https://doc.owncloud.com/admin",
+      developer: "https://doc.owncloud.com/dev",
+    });
+  });
+
+  it("does not confuse a <settings><admin> class reference with <documentation><admin>", () => {
+    const xml = VALID.replace(
+      "</dependencies>",
+      `</dependencies>
+  <settings>
+    <admin>OCA\\Foo\\Settings\\AdminSettings</admin>
+  </settings>`,
+    );
+    const info = parseInfoXml(xml);
+    expect(info.links?.documentation?.admin).toBeUndefined();
+  });
+
+  it("leaves links undefined when info.xml declares no link tags", () => {
+    const info = parseInfoXml(VALID);
+    expect(info.links).toBeUndefined();
+  });
+});

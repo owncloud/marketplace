@@ -16,6 +16,12 @@ export interface CatalogRelease {
   platformMax: string;
   downloads: number;
 }
+export interface CatalogAppLinks {
+  website?: string;
+  bugs?: string;
+  repository?: { url: string; type?: string };
+  documentation?: { user?: string; admin?: string; developer?: string };
+}
 export interface CatalogApp {
   id: string;
   name: string;
@@ -25,6 +31,7 @@ export interface CatalogApp {
   publisher: { name: string; url: string };
   downloads: number;
   releases: CatalogRelease[];
+  links?: CatalogAppLinks;
 }
 
 /** Join the site base path with a relative path, collapsing duplicate slashes. */

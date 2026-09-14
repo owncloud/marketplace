@@ -116,9 +116,7 @@ function parseLinks(info: Record<string, unknown>): AppLinks | undefined {
     repository: parseRepository(info.repository),
     documentation: parseDocumentation(info.documentation),
   };
-  return links.website || links.bugs || links.repository || links.documentation
-    ? links
-    : undefined;
+  return links.website || links.bugs || links.repository || links.documentation ? links : undefined;
 }
 
 /** Parse and structurally validate an appinfo/info.xml string. */

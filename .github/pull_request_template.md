@@ -9,6 +9,11 @@ submission below, fill in that section, and **delete the sections you are not us
 - [ ] An **oCIS web extension**
 - [ ] A **publisher page**
 
+**Before you submit:**
+- [ ] My commits are PGP/GPG signed and carry a DCO `Signed-off-by` line
+      (`git commit -s -S`) — required by branch protection, see
+      [CONTRIBUTING.md](../CONTRIBUTING.md).
+
 ---
 
 ## App

@@ -55,7 +55,7 @@ describe("KNOWN_PLATFORM_VERSIONS", () => {
   // is stale the day core tags a new patch. Cover the rest of each line ahead
   // of time rather than waiting for the next 404 report.
   it("covers headroom past the newest released patch of each supported line", () => {
-    for (const v of ["10.15.4", "10.16.5", "10.16.9"]) {
+    for (const v of ["10.15.4", "10.16.5", "10.16.9", "11.0.1", "11.0.9"]) {
       expect(KNOWN_PLATFORM_VERSIONS).toContain(v);
     }
   });

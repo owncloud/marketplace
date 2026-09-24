@@ -63,16 +63,14 @@ export function extAssetUrl(extId: string, version: string): string {
 const PLATFORM_LINE_MAX_PATCH: Record<string, number> = {
   "10.15": 9,
   "10.16": 9,
+  "11.0": 9,
 };
 
 /**
  * ownCloud platform versions for which a per-version apps.json is generated:
- * every patch of each supported classic line (see PLATFORM_LINE_MAX_PATCH) plus
- * the forward-looking 11.0.0 endpoint. Ascending order.
+ * every patch of each supported classic line (see PLATFORM_LINE_MAX_PATCH).
+ * Ascending order.
  */
-export const KNOWN_PLATFORM_VERSIONS = [
-  ...Object.entries(PLATFORM_LINE_MAX_PATCH).flatMap(([line, maxPatch]) =>
-    Array.from({ length: maxPatch + 1 }, (_, patch) => `${line}.${patch}`),
-  ),
-  "11.0.0",
-];
+export const KNOWN_PLATFORM_VERSIONS = Object.entries(PLATFORM_LINE_MAX_PATCH).flatMap(
+  ([line, maxPatch]) => Array.from({ length: maxPatch + 1 }, (_, patch) => `${line}.${patch}`),
+);

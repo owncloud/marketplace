@@ -34,7 +34,8 @@ source of truth.
   `tools-ci.yml` (lint/test/build for `tools/**` and `website/**`),
   `deploy.yml` (regenerate API + build site + deploy to Pages on push to `main`).
 - `.github/pull_request_template.md` — submission checklist.
-- `.github/dependabot.yml` — github-actions + npm (`/tools`, `/website`), weekly.
+- `.github/dependabot.yml` — github-actions + npm (`/tools`, `/website`), weekly;
+  minor/patch bumps grouped (actions, npm dev, npm prod), majors one PR each.
 - `.nvmrc` — Node version (22.12.0).
 
 ## Development Conventions

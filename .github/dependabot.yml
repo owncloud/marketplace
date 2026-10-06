@@ -4,11 +4,27 @@ updates:
     directory: "/"
     schedule:
       interval: weekly
+    groups:
+      github-actions:
+        patterns: ["*"]
+
+  # tools and website share one entry so a minor/patch bump of a dependency
+  # used by both (vitest) lands in a single grouped PR instead of one per
+  # directory.
   - package-ecosystem: npm
-    directory: "/tools"
+    directories:
+      - "/tools"
+      - "/website"
     schedule:
       interval: weekly
-  - package-ecosystem: npm
-    directory: "/website"
-    schedule:
-      interval: weekly
+    # Majors are left out of the groups and still get one PR each, per
+    # directory — merge both PRs of a shared dependency together.
+    groups:
+      dev-dependencies:
+        applies-to: version-updates
+        dependency-type: development
+        update-types: [minor, patch]
+      production-dependencies:
+        applies-to: version-updates
+        dependency-type: production
+        update-types: [minor, patch]

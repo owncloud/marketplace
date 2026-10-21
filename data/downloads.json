@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-20T06:42:44.939Z",
+  "generated_at": "2026-10-21T06:43:30.119Z",
   "ocis": [
     {
       "tag_name": "v8.2.1",
@@ -11,13 +11,13 @@
           "name": "End-User-License-Agreement-for-ownCloud-Infinite-Scale.pdf",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v8.2.1/End-User-License-Agreement-for-ownCloud-Infinite-Scale.pdf",
           "size": 77879,
-          "download_count": 33
+          "download_count": 36
         },
         {
           "name": "ocis-8.2.1-darwin-amd64",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v8.2.1/ocis-8.2.1-darwin-amd64",
           "size": 148955584,
-          "download_count": 119
+          "download_count": 122
         },
         {
           "name": "ocis-8.2.1-darwin-amd64.sha256",
@@ -29,7 +29,7 @@
           "name": "ocis-8.2.1-darwin-arm64",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v8.2.1/ocis-8.2.1-darwin-arm64",
           "size": 142357586,
-          "download_count": 43
+          "download_count": 44
         },
         {
           "name": "ocis-8.2.1-darwin-arm64.sha256",
@@ -41,7 +41,7 @@
           "name": "ocis-8.2.1-linux-386",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v8.2.1/ocis-8.2.1-linux-386",
           "size": 140284066,
-          "download_count": 34
+          "download_count": 40
         },
         {
           "name": "ocis-8.2.1-linux-386.sha256",
@@ -53,19 +53,19 @@
           "name": "ocis-8.2.1-linux-amd64",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v8.2.1/ocis-8.2.1-linux-amd64",
           "size": 149885320,
-          "download_count": 466
+          "download_count": 483
         },
         {
           "name": "ocis-8.2.1-linux-amd64.sha256",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v8.2.1/ocis-8.2.1-linux-amd64.sha256",
           "size": 89,
-          "download_count": 47
+          "download_count": 49
         },
         {
           "name": "ocis-8.2.1-linux-arm",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v8.2.1/ocis-8.2.1-linux-arm",
           "size": 139788450,
-          "download_count": 19
+          "download_count": 23
         },
         {
           "name": "ocis-8.2.1-linux-arm.sha256",
@@ -77,7 +77,7 @@
           "name": "ocis-8.2.1-linux-arm64",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v8.2.1/ocis-8.2.1-linux-arm64",
           "size": 153878830,
-          "download_count": 119
+          "download_count": 124
         },
         {
           "name": "ocis-8.2.1-linux-arm64.sha256",
@@ -157,7 +157,7 @@
           "name": "ocis-8.0.9-linux-arm",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v8.0.9/ocis-8.0.9-linux-arm",
           "size": 134676642,
-          "download_count": 1
+          "download_count": 2
         },
         {
           "name": "ocis-8.0.9-linux-arm.sha256",
@@ -237,7 +237,7 @@
           "name": "ocis-8.0.8-linux-amd64",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v8.0.8/ocis-8.0.8-linux-amd64",
           "size": 143768208,
-          "download_count": 376
+          "download_count": 377
         },
         {
           "name": "ocis-8.0.8-linux-amd64.sha256",
@@ -287,25 +287,25 @@
           "name": "End-User-License-Agreement-for-ownCloud-Infinite-Scale.pdf",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v8.2.0/End-User-License-Agreement-for-ownCloud-Infinite-Scale.pdf",
           "size": 77879,
-          "download_count": 85
+          "download_count": 87
         },
         {
           "name": "ocis-8.2.0-darwin-amd64",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v8.2.0/ocis-8.2.0-darwin-amd64",
           "size": 140858752,
-          "download_count": 254
+          "download_count": 257
         },
         {
           "name": "ocis-8.2.0-darwin-amd64.sha256",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v8.2.0/ocis-8.2.0-darwin-amd64.sha256",
           "size": 90,
-          "download_count": 15
+          "download_count": 16
         },
         {
           "name": "ocis-8.2.0-darwin-arm64",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v8.2.0/ocis-8.2.0-darwin-arm64",
           "size": 135077058,
-          "download_count": 162
+          "download_count": 163
         },
         {
           "name": "ocis-8.2.0-darwin-arm64.sha256",
@@ -329,7 +329,7 @@
           "name": "ocis-8.2.0-linux-amd64",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v8.2.0/ocis-8.2.0-linux-amd64",
           "size": 141889008,
-          "download_count": 1440
+          "download_count": 1442
         },
         {
           "name": "ocis-8.2.0-linux-amd64.sha256",
@@ -655,7 +655,7 @@
           "name": "End-User-License-Agreement-for-ownCloud-Infinite-Scale.pdf",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v8.0.5/End-User-License-Agreement-for-ownCloud-Infinite-Scale.pdf",
           "size": 77879,
-          "download_count": 20
+          "download_count": 22
         },
         {
           "name": "ocis-8.0.5-darwin-amd64",
@@ -1617,7 +1617,7 @@
           "name": "ocis-7.2.0-linux-amd64",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v7.2.0/ocis-7.2.0-linux-amd64",
           "size": 125175304,
-          "download_count": 554
+          "download_count": 555
         },
         {
           "name": "ocis-7.2.0-linux-amd64.sha256",
@@ -2353,7 +2353,7 @@
           "name": "ocis-5.0.9-linux-amd64",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v5.0.9/ocis-5.0.9-linux-amd64",
           "size": 101482816,
-          "download_count": 906
+          "download_count": 907
         },
         {
           "name": "ocis-5.0.9-linux-amd64.sha256",
@@ -4521,7 +4521,7 @@
           "name": "ownCloud-7.1.1.19543-arm64.pkg",
           "browser_download_url": "https://github.com/owncloud/client/releases/download/v7.1.1/ownCloud-7.1.1.19543-arm64.pkg",
           "size": 46510819,
-          "download_count": 307
+          "download_count": 314
         },
         {
           "name": "ownCloud-7.1.1.19543-arm64.pkg.tbz",
@@ -4545,7 +4545,7 @@
           "name": "ownCloud-7.1.1.19543-x86_64.AppImage",
           "browser_download_url": "https://github.com/owncloud/client/releases/download/v7.1.1/ownCloud-7.1.1.19543-x86_64.AppImage",
           "size": 76282360,
-          "download_count": 122
+          "download_count": 124
         },
         {
           "name": "ownCloud-7.1.1.19543-x86_64.AppImage.sha256",
@@ -4563,7 +4563,7 @@
           "name": "ownCloud-7.1.1.19543-x86_64.pkg",
           "browser_download_url": "https://github.com/owncloud/client/releases/download/v7.1.1/ownCloud-7.1.1.19543-x86_64.pkg",
           "size": 50349187,
-          "download_count": 149
+          "download_count": 153
         },
         {
           "name": "ownCloud-7.1.1.19543-x86_64.pkg.tbz",
@@ -4593,13 +4593,13 @@
           "name": "ownCloud-7.1.1.19543.x64.msi",
           "browser_download_url": "https://github.com/owncloud/client/releases/download/v7.1.1/ownCloud-7.1.1.19543.x64.msi",
           "size": 39407616,
-          "download_count": 304
+          "download_count": 307
         },
         {
           "name": "owncloud-client_7.1.1.19543_amd64.deb",
           "browser_download_url": "https://github.com/owncloud/client/releases/download/v7.1.1/owncloud-client_7.1.1.19543_amd64.deb",
           "size": 54821108,
-          "download_count": 63
+          "download_count": 64
         },
         {
           "name": "owncloud-client_7.1.1.19543_x86_64.rpm",
@@ -4661,7 +4661,7 @@
           "name": "ownCloud-7.1.0.19041-x86_64.pkg",
           "browser_download_url": "https://github.com/owncloud/client/releases/download/v7.1.0/ownCloud-7.1.0.19041-x86_64.pkg",
           "size": 50351064,
-          "download_count": 85
+          "download_count": 86
         },
         {
           "name": "ownCloud-7.1.0.19041-x86_64.pkg.tbz",
@@ -4691,7 +4691,7 @@
           "name": "ownCloud-7.1.0.19041.x64.msi",
           "browser_download_url": "https://github.com/owncloud/client/releases/download/v7.1.0/ownCloud-7.1.0.19041.x64.msi",
           "size": 39407616,
-          "download_count": 205
+          "download_count": 206
         },
         {
           "name": "owncloud-client_7.1.0.19041_amd64.deb",
@@ -4717,7 +4717,7 @@
           "name": "ownCloud-6.0.3.18040-arm64.pkg",
           "browser_download_url": "https://github.com/owncloud/client/releases/download/v6.0.3/ownCloud-6.0.3.18040-arm64.pkg",
           "size": 47122637,
-          "download_count": 314
+          "download_count": 323
         },
         {
           "name": "ownCloud-6.0.3.18040-arm64.pkg.tbz",
@@ -4741,7 +4741,7 @@
           "name": "ownCloud-6.0.3.18040-x86_64.AppImage",
           "browser_download_url": "https://github.com/owncloud/client/releases/download/v6.0.3/ownCloud-6.0.3.18040-x86_64.AppImage",
           "size": 76892664,
-          "download_count": 144
+          "download_count": 145
         },
         {
           "name": "ownCloud-6.0.3.18040-x86_64.AppImage.sha256",
@@ -4759,7 +4759,7 @@
           "name": "ownCloud-6.0.3.18040-x86_64.pkg",
           "browser_download_url": "https://github.com/owncloud/client/releases/download/v6.0.3/ownCloud-6.0.3.18040-x86_64.pkg",
           "size": 50979283,
-          "download_count": 110
+          "download_count": 113
         },
         {
           "name": "ownCloud-6.0.3.18040-x86_64.pkg.tbz",
@@ -4789,13 +4789,13 @@
           "name": "ownCloud-6.0.3.18040.x64.msi",
           "browser_download_url": "https://github.com/owncloud/client/releases/download/v6.0.3/ownCloud-6.0.3.18040.x64.msi",
           "size": 40128512,
-          "download_count": 737
+          "download_count": 762
         },
         {
           "name": "owncloud-client_6.0.3.18040_amd64.deb",
           "browser_download_url": "https://github.com/owncloud/client/releases/download/v6.0.3/owncloud-client_6.0.3.18040_amd64.deb",
           "size": 55295248,
-          "download_count": 130
+          "download_count": 131
         },
         {
           "name": "owncloud-client_6.0.3.18040_x86_64.rpm",
@@ -4913,7 +4913,7 @@
           "name": "ownCloud-6.0.1.17343-arm64.pkg",
           "browser_download_url": "https://github.com/owncloud/client/releases/download/v6.0.1/ownCloud-6.0.1.17343-arm64.pkg",
           "size": 45250410,
-          "download_count": 11
+          "download_count": 12
         },
         {
           "name": "ownCloud-6.0.1.17343-arm64.pkg.tbz",
@@ -4955,7 +4955,7 @@
           "name": "ownCloud-6.0.1.17343-x86_64.pkg",
           "browser_download_url": "https://github.com/owncloud/client/releases/download/v6.0.1/ownCloud-6.0.1.17343-x86_64.pkg",
           "size": 48807536,
-          "download_count": 10
+          "download_count": 11
         },
         {
           "name": "ownCloud-6.0.1.17343-x86_64.pkg.tbz",
@@ -5139,7 +5139,7 @@
           "name": "ownCloud-5.3.2.15463-x86_64.pkg",
           "browser_download_url": "https://github.com/owncloud/client/releases/download/v5.3.2/ownCloud-5.3.2.15463-x86_64.pkg",
           "size": 31171302,
-          "download_count": 16
+          "download_count": 17
         },
         {
           "name": "ownCloud-5.3.2.15463-x86_64.pkg.tbz",
@@ -5219,7 +5219,7 @@
           "name": "ownCloud-5.3.1.14018-x86_64.pkg",
           "browser_download_url": "https://github.com/owncloud/client/releases/download/v5.3.1/ownCloud-5.3.1.14018-x86_64.pkg",
           "size": 31168050,
-          "download_count": 7
+          "download_count": 8
         },
         {
           "name": "ownCloud-5.3.1.14018-x86_64.pkg.tbz",
@@ -5299,7 +5299,7 @@
           "name": "ownCloud-5.3.0.13987-x86_64.pkg",
           "browser_download_url": "https://github.com/owncloud/client/releases/download/v5.3.0/ownCloud-5.3.0.13987-x86_64.pkg",
           "size": 31165930,
-          "download_count": 5
+          "download_count": 6
         },
         {
           "name": "ownCloud-5.3.0.13987-x86_64.pkg.tbz",
@@ -5403,7 +5403,7 @@
           "name": "ownCloud-5.2.1.13040.x64.msi",
           "browser_download_url": "https://github.com/owncloud/client/releases/download/v5.2.1/ownCloud-5.2.1.13040.x64.msi",
           "size": 21528576,
-          "download_count": 6
+          "download_count": 9
         },
         {
           "name": "owncloud-client_5.2.1.13040.deb",
@@ -5429,7 +5429,7 @@
           "name": "ownCloud-5.2.0.12726-arm64.pkg",
           "browser_download_url": "https://github.com/owncloud/client/releases/download/v5.2.0/ownCloud-5.2.0.12726-arm64.pkg",
           "size": 28850998,
-          "download_count": 4
+          "download_count": 5
         },
         {
           "name": "ownCloud-5.2.0.12726-arm64.pkg.tbz",
@@ -5539,7 +5539,7 @@
           "name": "ownCloud-5.1.2.12600-x86_64.pkg",
           "browser_download_url": "https://github.com/owncloud/client/releases/download/v5.1.2/ownCloud-5.1.2.12600-x86_64.pkg",
           "size": 31145249,
-          "download_count": 4
+          "download_count": 5
         },
         {
           "name": "ownCloud-5.1.2.12600-x86_64.pkg.tbz",
@@ -5643,7 +5643,7 @@
           "name": "ownCloud-5.0.0.12278.x64.msi",
           "browser_download_url": "https://github.com/owncloud/client/releases/download/v5.0.0/ownCloud-5.0.0.12278.x64.msi",
           "size": 21516288,
-          "download_count": 9
+          "download_count": 10
         },
         {
           "name": "owncloud-client_5.0.0.12278.deb",
@@ -5699,7 +5699,7 @@
           "name": "ownCloud-4.2.0.11670-x86_64.pkg",
           "browser_download_url": "https://github.com/owncloud/client/releases/download/v4.2.0/ownCloud-4.2.0.11670-x86_64.pkg",
           "size": 35989350,
-          "download_count": 10
+          "download_count": 11
         },
         {
           "name": "ownCloud-4.2.0.11670-x86_64.pkg.tbz",
@@ -5723,7 +5723,7 @@
           "name": "ownCloud-4.2.0.11670.x64.msi",
           "browser_download_url": "https://github.com/owncloud/client/releases/download/v4.2.0/ownCloud-4.2.0.11670.x64.msi",
           "size": 20193280,
-          "download_count": 9
+          "download_count": 10
         },
         {
           "name": "ownCloud-4.2.0.11670.x86.GPO.msi",
@@ -5803,7 +5803,7 @@
           "name": "ownCloud-4.1.0.11250.x64.msi",
           "browser_download_url": "https://github.com/owncloud/client/releases/download/v4.1.0/ownCloud-4.1.0.11250.x64.msi",
           "size": 20185088,
-          "download_count": 4
+          "download_count": 5
         },
         {
           "name": "ownCloud-4.1.0.11250.x86.GPO.msi",
@@ -5883,7 +5883,7 @@
           "name": "ownCloud-4.0.0.10896.x64.msi",
           "browser_download_url": "https://github.com/owncloud/client/releases/download/v4.0.0/ownCloud-4.0.0.10896.x64.msi",
           "size": 20168704,
-          "download_count": 3
+          "download_count": 4
         },
         {
           "name": "ownCloud-4.0.0.10896.x86.GPO.msi",
@@ -5945,7 +5945,7 @@
           "name": "ownCloud-3.2.1.10355.x64.msi",
           "browser_download_url": "https://github.com/owncloud/client/releases/download/v3.2.1/ownCloud-3.2.1.10355.x64.msi",
           "size": 20111360,
-          "download_count": 12
+          "download_count": 13
         },
         {
           "name": "ownCloud-3.2.1.10355.x86.GPO.msi",
@@ -5983,7 +5983,7 @@
           "name": "ownCloud-3.2.0.10193-x86_64.pkg",
           "browser_download_url": "https://github.com/owncloud/client/releases/download/v3.2.0/ownCloud-3.2.0.10193-x86_64.pkg",
           "size": 36103670,
-          "download_count": 4
+          "download_count": 5
         },
         {
           "name": "ownCloud-3.2.0.10193-x86_64.pkg.tbz",
@@ -6193,7 +6193,7 @@
           "name": "ownCloud-2.11.1.8438.x64.msi",
           "browser_download_url": "https://github.com/owncloud/client/releases/download/v2.11.1/ownCloud-2.11.1.8438.x64.msi",
           "size": 20922368,
-          "download_count": 17
+          "download_count": 18
         },
         {
           "name": "ownCloud-2.11.1.8438.x86.GPO.msi",
@@ -6901,7 +6901,7 @@
           "name": "owncloud_4.8.4-original-release.apk",
           "browser_download_url": "https://github.com/owncloud/android/releases/download/v4.8.4/owncloud_4.8.4-original-release.apk",
           "size": 14447953,
-          "download_count": 449
+          "download_count": 454
         }
       ]
     },
@@ -7299,7 +7299,7 @@
           "name": "owncloud_2.21.2-original-release.apk",
           "browser_download_url": "https://github.com/owncloud/android/releases/download/oc-android-2.21.2/owncloud_2.21.2-original-release.apk",
           "size": 12152217,
-          "download_count": 322
+          "download_count": 323
         }
       ]
     },
@@ -7856,13 +7856,13 @@
           "name": "owncloud-complete-20260925.tar.bz2",
           "browser_download_url": "https://github.com/owncloud/core/releases/download/v11.0.1/owncloud-complete-20260925.tar.bz2",
           "size": 101882767,
-          "download_count": 196
+          "download_count": 207
         },
         {
           "name": "owncloud-complete-20260925.zip",
           "browser_download_url": "https://github.com/owncloud/core/releases/download/v11.0.1/owncloud-complete-20260925.zip",
           "size": 137002772,
-          "download_count": 122
+          "download_count": 126
         },
         {
           "name": "owncloud-complete-20260925-qa.tar.bz2",
@@ -7880,19 +7880,19 @@
           "name": "owncloud-11.0.1.tar.bz2",
           "browser_download_url": "https://github.com/owncloud/core/releases/download/v11.0.1/owncloud-11.0.1.tar.bz2",
           "size": 54182875,
-          "download_count": 86
+          "download_count": 87
         },
         {
           "name": "owncloud-11.0.1.zip",
           "browser_download_url": "https://github.com/owncloud/core/releases/download/v11.0.1/owncloud-11.0.1.zip",
           "size": 69028203,
-          "download_count": 128
+          "download_count": 132
         },
         {
           "name": "owncloud-11.0.1-qa.tar.bz2",
           "browser_download_url": "https://github.com/owncloud/core/releases/download/v11.0.1/owncloud-11.0.1-qa.tar.bz2",
           "size": 65327834,
-          "download_count": 34
+          "download_count": 35
         },
         {
           "name": "owncloud-11.0.1-qa.zip",
@@ -7912,13 +7912,13 @@
           "name": "owncloud-11.0.0.tar.bz2",
           "browser_download_url": "https://github.com/owncloud/core/releases/download/v11.0.0/owncloud-11.0.0.tar.bz2",
           "size": 55248500,
-          "download_count": 442
+          "download_count": 451
         },
         {
           "name": "owncloud-11.0.0.zip",
           "browser_download_url": "https://github.com/owncloud/core/releases/download/v11.0.0/owncloud-11.0.0.zip",
           "size": 69972670,
-          "download_count": 466
+          "download_count": 471
         },
         {
           "name": "owncloud-11.0.0-qa.tar.bz2",
@@ -7936,7 +7936,7 @@
           "name": "owncloud-complete-20260730.tar.bz2",
           "browser_download_url": "https://github.com/owncloud/core/releases/download/v11.0.0/owncloud-complete-20260730.tar.bz2",
           "size": 136526364,
-          "download_count": 433
+          "download_count": 434
         },
         {
           "name": "owncloud-complete-20260730.zip",
@@ -7948,7 +7948,7 @@
           "name": "owncloud-complete-20260730-qa.tar.bz2",
           "browser_download_url": "https://github.com/owncloud/core/releases/download/v11.0.0/owncloud-complete-20260730-qa.tar.bz2",
           "size": 147423491,
-          "download_count": 118
+          "download_count": 119
         },
         {
           "name": "owncloud-complete-20260730-qa.zip",
@@ -7968,49 +7968,49 @@
           "name": "owncloud-complete-20261006.tar.bz2",
           "browser_download_url": "https://github.com/owncloud/core/releases/download/v10.16.6/owncloud-complete-20261006.tar.bz2",
           "size": 76688706,
-          "download_count": 176
+          "download_count": 188
         },
         {
           "name": "owncloud-complete-20261006.zip",
           "browser_download_url": "https://github.com/owncloud/core/releases/download/v10.16.6/owncloud-complete-20261006.zip",
           "size": 106106482,
-          "download_count": 83
+          "download_count": 89
         },
         {
           "name": "owncloud-complete-20261006-qa.tar.bz2",
           "browser_download_url": "https://github.com/owncloud/core/releases/download/v10.16.6/owncloud-complete-20261006-qa.tar.bz2",
           "size": 87743807,
-          "download_count": 71
+          "download_count": 75
         },
         {
           "name": "owncloud-complete-20261006-qa.zip",
           "browser_download_url": "https://github.com/owncloud/core/releases/download/v10.16.6/owncloud-complete-20261006-qa.zip",
           "size": 120653360,
-          "download_count": 51
+          "download_count": 55
         },
         {
           "name": "owncloud-10.16.6.tar.bz2",
           "browser_download_url": "https://github.com/owncloud/core/releases/download/v10.16.6/owncloud-10.16.6.tar.bz2",
           "size": 57843056,
-          "download_count": 123
+          "download_count": 131
         },
         {
           "name": "owncloud-10.16.6.zip",
           "browser_download_url": "https://github.com/owncloud/core/releases/download/v10.16.6/owncloud-10.16.6.zip",
           "size": 72800332,
-          "download_count": 59
+          "download_count": 63
         },
         {
           "name": "owncloud-10.16.6-qa.tar.bz2",
           "browser_download_url": "https://github.com/owncloud/core/releases/download/v10.16.6/owncloud-10.16.6-qa.tar.bz2",
           "size": 69129315,
-          "download_count": 60
+          "download_count": 66
         },
         {
           "name": "owncloud-10.16.6-qa.zip",
           "browser_download_url": "https://github.com/owncloud/core/releases/download/v10.16.6/owncloud-10.16.6-qa.zip",
           "size": 87347227,
-          "download_count": 54
+          "download_count": 59
         }
       ]
     },
@@ -8024,7 +8024,7 @@
           "name": "owncloud-complete-20260925.tar.bz2",
           "browser_download_url": "https://github.com/owncloud/core/releases/download/v10.16.5/owncloud-complete-20260925.tar.bz2",
           "size": 76694995,
-          "download_count": 108
+          "download_count": 110
         },
         {
           "name": "owncloud-complete-20260925.zip",
@@ -8048,7 +8048,7 @@
           "name": "owncloud-10.16.5.tar.bz2",
           "browser_download_url": "https://github.com/owncloud/core/releases/download/v10.16.5/owncloud-10.16.5.tar.bz2",
           "size": 57839281,
-          "download_count": 71
+          "download_count": 72
         },
         {
           "name": "owncloud-10.16.5.zip",
@@ -8060,7 +8060,7 @@
           "name": "owncloud-10.16.5-qa.tar.bz2",
           "browser_download_url": "https://github.com/owncloud/core/releases/download/v10.16.5/owncloud-10.16.5-qa.tar.bz2",
           "size": 69100218,
-          "download_count": 137
+          "download_count": 138
         },
         {
           "name": "owncloud-10.16.5-qa.zip",
@@ -8142,7 +8142,7 @@
           "name": "owncloud-10.16.3.tar.bz2",
           "browser_download_url": "https://github.com/owncloud/core/releases/download/v10.16.3/owncloud-10.16.3.tar.bz2",
           "size": 57971848,
-          "download_count": 51
+          "download_count": 52
         },
         {
           "name": "owncloud-complete-20260522.tar.bz2",
@@ -8388,23 +8388,23 @@
       "1.0.0": 46
     },
     "contacts": {
-      "1.5.5": 713,
-      "1.6.0": 134
+      "1.5.5": 715,
+      "1.6.0": 137
     },
     "calendar": {
       "2.0.0": 759,
-      "2.0.1": 35,
+      "2.0.1": 90,
       "2.1.0": 496,
-      "2.1.1": 10
+      "2.1.1": 22
     },
     "market": {
-      "0.9.1": 6558
+      "0.9.1": 6603
     },
     "phonetrack": {
       "0.2.8": 14
     },
     "migrate_to_kiteworks": {
-      "1.0.2": 29
+      "1.0.2": 30
     },
     "gpxpod": {
       "2.2.2": 12
@@ -8420,7 +8420,7 @@
     },
     "migrate_to_ocis": {
       "2.0.0": 128,
-      "2.0.1": 230
+      "2.0.1": 234
     },
     "passman": {
       "2.1.4": 25
@@ -8438,7 +8438,7 @@
       "1.1.3": 18
     },
     "wallpaper": {
-      "0.2.2": 462
+      "0.2.2": 468
     },
     "twofactor_privacyidea": {
       "2.2.0": 3,
@@ -8463,14 +8463,14 @@
       "0.9.3": 3,
       "0.9.5": 2,
       "0.9.6": 3,
-      "0.9.7": 641
+      "0.9.7": 642
     },
     "syncblue": {
       "1.2.1": 3,
       "1.2.2": 54
     },
     "sensorlogger": {
-      "0.1.1": 68
+      "0.1.1": 69
     },
     "sciencemesh": {
       "0.1.0": 1,
@@ -8505,11 +8505,11 @@
     },
     "qownnotesapi": {
       "17.7.0": 1,
-      "19.1.0": 47,
+      "19.1.0": 48,
       "21.3.0": 50
     },
     "openotp_auth": {
-      "1.2.3": 240
+      "1.2.3": 247
     },
     "opencloudmesh": {
       "0.1.1": 1,
@@ -8520,14 +8520,14 @@
       "2.0.4": 1,
       "2.0.5": 1,
       "2.0.6": 1,
-      "2.0.7": 285
+      "2.0.7": 286
     },
     "nextbackup": {
       "21.1.0": 2,
-      "21.1.1": 73
+      "21.1.1": 74
     },
     "metadata": {
-      "0.10.0": 375
+      "0.10.0": 377
     },
     "groupalert": {
       "1.0.6": 1,
@@ -8552,7 +8552,7 @@
       "1.2.3": 1,
       "1.2.4": 2,
       "1.3.6": 3,
-      "1.3.7": 374
+      "1.3.7": 377
     },
     "e2eeshare": {
       "1.0.0": 1,
@@ -8602,7 +8602,7 @@
       "2.5.2": 2,
       "3.0.0": 1,
       "3.0.1": 1,
-      "3.0.2": 184
+      "3.0.2": 185
     },
     "cms_pico": {
       "0.9.7": 2,
@@ -8629,13 +8629,13 @@
       "0.18.8": 0,
       "0.18.9": 0,
       "0.19.0": 0,
-      "0.19.1": 97
+      "0.19.1": 99
     },
     "bplog": {
       "0.1.0": 1,
       "0.2.0": 1,
       "0.3.0": 1,
-      "0.3.1": 57
+      "0.3.1": 58
     },
     "bookmarks": {
       "0.10.3": 2,
@@ -8647,7 +8647,7 @@
       "1.1.2": 1,
       "1.2.1": 2,
       "1.2.2": 1,
-      "1.2.3": 123
+      "1.2.3": 125
     },
     "richdocuments": {
       "1.1.20": 2,
@@ -8683,7 +8683,7 @@
       "4.2.0": 5,
       "4.2.1": 3,
       "4.2.2": 4,
-      "4.2.3": 827
+      "4.2.3": 834
     },
     "onlyoffice": {
       "1.1.3": 3,
@@ -8693,7 +8693,7 @@
       "1.2.0": 1,
       "1.3.0": 1,
       "1.4.0": 1,
-      "10.0.0": 980,
+      "10.0.0": 1004,
       "2.0.1": 1,
       "2.0.3": 1,
       "2.1.1": 1,
@@ -8727,7 +8727,7 @@
       "8.2.3": 4,
       "9.1.1": 1,
       "9.10.1": 2,
-      "9.12.1": 863,
+      "9.12.1": 866,
       "9.3.1": 1,
       "9.5.1": 1,
       "9.6.1": 2,
@@ -8808,10 +8808,10 @@
       "2.5.1": 1,
       "2.5.2": 17,
       "2.6.0": 514,
-      "2.6.1": 652
+      "2.6.1": 660
     },
     "example-app": {
-      "1.0.0": 2,
+      "1.0.0": 3,
       "1.0.1": 2,
       "1.0.2": 3
     }
@@ -8871,11 +8871,11 @@
       "0.1.0": 4,
       "0.2.0": 4,
       "0.3.0": 3,
-      "0.3.1": 17
+      "0.3.1": 19
     },
     "web-app-skeleton": {
-      "0.1.0": 1041,
-      "0.2.0": 1049
+      "0.1.0": 1057,
+      "0.2.0": 1065
     },
     "web-app-dicom-viewer": {
       "1.0.0": 11
@@ -8933,7 +8933,7 @@
       "0.4.1": 15
     },
     "excalidraw": {
-      "0.1.0": 62
+      "0.1.0": 64
     },
     "draw-io": {
       "0.1.0": 3,
@@ -8943,7 +8943,7 @@
       "0.3.2": 2,
       "0.3.3": 2,
       "0.4.0": 2,
-      "0.4.1": 23
+      "0.4.1": 24
     },
     "ai-doc-summary": {
       "0.1.0": 15
@@ -8959,7 +8959,7 @@
     "android": {
       "url": "https://play.google.com/store/apps/details?id=com.owncloud.android&hl=en&gl=us",
       "rating": 4.5,
-      "ratingCount": 14679,
+      "ratingCount": 14681,
       "installs": "500,000+"
     },
     "ios": {

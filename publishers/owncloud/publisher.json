@@ -9,7 +9,8 @@
     "calendar",
     "contacts",
     "migrate_to_kiteworks",
-    "migrate_to_ocis"
+    "migrate_to_ocis",
+    "twofactor_totp"
   ],
   "extensions": [
     "ai-doc-summary",

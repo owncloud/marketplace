@@ -126,6 +126,9 @@
     "twofactor_privacyidea": {
       "3.2.0": 7988
     },
+    "twofactor_totp": {
+      "0.9.0": 96763
+    },
     "wallpaper": {
       "0.2.2": 51261
     }

@@ -9,6 +9,9 @@ on:
 env:
   ASTRO_TELEMETRY_DISABLED: "1"
 
+permissions:
+  contents: read
+
 jobs:
   tools:
     runs-on: ubuntu-latest
@@ -16,6 +19,7 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           lfs: true
+          persist-credentials: false
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version-file: .nvmrc
@@ -47,11 +51,16 @@ jobs:
   # — that needs pages:write/id-token and is inherently main-only (see deploy.yml).
   pages-dryrun:
     runs-on: ubuntu-latest
+    # configure-pages reads the repository's Pages site with the token.
+    permissions:
+      contents: read
+      pages: read
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           lfs: true
           fetch-depth: 0
+          persist-credentials: false
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version-file: .nvmrc

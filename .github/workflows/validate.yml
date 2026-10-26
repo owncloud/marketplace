@@ -3,6 +3,9 @@ on:
   pull_request:
     paths: ["apps/**", "extensions/**"]
 
+permissions:
+  contents: read
+
 jobs:
   validate:
     runs-on: ubuntu-latest
@@ -11,6 +14,7 @@ jobs:
         with:
           lfs: true
           fetch-depth: 0
+          persist-credentials: false
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version-file: .nvmrc
@@ -25,14 +29,14 @@ jobs:
           # merge base. A shallow base tip has no ancestors, so once main moves
           # past a PR's branch point the three-dot diff fails with "no merge
           # base". checkout already used fetch-depth: 0, so this stays unshallow.
-          git fetch origin "${{ github.base_ref }}"
-          npx tsx src/cli/check-changeset.ts "origin/${{ github.base_ref }}"
+          git fetch origin "${GITHUB_BASE_REF}"
+          npx tsx src/cli/check-changeset.ts "origin/${GITHUB_BASE_REF}"
       - name: Verify code-signing signatures on new releases
         working-directory: tools
-        run: npx tsx src/cli/check-signatures.ts "origin/${{ github.base_ref }}"
+        run: npx tsx src/cli/check-signatures.ts "origin/${GITHUB_BASE_REF}"
       - name: Validate all releases
         working-directory: tools
         run: npx tsx src/cli/validate.ts ../apps ../extensions
       - name: Validate screenshots on new releases
         working-directory: tools
-        run: npx tsx src/cli/validate-screenshots.ts "origin/${{ github.base_ref }}"
+        run: npx tsx src/cli/validate-screenshots.ts "origin/${GITHUB_BASE_REF}"

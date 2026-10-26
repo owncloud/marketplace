@@ -19,6 +19,8 @@ updates:
       - "/website"
     schedule:
       interval: weekly
+    cooldown:
+      default-days: 7
     # Majors are left out of the groups and still get one PR each, per
     # directory — merge both PRs of a shared dependency together.
     groups:

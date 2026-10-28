@@ -36,7 +36,7 @@ source of truth.
 - `.github/pull_request_template.md` — submission checklist.
 - `.github/dependabot.yml` — github-actions + npm (`/tools`, `/website`), weekly;
   minor/patch bumps grouped (actions, npm dev, npm prod), majors one PR each.
-- `.nvmrc` — Node version (22.12.0).
+- `.nvmrc` — Node version (26.12.1).
 
 ## Development Conventions
 

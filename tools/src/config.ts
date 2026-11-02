@@ -64,6 +64,7 @@ const PLATFORM_LINE_MAX_PATCH: Record<string, number> = {
   "10.15": 9,
   "10.16": 9,
   "11.0": 9,
+  "11.1": 9,
 };
 
 /**

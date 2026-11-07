@@ -1,6 +1,98 @@
 {
-  "generated_at": "2026-11-06T06:30:01.324Z",
+  "generated_at": "2026-11-07T06:25:53.606Z",
   "ocis": [
+    {
+      "tag_name": "v8.2.3",
+      "name": "v8.2.3",
+      "published_at": "2026-11-06T14:01:12Z",
+      "html_url": "https://github.com/owncloud/ocis/releases/tag/v8.2.3",
+      "assets": [
+        {
+          "name": "End-User-License-Agreement-for-ownCloud-Infinite-Scale.pdf",
+          "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v8.2.3/End-User-License-Agreement-for-ownCloud-Infinite-Scale.pdf",
+          "size": 77879,
+          "download_count": 1
+        },
+        {
+          "name": "ocis-8.2.3-darwin-amd64",
+          "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v8.2.3/ocis-8.2.3-darwin-amd64",
+          "size": 149399104,
+          "download_count": 2
+        },
+        {
+          "name": "ocis-8.2.3-darwin-amd64.sha256",
+          "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v8.2.3/ocis-8.2.3-darwin-amd64.sha256",
+          "size": 90,
+          "download_count": 1
+        },
+        {
+          "name": "ocis-8.2.3-darwin-arm64",
+          "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v8.2.3/ocis-8.2.3-darwin-arm64",
+          "size": 142866306,
+          "download_count": 1
+        },
+        {
+          "name": "ocis-8.2.3-darwin-arm64.sha256",
+          "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v8.2.3/ocis-8.2.3-darwin-arm64.sha256",
+          "size": 90,
+          "download_count": 1
+        },
+        {
+          "name": "ocis-8.2.3-linux-386",
+          "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v8.2.3/ocis-8.2.3-linux-386",
+          "size": 140640418,
+          "download_count": 5
+        },
+        {
+          "name": "ocis-8.2.3-linux-386.sha256",
+          "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v8.2.3/ocis-8.2.3-linux-386.sha256",
+          "size": 87,
+          "download_count": 1
+        },
+        {
+          "name": "ocis-8.2.3-linux-amd64",
+          "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v8.2.3/ocis-8.2.3-linux-amd64",
+          "size": 150339368,
+          "download_count": 28
+        },
+        {
+          "name": "ocis-8.2.3-linux-amd64.sha256",
+          "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v8.2.3/ocis-8.2.3-linux-amd64.sha256",
+          "size": 89,
+          "download_count": 2
+        },
+        {
+          "name": "ocis-8.2.3-linux-arm",
+          "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v8.2.3/ocis-8.2.3-linux-arm",
+          "size": 140050594,
+          "download_count": 2
+        },
+        {
+          "name": "ocis-8.2.3-linux-arm.sha256",
+          "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v8.2.3/ocis-8.2.3-linux-arm.sha256",
+          "size": 87,
+          "download_count": 1
+        },
+        {
+          "name": "ocis-8.2.3-linux-arm64",
+          "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v8.2.3/ocis-8.2.3-linux-arm64",
+          "size": 154403118,
+          "download_count": 3
+        },
+        {
+          "name": "ocis-8.2.3-linux-arm64.sha256",
+          "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v8.2.3/ocis-8.2.3-linux-arm64.sha256",
+          "size": 89,
+          "download_count": 1
+        },
+        {
+          "name": "third-party-licenses.tar.gz",
+          "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v8.2.3/third-party-licenses.tar.gz",
+          "size": 407842,
+          "download_count": 1
+        }
+      ]
+    },
     {
       "tag_name": "v8.0.10",
       "name": "v8.0.10",
@@ -17,7 +109,7 @@
           "name": "ocis-8.0.10-darwin-amd64",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v8.0.10/ocis-8.0.10-darwin-amd64",
           "size": 144178784,
-          "download_count": 6
+          "download_count": 8
         },
         {
           "name": "ocis-8.0.10-darwin-amd64.sha256",
@@ -29,7 +121,7 @@
           "name": "ocis-8.0.10-darwin-arm64",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v8.0.10/ocis-8.0.10-darwin-arm64",
           "size": 137691874,
-          "download_count": 3
+          "download_count": 4
         },
         {
           "name": "ocis-8.0.10-darwin-arm64.sha256",
@@ -53,7 +145,7 @@
           "name": "ocis-8.0.10-linux-amd64",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v8.0.10/ocis-8.0.10-linux-amd64",
           "size": 145113064,
-          "download_count": 19
+          "download_count": 22
         },
         {
           "name": "ocis-8.0.10-linux-amd64.sha256",
@@ -77,7 +169,7 @@
           "name": "ocis-8.0.10-linux-arm64",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v8.0.10/ocis-8.0.10-linux-arm64",
           "size": 149160238,
-          "download_count": 4
+          "download_count": 5
         },
         {
           "name": "ocis-8.0.10-linux-arm64.sha256",
@@ -89,7 +181,7 @@
           "name": "third-party-licenses.tar.gz",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v8.0.10/third-party-licenses.tar.gz",
           "size": 718686,
-          "download_count": 0
+          "download_count": 1
         }
       ]
     },
@@ -103,61 +195,61 @@
           "name": "End-User-License-Agreement-for-ownCloud-Infinite-Scale.pdf",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v8.2.2/End-User-License-Agreement-for-ownCloud-Infinite-Scale.pdf",
           "size": 77879,
-          "download_count": 56
+          "download_count": 57
         },
         {
           "name": "ocis-8.2.2-darwin-amd64",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v8.2.2/ocis-8.2.2-darwin-amd64",
           "size": 149275088,
-          "download_count": 160
+          "download_count": 162
         },
         {
           "name": "ocis-8.2.2-darwin-amd64.sha256",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v8.2.2/ocis-8.2.2-darwin-amd64.sha256",
           "size": 90,
-          "download_count": 15
+          "download_count": 16
         },
         {
           "name": "ocis-8.2.2-darwin-arm64",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v8.2.2/ocis-8.2.2-darwin-arm64",
           "size": 142749858,
-          "download_count": 53
+          "download_count": 58
         },
         {
           "name": "ocis-8.2.2-darwin-arm64.sha256",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v8.2.2/ocis-8.2.2-darwin-arm64.sha256",
           "size": 90,
-          "download_count": 11
+          "download_count": 12
         },
         {
           "name": "ocis-8.2.2-linux-386",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v8.2.2/ocis-8.2.2-linux-386",
           "size": 140513442,
-          "download_count": 52
+          "download_count": 55
         },
         {
           "name": "ocis-8.2.2-linux-386.sha256",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v8.2.2/ocis-8.2.2-linux-386.sha256",
           "size": 87,
-          "download_count": 9
+          "download_count": 10
         },
         {
           "name": "ocis-8.2.2-linux-amd64",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v8.2.2/ocis-8.2.2-linux-amd64",
           "size": 150191464,
-          "download_count": 1097
+          "download_count": 1107
         },
         {
           "name": "ocis-8.2.2-linux-amd64.sha256",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v8.2.2/ocis-8.2.2-linux-amd64.sha256",
           "size": 89,
-          "download_count": 108
+          "download_count": 110
         },
         {
           "name": "ocis-8.2.2-linux-arm",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v8.2.2/ocis-8.2.2-linux-arm",
           "size": 139919522,
-          "download_count": 32
+          "download_count": 37
         },
         {
           "name": "ocis-8.2.2-linux-arm.sha256",
@@ -169,7 +261,7 @@
           "name": "ocis-8.2.2-linux-arm64",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v8.2.2/ocis-8.2.2-linux-arm64",
           "size": 154272046,
-          "download_count": 102
+          "download_count": 105
         },
         {
           "name": "ocis-8.2.2-linux-arm64.sha256",
@@ -489,7 +581,7 @@
           "name": "ocis-8.2.0-darwin-arm64",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v8.2.0/ocis-8.2.0-darwin-arm64",
           "size": 135077058,
-          "download_count": 190
+          "download_count": 191
         },
         {
           "name": "ocis-8.2.0-darwin-arm64.sha256",
@@ -881,7 +973,7 @@
           "name": "ocis-8.0.5-linux-amd64",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v8.0.5/ocis-8.0.5-linux-amd64",
           "size": 138409008,
-          "download_count": 262
+          "download_count": 263
         },
         {
           "name": "ocis-8.0.5-linux-amd64.sha256",
@@ -893,7 +985,7 @@
           "name": "ocis-8.0.5-linux-arm",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v8.0.5/ocis-8.0.5-linux-arm",
           "size": 128909496,
-          "download_count": 45
+          "download_count": 46
         },
         {
           "name": "ocis-8.0.5-linux-arm.sha256",
@@ -1065,7 +1157,7 @@
           "name": "ocis-8.0.3-linux-amd64",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v8.0.3/ocis-8.0.3-linux-amd64",
           "size": 138173712,
-          "download_count": 646
+          "download_count": 647
         },
         {
           "name": "ocis-8.0.3-linux-amd64.sha256",
@@ -1851,85 +1943,85 @@
           "name": "End-User-License-Agreement-for-ownCloud-Infinite-Scale.pdf",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v7.1.3/End-User-License-Agreement-for-ownCloud-Infinite-Scale.pdf",
           "size": 77879,
-          "download_count": 28
+          "download_count": 29
         },
         {
           "name": "ocis-7.1.3-darwin-amd64",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v7.1.3/ocis-7.1.3-darwin-amd64",
           "size": 119025440,
-          "download_count": 20
+          "download_count": 21
         },
         {
           "name": "ocis-7.1.3-darwin-amd64.sha256",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v7.1.3/ocis-7.1.3-darwin-amd64.sha256",
           "size": 90,
-          "download_count": 12
+          "download_count": 13
         },
         {
           "name": "ocis-7.1.3-darwin-arm64",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v7.1.3/ocis-7.1.3-darwin-arm64",
           "size": 116577650,
-          "download_count": 19
+          "download_count": 20
         },
         {
           "name": "ocis-7.1.3-darwin-arm64.sha256",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v7.1.3/ocis-7.1.3-darwin-arm64.sha256",
           "size": 90,
-          "download_count": 9
+          "download_count": 10
         },
         {
           "name": "ocis-7.1.3-linux-386",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v7.1.3/ocis-7.1.3-linux-386",
           "size": 112201880,
-          "download_count": 24
+          "download_count": 25
         },
         {
           "name": "ocis-7.1.3-linux-386.sha256",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v7.1.3/ocis-7.1.3-linux-386.sha256",
           "size": 87,
-          "download_count": 9
+          "download_count": 10
         },
         {
           "name": "ocis-7.1.3-linux-amd64",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v7.1.3/ocis-7.1.3-linux-amd64",
           "size": 120034288,
-          "download_count": 521
+          "download_count": 522
         },
         {
           "name": "ocis-7.1.3-linux-amd64.sha256",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v7.1.3/ocis-7.1.3-linux-amd64.sha256",
           "size": 89,
-          "download_count": 10
+          "download_count": 11
         },
         {
           "name": "ocis-7.1.3-linux-arm",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v7.1.3/ocis-7.1.3-linux-arm",
           "size": 112197784,
-          "download_count": 20
+          "download_count": 21
         },
         {
           "name": "ocis-7.1.3-linux-arm.sha256",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v7.1.3/ocis-7.1.3-linux-arm.sha256",
           "size": 87,
-          "download_count": 8
+          "download_count": 9
         },
         {
           "name": "ocis-7.1.3-linux-arm64",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v7.1.3/ocis-7.1.3-linux-arm64",
           "size": 127598913,
-          "download_count": 81
+          "download_count": 82
         },
         {
           "name": "ocis-7.1.3-linux-arm64.sha256",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v7.1.3/ocis-7.1.3-linux-arm64.sha256",
           "size": 89,
-          "download_count": 10
+          "download_count": 11
         },
         {
           "name": "third-party-licenses.tar.gz",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v7.1.3/third-party-licenses.tar.gz",
           "size": 710185,
-          "download_count": 9
+          "download_count": 10
         }
       ]
     },
@@ -1943,85 +2035,85 @@
           "name": "End-User-License-Agreement-for-ownCloud-Infinite-Scale.pdf",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v7.1.2/End-User-License-Agreement-for-ownCloud-Infinite-Scale.pdf",
           "size": 77879,
-          "download_count": 28
+          "download_count": 29
         },
         {
           "name": "ocis-7.1.2-darwin-amd64",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v7.1.2/ocis-7.1.2-darwin-amd64",
           "size": 112842064,
-          "download_count": 35
+          "download_count": 36
         },
         {
           "name": "ocis-7.1.2-darwin-amd64.sha256",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v7.1.2/ocis-7.1.2-darwin-amd64.sha256",
           "size": 90,
-          "download_count": 9
+          "download_count": 10
         },
         {
           "name": "ocis-7.1.2-darwin-arm64",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v7.1.2/ocis-7.1.2-darwin-arm64",
           "size": 110350114,
-          "download_count": 17
+          "download_count": 18
         },
         {
           "name": "ocis-7.1.2-darwin-arm64.sha256",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v7.1.2/ocis-7.1.2-darwin-arm64.sha256",
           "size": 90,
-          "download_count": 6
+          "download_count": 7
         },
         {
           "name": "ocis-7.1.2-linux-386",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v7.1.2/ocis-7.1.2-linux-386",
           "size": 106029208,
-          "download_count": 32
+          "download_count": 33
         },
         {
           "name": "ocis-7.1.2-linux-386.sha256",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v7.1.2/ocis-7.1.2-linux-386.sha256",
           "size": 87,
-          "download_count": 7
+          "download_count": 8
         },
         {
           "name": "ocis-7.1.2-linux-amd64",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v7.1.2/ocis-7.1.2-linux-amd64",
           "size": 113849136,
-          "download_count": 4096
+          "download_count": 4097
         },
         {
           "name": "ocis-7.1.2-linux-amd64.sha256",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v7.1.2/ocis-7.1.2-linux-amd64.sha256",
           "size": 89,
-          "download_count": 10
+          "download_count": 11
         },
         {
           "name": "ocis-7.1.2-linux-arm",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v7.1.2/ocis-7.1.2-linux-arm",
           "size": 105906328,
-          "download_count": 13
+          "download_count": 14
         },
         {
           "name": "ocis-7.1.2-linux-arm.sha256",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v7.1.2/ocis-7.1.2-linux-arm.sha256",
           "size": 87,
-          "download_count": 5
+          "download_count": 6
         },
         {
           "name": "ocis-7.1.2-linux-arm64",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v7.1.2/ocis-7.1.2-linux-arm64",
           "size": 121438529,
-          "download_count": 77
+          "download_count": 78
         },
         {
           "name": "ocis-7.1.2-linux-arm64.sha256",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v7.1.2/ocis-7.1.2-linux-arm64.sha256",
           "size": 89,
-          "download_count": 5
+          "download_count": 6
         },
         {
           "name": "third-party-licenses.tar.gz",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v7.1.2/third-party-licenses.tar.gz",
           "size": 716510,
-          "download_count": 7
+          "download_count": 8
         }
       ]
     },
@@ -2035,85 +2127,85 @@
           "name": "End-User-License-Agreement-for-ownCloud-Infinite-Scale.pdf",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v7.1.1/End-User-License-Agreement-for-ownCloud-Infinite-Scale.pdf",
           "size": 77879,
-          "download_count": 13
+          "download_count": 14
         },
         {
           "name": "ocis-7.1.1-darwin-amd64",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v7.1.1/ocis-7.1.1-darwin-amd64",
           "size": 112842048,
-          "download_count": 19
+          "download_count": 20
         },
         {
           "name": "ocis-7.1.1-darwin-amd64.sha256",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v7.1.1/ocis-7.1.1-darwin-amd64.sha256",
           "size": 90,
-          "download_count": 10
+          "download_count": 11
         },
         {
           "name": "ocis-7.1.1-darwin-arm64",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v7.1.1/ocis-7.1.1-darwin-arm64",
           "size": 110350082,
-          "download_count": 10
+          "download_count": 11
         },
         {
           "name": "ocis-7.1.1-darwin-arm64.sha256",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v7.1.1/ocis-7.1.1-darwin-arm64.sha256",
           "size": 90,
-          "download_count": 6
+          "download_count": 8
         },
         {
           "name": "ocis-7.1.1-linux-386",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v7.1.1/ocis-7.1.1-linux-386",
           "size": 106021016,
-          "download_count": 10
+          "download_count": 11
         },
         {
           "name": "ocis-7.1.1-linux-386.sha256",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v7.1.1/ocis-7.1.1-linux-386.sha256",
           "size": 87,
-          "download_count": 6
+          "download_count": 7
         },
         {
           "name": "ocis-7.1.1-linux-amd64",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v7.1.1/ocis-7.1.1-linux-amd64",
           "size": 113849136,
-          "download_count": 288
+          "download_count": 291
         },
         {
           "name": "ocis-7.1.1-linux-amd64.sha256",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v7.1.1/ocis-7.1.1-linux-amd64.sha256",
           "size": 89,
-          "download_count": 9
+          "download_count": 10
         },
         {
           "name": "ocis-7.1.1-linux-arm",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v7.1.1/ocis-7.1.1-linux-arm",
           "size": 105906328,
-          "download_count": 14
+          "download_count": 15
         },
         {
           "name": "ocis-7.1.1-linux-arm.sha256",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v7.1.1/ocis-7.1.1-linux-arm.sha256",
           "size": 87,
-          "download_count": 5
+          "download_count": 6
         },
         {
           "name": "ocis-7.1.1-linux-arm64",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v7.1.1/ocis-7.1.1-linux-arm64",
           "size": 121438529,
-          "download_count": 38
+          "download_count": 39
         },
         {
           "name": "ocis-7.1.1-linux-arm64.sha256",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v7.1.1/ocis-7.1.1-linux-arm64.sha256",
           "size": 89,
-          "download_count": 6
+          "download_count": 7
         },
         {
           "name": "third-party-licenses.tar.gz",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v7.1.1/third-party-licenses.tar.gz",
           "size": 716354,
-          "download_count": 7
+          "download_count": 8
         }
       ]
     },
@@ -2127,85 +2219,85 @@
           "name": "End-User-License-Agreement-for-ownCloud-Infinite-Scale.pdf",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v7.1.0/End-User-License-Agreement-for-ownCloud-Infinite-Scale.pdf",
           "size": 77879,
-          "download_count": 7
+          "download_count": 8
         },
         {
           "name": "ocis-7.1.0-darwin-amd64",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v7.1.0/ocis-7.1.0-darwin-amd64",
           "size": 112825664,
-          "download_count": 16
+          "download_count": 17
         },
         {
           "name": "ocis-7.1.0-darwin-amd64.sha256",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v7.1.0/ocis-7.1.0-darwin-amd64.sha256",
           "size": 90,
-          "download_count": 5
+          "download_count": 6
         },
         {
           "name": "ocis-7.1.0-darwin-arm64",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v7.1.0/ocis-7.1.0-darwin-arm64",
           "size": 110333570,
-          "download_count": 12
+          "download_count": 13
         },
         {
           "name": "ocis-7.1.0-darwin-arm64.sha256",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v7.1.0/ocis-7.1.0-darwin-arm64.sha256",
           "size": 90,
-          "download_count": 5
+          "download_count": 6
         },
         {
           "name": "ocis-7.1.0-linux-386",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v7.1.0/ocis-7.1.0-linux-386",
           "size": 106004632,
-          "download_count": 9
+          "download_count": 10
         },
         {
           "name": "ocis-7.1.0-linux-386.sha256",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v7.1.0/ocis-7.1.0-linux-386.sha256",
           "size": 87,
-          "download_count": 5
+          "download_count": 6
         },
         {
           "name": "ocis-7.1.0-linux-amd64",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v7.1.0/ocis-7.1.0-linux-amd64",
           "size": 113832752,
-          "download_count": 226
+          "download_count": 227
         },
         {
           "name": "ocis-7.1.0-linux-amd64.sha256",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v7.1.0/ocis-7.1.0-linux-amd64.sha256",
           "size": 89,
-          "download_count": 8
+          "download_count": 9
         },
         {
           "name": "ocis-7.1.0-linux-arm",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v7.1.0/ocis-7.1.0-linux-arm",
           "size": 105906328,
-          "download_count": 12
+          "download_count": 13
         },
         {
           "name": "ocis-7.1.0-linux-arm.sha256",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v7.1.0/ocis-7.1.0-linux-arm.sha256",
           "size": 87,
-          "download_count": 6
+          "download_count": 7
         },
         {
           "name": "ocis-7.1.0-linux-arm64",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v7.1.0/ocis-7.1.0-linux-arm64",
           "size": 121438529,
-          "download_count": 22
+          "download_count": 23
         },
         {
           "name": "ocis-7.1.0-linux-arm64.sha256",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v7.1.0/ocis-7.1.0-linux-arm64.sha256",
           "size": 89,
-          "download_count": 5
+          "download_count": 6
         },
         {
           "name": "third-party-licenses.tar.gz",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v7.1.0/third-party-licenses.tar.gz",
           "size": 695647,
-          "download_count": 7
+          "download_count": 8
         }
       ]
     },
@@ -2219,67 +2311,67 @@
           "name": "End-User-License-Agreement-for-ownCloud-Infinite-Scale.pdf",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v7.0.1/End-User-License-Agreement-for-ownCloud-Infinite-Scale.pdf",
           "size": 77879,
-          "download_count": 23
+          "download_count": 24
         },
         {
           "name": "ocis-7.0.1-darwin-amd64",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v7.0.1/ocis-7.0.1-darwin-amd64",
           "size": 112315104,
-          "download_count": 15
+          "download_count": 16
         },
         {
           "name": "ocis-7.0.1-darwin-amd64.sha256",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v7.0.1/ocis-7.0.1-darwin-amd64.sha256",
           "size": 90,
-          "download_count": 5
+          "download_count": 6
         },
         {
           "name": "ocis-7.0.1-darwin-arm64",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v7.0.1/ocis-7.0.1-darwin-arm64",
           "size": 109827282,
-          "download_count": 22
+          "download_count": 23
         },
         {
           "name": "ocis-7.0.1-darwin-arm64.sha256",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v7.0.1/ocis-7.0.1-darwin-arm64.sha256",
           "size": 90,
-          "download_count": 5
+          "download_count": 6
         },
         {
           "name": "ocis-7.0.1-linux-386",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v7.0.1/ocis-7.0.1-linux-386",
           "size": 105517208,
-          "download_count": 11
+          "download_count": 12
         },
         {
           "name": "ocis-7.0.1-linux-386.sha256",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v7.0.1/ocis-7.0.1-linux-386.sha256",
           "size": 87,
-          "download_count": 6
+          "download_count": 7
         },
         {
           "name": "ocis-7.0.1-linux-amd64",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v7.0.1/ocis-7.0.1-linux-amd64",
           "size": 113296328,
-          "download_count": 130
+          "download_count": 131
         },
         {
           "name": "ocis-7.0.1-linux-amd64.sha256",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v7.0.1/ocis-7.0.1-linux-amd64.sha256",
           "size": 89,
-          "download_count": 9
+          "download_count": 10
         },
         {
           "name": "ocis-7.0.1-linux-arm",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v7.0.1/ocis-7.0.1-linux-arm",
           "size": 105447576,
-          "download_count": 10
+          "download_count": 11
         },
         {
           "name": "ocis-7.0.1-linux-arm.sha256",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v7.0.1/ocis-7.0.1-linux-arm.sha256",
           "size": 87,
-          "download_count": 5
+          "download_count": 6
         },
         {
           "name": "ocis-7.0.1-linux-arm64",
@@ -2291,13 +2383,13 @@
           "name": "ocis-7.0.1-linux-arm64.sha256",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v7.0.1/ocis-7.0.1-linux-arm64.sha256",
           "size": 89,
-          "download_count": 5
+          "download_count": 6
         },
         {
           "name": "third-party-licenses.tar.gz",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v7.0.1/third-party-licenses.tar.gz",
           "size": 727999,
-          "download_count": 9
+          "download_count": 10
         }
       ]
     },
@@ -2311,61 +2403,61 @@
           "name": "End-User-License-Agreement-for-ownCloud-Infinite-Scale.pdf",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v6.5.1/End-User-License-Agreement-for-ownCloud-Infinite-Scale.pdf",
           "size": 77879,
-          "download_count": 3
+          "download_count": 4
         },
         {
           "name": "ocis-6.5.1-darwin-amd64",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v6.5.1/ocis-6.5.1-darwin-amd64",
           "size": 111001040,
-          "download_count": 7
+          "download_count": 8
         },
         {
           "name": "ocis-6.5.1-darwin-amd64.sha256",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v6.5.1/ocis-6.5.1-darwin-amd64.sha256",
           "size": 90,
-          "download_count": 4
+          "download_count": 5
         },
         {
           "name": "ocis-6.5.1-darwin-arm64",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v6.5.1/ocis-6.5.1-darwin-arm64",
           "size": 108594274,
-          "download_count": 9
+          "download_count": 11
         },
         {
           "name": "ocis-6.5.1-darwin-arm64.sha256",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v6.5.1/ocis-6.5.1-darwin-arm64.sha256",
           "size": 90,
-          "download_count": 4
+          "download_count": 5
         },
         {
           "name": "ocis-6.5.1-linux-386",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v6.5.1/ocis-6.5.1-linux-386",
           "size": 104251544,
-          "download_count": 5
+          "download_count": 6
         },
         {
           "name": "ocis-6.5.1-linux-386.sha256",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v6.5.1/ocis-6.5.1-linux-386.sha256",
           "size": 87,
-          "download_count": 4
+          "download_count": 5
         },
         {
           "name": "ocis-6.5.1-linux-amd64",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v6.5.1/ocis-6.5.1-linux-amd64",
           "size": 111947008,
-          "download_count": 17
+          "download_count": 18
         },
         {
           "name": "ocis-6.5.1-linux-amd64.sha256",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v6.5.1/ocis-6.5.1-linux-amd64.sha256",
           "size": 89,
-          "download_count": 4
+          "download_count": 5
         },
         {
           "name": "ocis-6.5.1-linux-arm",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v6.5.1/ocis-6.5.1-linux-arm",
           "size": 104071320,
-          "download_count": 5
+          "download_count": 6
         },
         {
           "name": "ocis-6.5.1-linux-arm.sha256",
@@ -2377,19 +2469,19 @@
           "name": "ocis-6.5.1-linux-arm64",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v6.5.1/ocis-6.5.1-linux-arm64",
           "size": 119603521,
-          "download_count": 9
+          "download_count": 10
         },
         {
           "name": "ocis-6.5.1-linux-arm64.sha256",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v6.5.1/ocis-6.5.1-linux-arm64.sha256",
           "size": 89,
-          "download_count": 4
+          "download_count": 5
         },
         {
           "name": "third-party-licenses.tar.gz",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v6.5.1/third-party-licenses.tar.gz",
           "size": 829611,
-          "download_count": 7
+          "download_count": 8
         }
       ]
     },
@@ -2403,31 +2495,31 @@
           "name": "End-User-License-Agreement-for-ownCloud-Infinite-Scale.pdf",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v7.0.0/End-User-License-Agreement-for-ownCloud-Infinite-Scale.pdf",
           "size": 77879,
-          "download_count": 24
+          "download_count": 25
         },
         {
           "name": "ocis-7.0.0-darwin-amd64",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v7.0.0/ocis-7.0.0-darwin-amd64",
           "size": 111305360,
-          "download_count": 16
+          "download_count": 17
         },
         {
           "name": "ocis-7.0.0-darwin-amd64.sha256",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v7.0.0/ocis-7.0.0-darwin-amd64.sha256",
           "size": 90,
-          "download_count": 8
+          "download_count": 9
         },
         {
           "name": "ocis-7.0.0-darwin-arm64",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v7.0.0/ocis-7.0.0-darwin-arm64",
           "size": 108817874,
-          "download_count": 17
+          "download_count": 18
         },
         {
           "name": "ocis-7.0.0-darwin-arm64.sha256",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v7.0.0/ocis-7.0.0-darwin-arm64.sha256",
           "size": 90,
-          "download_count": 6
+          "download_count": 7
         },
         {
           "name": "ocis-7.0.0-linux-386",
@@ -2439,49 +2531,49 @@
           "name": "ocis-7.0.0-linux-386.sha256",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v7.0.0/ocis-7.0.0-linux-386.sha256",
           "size": 87,
-          "download_count": 6
+          "download_count": 7
         },
         {
           "name": "ocis-7.0.0-linux-amd64",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v7.0.0/ocis-7.0.0-linux-amd64",
           "size": 112292808,
-          "download_count": 409
+          "download_count": 410
         },
         {
           "name": "ocis-7.0.0-linux-amd64.sha256",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v7.0.0/ocis-7.0.0-linux-amd64.sha256",
           "size": 89,
-          "download_count": 15
+          "download_count": 16
         },
         {
           "name": "ocis-7.0.0-linux-arm",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v7.0.0/ocis-7.0.0-linux-arm",
           "size": 104464536,
-          "download_count": 12
+          "download_count": 13
         },
         {
           "name": "ocis-7.0.0-linux-arm.sha256",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v7.0.0/ocis-7.0.0-linux-arm.sha256",
           "size": 87,
-          "download_count": 5
+          "download_count": 6
         },
         {
           "name": "ocis-7.0.0-linux-arm64",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v7.0.0/ocis-7.0.0-linux-arm64",
           "size": 119931201,
-          "download_count": 116
+          "download_count": 117
         },
         {
           "name": "ocis-7.0.0-linux-arm64.sha256",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v7.0.0/ocis-7.0.0-linux-arm64.sha256",
           "size": 89,
-          "download_count": 7
+          "download_count": 8
         },
         {
           "name": "third-party-licenses.tar.gz",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v7.0.0/third-party-licenses.tar.gz",
           "size": 735477,
-          "download_count": 7
+          "download_count": 8
         }
       ]
     },
@@ -2495,85 +2587,85 @@
           "name": "End-User-License-Agreement-for-ownCloud-Infinite-Scale.pdf",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v5.0.9/End-User-License-Agreement-for-ownCloud-Infinite-Scale.pdf",
           "size": 77879,
-          "download_count": 12
+          "download_count": 13
         },
         {
           "name": "ocis-5.0.9-darwin-amd64",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v5.0.9/ocis-5.0.9-darwin-amd64",
           "size": 101818656,
-          "download_count": 15
+          "download_count": 16
         },
         {
           "name": "ocis-5.0.9-darwin-amd64.sha256",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v5.0.9/ocis-5.0.9-darwin-amd64.sha256",
           "size": 90,
-          "download_count": 7
+          "download_count": 8
         },
         {
           "name": "ocis-5.0.9-darwin-arm64",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v5.0.9/ocis-5.0.9-darwin-arm64",
           "size": 99513106,
-          "download_count": 12
+          "download_count": 13
         },
         {
           "name": "ocis-5.0.9-darwin-arm64.sha256",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v5.0.9/ocis-5.0.9-darwin-arm64.sha256",
           "size": 90,
-          "download_count": 7
+          "download_count": 8
         },
         {
           "name": "ocis-5.0.9-linux-386",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v5.0.9/ocis-5.0.9-linux-386",
           "size": 93831320,
-          "download_count": 10
+          "download_count": 11
         },
         {
           "name": "ocis-5.0.9-linux-386.sha256",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v5.0.9/ocis-5.0.9-linux-386.sha256",
           "size": 87,
-          "download_count": 5
+          "download_count": 6
         },
         {
           "name": "ocis-5.0.9-linux-amd64",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v5.0.9/ocis-5.0.9-linux-amd64",
           "size": 101482816,
-          "download_count": 942
+          "download_count": 943
         },
         {
           "name": "ocis-5.0.9-linux-amd64.sha256",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v5.0.9/ocis-5.0.9-linux-amd64.sha256",
           "size": 89,
-          "download_count": 9
+          "download_count": 10
         },
         {
           "name": "ocis-5.0.9-linux-arm",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v5.0.9/ocis-5.0.9-linux-arm",
           "size": 93716632,
-          "download_count": 13
+          "download_count": 14
         },
         {
           "name": "ocis-5.0.9-linux-arm.sha256",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v5.0.9/ocis-5.0.9-linux-arm.sha256",
           "size": 87,
-          "download_count": 5
+          "download_count": 6
         },
         {
           "name": "ocis-5.0.9-linux-arm64",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v5.0.9/ocis-5.0.9-linux-arm64",
           "size": 108790081,
-          "download_count": 83
+          "download_count": 84
         },
         {
           "name": "ocis-5.0.9-linux-arm64.sha256",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v5.0.9/ocis-5.0.9-linux-arm64.sha256",
           "size": 89,
-          "download_count": 6
+          "download_count": 7
         },
         {
           "name": "third-party-licenses.tar.gz",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v5.0.9/third-party-licenses.tar.gz",
           "size": 828430,
-          "download_count": 7
+          "download_count": 8
         }
       ]
     },
@@ -2587,7 +2679,7 @@
           "name": "End-User-License-Agreement-for-ownCloud-Infinite-Scale.pdf",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v6.6.1/End-User-License-Agreement-for-ownCloud-Infinite-Scale.pdf",
           "size": 77879,
-          "download_count": 10
+          "download_count": 11
         },
         {
           "name": "ocis-6.6.1-darwin-amd64",
@@ -2599,37 +2691,37 @@
           "name": "ocis-6.6.1-darwin-amd64.sha256",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v6.6.1/ocis-6.6.1-darwin-amd64.sha256",
           "size": 90,
-          "download_count": 6
+          "download_count": 7
         },
         {
           "name": "ocis-6.6.1-darwin-arm64",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v6.6.1/ocis-6.6.1-darwin-arm64",
           "size": 108261250,
-          "download_count": 13
+          "download_count": 14
         },
         {
           "name": "ocis-6.6.1-darwin-arm64.sha256",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v6.6.1/ocis-6.6.1-darwin-arm64.sha256",
           "size": 90,
-          "download_count": 5
+          "download_count": 6
         },
         {
           "name": "ocis-6.6.1-linux-386",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v6.6.1/ocis-6.6.1-linux-386",
           "size": 103956632,
-          "download_count": 24
+          "download_count": 25
         },
         {
           "name": "ocis-6.6.1-linux-386.sha256",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v6.6.1/ocis-6.6.1-linux-386.sha256",
           "size": 87,
-          "download_count": 6
+          "download_count": 7
         },
         {
           "name": "ocis-6.6.1-linux-amd64",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v6.6.1/ocis-6.6.1-linux-amd64",
           "size": 111703016,
-          "download_count": 161
+          "download_count": 162
         },
         {
           "name": "ocis-6.6.1-linux-amd64.sha256",
@@ -2641,31 +2733,31 @@
           "name": "ocis-6.6.1-linux-arm",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v6.6.1/ocis-6.6.1-linux-arm",
           "size": 103874712,
-          "download_count": 18
+          "download_count": 19
         },
         {
           "name": "ocis-6.6.1-linux-arm.sha256",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v6.6.1/ocis-6.6.1-linux-arm.sha256",
           "size": 87,
-          "download_count": 5
+          "download_count": 6
         },
         {
           "name": "ocis-6.6.1-linux-arm64",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v6.6.1/ocis-6.6.1-linux-arm64",
           "size": 119341377,
-          "download_count": 67
+          "download_count": 68
         },
         {
           "name": "ocis-6.6.1-linux-arm64.sha256",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v6.6.1/ocis-6.6.1-linux-arm64.sha256",
           "size": 89,
-          "download_count": 5
+          "download_count": 6
         },
         {
           "name": "third-party-licenses.tar.gz",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v6.6.1/third-party-licenses.tar.gz",
           "size": 725420,
-          "download_count": 7
+          "download_count": 8
         }
       ]
     },
@@ -2679,85 +2771,85 @@
           "name": "End-User-License-Agreement-for-ownCloud-Infinite-Scale.pdf",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v6.6.0/End-User-License-Agreement-for-ownCloud-Infinite-Scale.pdf",
           "size": 77879,
-          "download_count": 8
+          "download_count": 9
         },
         {
           "name": "ocis-6.6.0-darwin-amd64",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v6.6.0/ocis-6.6.0-darwin-amd64",
           "size": 110703584,
-          "download_count": 8
+          "download_count": 9
         },
         {
           "name": "ocis-6.6.0-darwin-amd64.sha256",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v6.6.0/ocis-6.6.0-darwin-amd64.sha256",
           "size": 90,
-          "download_count": 4
+          "download_count": 5
         },
         {
           "name": "ocis-6.6.0-darwin-arm64",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v6.6.0/ocis-6.6.0-darwin-arm64",
           "size": 108244498,
-          "download_count": 9
+          "download_count": 10
         },
         {
           "name": "ocis-6.6.0-darwin-arm64.sha256",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v6.6.0/ocis-6.6.0-darwin-arm64.sha256",
           "size": 90,
-          "download_count": 4
+          "download_count": 5
         },
         {
           "name": "ocis-6.6.0-linux-386",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v6.6.0/ocis-6.6.0-linux-386",
           "size": 103948440,
-          "download_count": 7
+          "download_count": 8
         },
         {
           "name": "ocis-6.6.0-linux-386.sha256",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v6.6.0/ocis-6.6.0-linux-386.sha256",
           "size": 87,
-          "download_count": 4
+          "download_count": 5
         },
         {
           "name": "ocis-6.6.0-linux-amd64",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v6.6.0/ocis-6.6.0-linux-amd64",
           "size": 111690632,
-          "download_count": 25
+          "download_count": 26
         },
         {
           "name": "ocis-6.6.0-linux-amd64.sha256",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v6.6.0/ocis-6.6.0-linux-amd64.sha256",
           "size": 89,
-          "download_count": 5
+          "download_count": 6
         },
         {
           "name": "ocis-6.6.0-linux-arm",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v6.6.0/ocis-6.6.0-linux-arm",
           "size": 103874712,
-          "download_count": 9
+          "download_count": 10
         },
         {
           "name": "ocis-6.6.0-linux-arm.sha256",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v6.6.0/ocis-6.6.0-linux-arm.sha256",
           "size": 87,
-          "download_count": 5
+          "download_count": 6
         },
         {
           "name": "ocis-6.6.0-linux-arm64",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v6.6.0/ocis-6.6.0-linux-arm64",
           "size": 119210305,
-          "download_count": 12
+          "download_count": 13
         },
         {
           "name": "ocis-6.6.0-linux-arm64.sha256",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v6.6.0/ocis-6.6.0-linux-arm64.sha256",
           "size": 89,
-          "download_count": 5
+          "download_count": 6
         },
         {
           "name": "third-party-licenses.tar.gz",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v6.6.0/third-party-licenses.tar.gz",
           "size": 727408,
-          "download_count": 6
+          "download_count": 7
         }
       ]
     },
@@ -2771,19 +2863,19 @@
           "name": "End-User-License-Agreement-for-ownCloud-Infinite-Scale.pdf",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v6.5.0/End-User-License-Agreement-for-ownCloud-Infinite-Scale.pdf",
           "size": 77879,
-          "download_count": 7
+          "download_count": 8
         },
         {
           "name": "ocis-6.5.0-darwin-amd64",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v6.5.0/ocis-6.5.0-darwin-amd64",
           "size": 109983024,
-          "download_count": 13
+          "download_count": 14
         },
         {
           "name": "ocis-6.5.0-darwin-amd64.sha256",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v6.5.0/ocis-6.5.0-darwin-amd64.sha256",
           "size": 90,
-          "download_count": 5
+          "download_count": 6
         },
         {
           "name": "ocis-6.5.0-darwin-arm64",
@@ -2795,61 +2887,61 @@
           "name": "ocis-6.5.0-darwin-arm64.sha256",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v6.5.0/ocis-6.5.0-darwin-arm64.sha256",
           "size": 90,
-          "download_count": 6
+          "download_count": 7
         },
         {
           "name": "ocis-6.5.0-linux-386",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v6.5.0/ocis-6.5.0-linux-386",
           "size": 103239832,
-          "download_count": 11
+          "download_count": 12
         },
         {
           "name": "ocis-6.5.0-linux-386.sha256",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v6.5.0/ocis-6.5.0-linux-386.sha256",
           "size": 87,
-          "download_count": 6
+          "download_count": 7
         },
         {
           "name": "ocis-6.5.0-linux-amd64",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v6.5.0/ocis-6.5.0-linux-amd64",
           "size": 110931200,
-          "download_count": 144
+          "download_count": 146
         },
         {
           "name": "ocis-6.5.0-linux-amd64.sha256",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v6.5.0/ocis-6.5.0-linux-amd64.sha256",
           "size": 89,
-          "download_count": 6
+          "download_count": 7
         },
         {
           "name": "ocis-6.5.0-linux-arm",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v6.5.0/ocis-6.5.0-linux-arm",
           "size": 103022744,
-          "download_count": 11
+          "download_count": 13
         },
         {
           "name": "ocis-6.5.0-linux-arm.sha256",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v6.5.0/ocis-6.5.0-linux-arm.sha256",
           "size": 87,
-          "download_count": 5
+          "download_count": 6
         },
         {
           "name": "ocis-6.5.0-linux-arm64",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v6.5.0/ocis-6.5.0-linux-arm64",
           "size": 118554945,
-          "download_count": 27
+          "download_count": 29
         },
         {
           "name": "ocis-6.5.0-linux-arm64.sha256",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v6.5.0/ocis-6.5.0-linux-arm64.sha256",
           "size": 89,
-          "download_count": 4
+          "download_count": 5
         },
         {
           "name": "third-party-licenses.tar.gz",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v6.5.0/third-party-licenses.tar.gz",
           "size": 847536,
-          "download_count": 6
+          "download_count": 7
         }
       ]
     },
@@ -2863,85 +2955,85 @@
           "name": "End-User-License-Agreement-for-ownCloud-Infinite-Scale.pdf",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v5.0.8/End-User-License-Agreement-for-ownCloud-Infinite-Scale.pdf",
           "size": 77879,
-          "download_count": 1
+          "download_count": 2
         },
         {
           "name": "ocis-5.0.8-darwin-amd64",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v5.0.8/ocis-5.0.8-darwin-amd64",
           "size": 101806208,
-          "download_count": 5
+          "download_count": 6
         },
         {
           "name": "ocis-5.0.8-darwin-amd64.sha256",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v5.0.8/ocis-5.0.8-darwin-amd64.sha256",
           "size": 90,
-          "download_count": 3
+          "download_count": 4
         },
         {
           "name": "ocis-5.0.8-darwin-arm64",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v5.0.8/ocis-5.0.8-darwin-arm64",
           "size": 99512946,
-          "download_count": 7
+          "download_count": 8
         },
         {
           "name": "ocis-5.0.8-darwin-arm64.sha256",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v5.0.8/ocis-5.0.8-darwin-arm64.sha256",
           "size": 90,
-          "download_count": 3
+          "download_count": 4
         },
         {
           "name": "ocis-5.0.8-linux-386",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v5.0.8/ocis-5.0.8-linux-386",
           "size": 93823128,
-          "download_count": 4
+          "download_count": 5
         },
         {
           "name": "ocis-5.0.8-linux-386.sha256",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v5.0.8/ocis-5.0.8-linux-386.sha256",
           "size": 87,
-          "download_count": 3
+          "download_count": 4
         },
         {
           "name": "ocis-5.0.8-linux-amd64",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v5.0.8/ocis-5.0.8-linux-amd64",
           "size": 101474432,
-          "download_count": 25
+          "download_count": 26
         },
         {
           "name": "ocis-5.0.8-linux-amd64.sha256",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v5.0.8/ocis-5.0.8-linux-amd64.sha256",
           "size": 89,
-          "download_count": 7
+          "download_count": 8
         },
         {
           "name": "ocis-5.0.8-linux-arm",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v5.0.8/ocis-5.0.8-linux-arm",
           "size": 93716632,
-          "download_count": 5
+          "download_count": 6
         },
         {
           "name": "ocis-5.0.8-linux-arm.sha256",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v5.0.8/ocis-5.0.8-linux-arm.sha256",
           "size": 87,
-          "download_count": 4
+          "download_count": 5
         },
         {
           "name": "ocis-5.0.8-linux-arm64",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v5.0.8/ocis-5.0.8-linux-arm64",
           "size": 108790081,
-          "download_count": 13
+          "download_count": 14
         },
         {
           "name": "ocis-5.0.8-linux-arm64.sha256",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v5.0.8/ocis-5.0.8-linux-arm64.sha256",
           "size": 89,
-          "download_count": 5
+          "download_count": 6
         },
         {
           "name": "third-party-licenses.tar.gz",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v5.0.8/third-party-licenses.tar.gz",
           "size": 818617,
-          "download_count": 5
+          "download_count": 6
         }
       ]
     },
@@ -2955,67 +3047,67 @@
           "name": "End-User-License-Agreement-for-ownCloud-Infinite-Scale.pdf",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v6.4.0/End-User-License-Agreement-for-ownCloud-Infinite-Scale.pdf",
           "size": 77879,
-          "download_count": 49
+          "download_count": 50
         },
         {
           "name": "ocis-6.4.0-darwin-amd64",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v6.4.0/ocis-6.4.0-darwin-amd64",
           "size": 109860928,
-          "download_count": 11
+          "download_count": 12
         },
         {
           "name": "ocis-6.4.0-darwin-amd64.sha256",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v6.4.0/ocis-6.4.0-darwin-amd64.sha256",
           "size": 90,
-          "download_count": 6
+          "download_count": 7
         },
         {
           "name": "ocis-6.4.0-darwin-arm64",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v6.4.0/ocis-6.4.0-darwin-arm64",
           "size": 107478274,
-          "download_count": 10
+          "download_count": 11
         },
         {
           "name": "ocis-6.4.0-darwin-arm64.sha256",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v6.4.0/ocis-6.4.0-darwin-arm64.sha256",
           "size": 90,
-          "download_count": 6
+          "download_count": 8
         },
         {
           "name": "ocis-6.4.0-linux-386",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v6.4.0/ocis-6.4.0-linux-386",
           "size": 103153816,
-          "download_count": 10
+          "download_count": 11
         },
         {
           "name": "ocis-6.4.0-linux-386.sha256",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v6.4.0/ocis-6.4.0-linux-386.sha256",
           "size": 87,
-          "download_count": 7
+          "download_count": 8
         },
         {
           "name": "ocis-6.4.0-linux-amd64",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v6.4.0/ocis-6.4.0-linux-amd64",
           "size": 110802432,
-          "download_count": 169
+          "download_count": 171
         },
         {
           "name": "ocis-6.4.0-linux-amd64.sha256",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v6.4.0/ocis-6.4.0-linux-amd64.sha256",
           "size": 89,
-          "download_count": 8
+          "download_count": 9
         },
         {
           "name": "ocis-6.4.0-linux-arm",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v6.4.0/ocis-6.4.0-linux-arm",
           "size": 102957208,
-          "download_count": 15
+          "download_count": 17
         },
         {
           "name": "ocis-6.4.0-linux-arm.sha256",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v6.4.0/ocis-6.4.0-linux-arm.sha256",
           "size": 87,
-          "download_count": 6
+          "download_count": 7
         },
         {
           "name": "ocis-6.4.0-linux-arm64",
@@ -3033,7 +3125,7 @@
           "name": "third-party-licenses.tar.gz",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v6.4.0/third-party-licenses.tar.gz",
           "size": 840102,
-          "download_count": 8
+          "download_count": 9
         }
       ]
     },
@@ -3047,85 +3139,85 @@
           "name": "End-User-License-Agreement-for-ownCloud-Infinite-Scale.pdf",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v5.0.7/End-User-License-Agreement-for-ownCloud-Infinite-Scale.pdf",
           "size": 77879,
-          "download_count": 4
+          "download_count": 5
         },
         {
           "name": "ocis-5.0.7-darwin-amd64",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v5.0.7/ocis-5.0.7-darwin-amd64",
           "size": 101806192,
-          "download_count": 13
+          "download_count": 14
         },
         {
           "name": "ocis-5.0.7-darwin-amd64.sha256",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v5.0.7/ocis-5.0.7-darwin-amd64.sha256",
           "size": 90,
-          "download_count": 5
+          "download_count": 6
         },
         {
           "name": "ocis-5.0.7-darwin-arm64",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v5.0.7/ocis-5.0.7-darwin-arm64",
           "size": 99512946,
-          "download_count": 10
+          "download_count": 11
         },
         {
           "name": "ocis-5.0.7-darwin-arm64.sha256",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v5.0.7/ocis-5.0.7-darwin-arm64.sha256",
           "size": 90,
-          "download_count": 6
+          "download_count": 7
         },
         {
           "name": "ocis-5.0.7-linux-386",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v5.0.7/ocis-5.0.7-linux-386",
           "size": 93814936,
-          "download_count": 9
+          "download_count": 10
         },
         {
           "name": "ocis-5.0.7-linux-386.sha256",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v5.0.7/ocis-5.0.7-linux-386.sha256",
           "size": 87,
-          "download_count": 8
+          "download_count": 9
         },
         {
           "name": "ocis-5.0.7-linux-amd64",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v5.0.7/ocis-5.0.7-linux-amd64",
           "size": 101470304,
-          "download_count": 70
+          "download_count": 71
         },
         {
           "name": "ocis-5.0.7-linux-amd64.sha256",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v5.0.7/ocis-5.0.7-linux-amd64.sha256",
           "size": 89,
-          "download_count": 7
+          "download_count": 8
         },
         {
           "name": "ocis-5.0.7-linux-arm",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v5.0.7/ocis-5.0.7-linux-arm",
           "size": 93716632,
-          "download_count": 7
+          "download_count": 8
         },
         {
           "name": "ocis-5.0.7-linux-arm.sha256",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v5.0.7/ocis-5.0.7-linux-arm.sha256",
           "size": 87,
-          "download_count": 6
+          "download_count": 7
         },
         {
           "name": "ocis-5.0.7-linux-arm64",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v5.0.7/ocis-5.0.7-linux-arm64",
           "size": 108790081,
-          "download_count": 24
+          "download_count": 25
         },
         {
           "name": "ocis-5.0.7-linux-arm64.sha256",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v5.0.7/ocis-5.0.7-linux-arm64.sha256",
           "size": 89,
-          "download_count": 7
+          "download_count": 8
         },
         {
           "name": "third-party-licenses.tar.gz",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v5.0.7/third-party-licenses.tar.gz",
           "size": 840649,
-          "download_count": 9
+          "download_count": 10
         }
       ]
     },
@@ -3139,37 +3231,37 @@
           "name": "End-User-License-Agreement-for-ownCloud-Infinite-Scale.pdf",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v6.3.0/End-User-License-Agreement-for-ownCloud-Infinite-Scale.pdf",
           "size": 77879,
-          "download_count": 11
+          "download_count": 12
         },
         {
           "name": "ocis-6.3.0-darwin-amd64",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v6.3.0/ocis-6.3.0-darwin-amd64",
           "size": 109474240,
-          "download_count": 15
+          "download_count": 16
         },
         {
           "name": "ocis-6.3.0-darwin-amd64.sha256",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v6.3.0/ocis-6.3.0-darwin-amd64.sha256",
           "size": 90,
-          "download_count": 8
+          "download_count": 9
         },
         {
           "name": "ocis-6.3.0-darwin-arm64",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v6.3.0/ocis-6.3.0-darwin-arm64",
           "size": 107105026,
-          "download_count": 13
+          "download_count": 14
         },
         {
           "name": "ocis-6.3.0-darwin-arm64.sha256",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v6.3.0/ocis-6.3.0-darwin-arm64.sha256",
           "size": 90,
-          "download_count": 7
+          "download_count": 8
         },
         {
           "name": "ocis-6.3.0-linux-386",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v6.3.0/ocis-6.3.0-linux-386",
           "size": 103075992,
-          "download_count": 20
+          "download_count": 21
         },
         {
           "name": "ocis-6.3.0-linux-386.sha256",
@@ -3181,43 +3273,43 @@
           "name": "ocis-6.3.0-linux-amd64",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v6.3.0/ocis-6.3.0-linux-amd64",
           "size": 110720352,
-          "download_count": 240
+          "download_count": 241
         },
         {
           "name": "ocis-6.3.0-linux-amd64.sha256",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v6.3.0/ocis-6.3.0-linux-amd64.sha256",
           "size": 89,
-          "download_count": 8
+          "download_count": 9
         },
         {
           "name": "ocis-6.3.0-linux-arm",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v6.3.0/ocis-6.3.0-linux-arm",
           "size": 102957208,
-          "download_count": 8
+          "download_count": 9
         },
         {
           "name": "ocis-6.3.0-linux-arm.sha256",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v6.3.0/ocis-6.3.0-linux-arm.sha256",
           "size": 87,
-          "download_count": 6
+          "download_count": 7
         },
         {
           "name": "ocis-6.3.0-linux-arm64",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v6.3.0/ocis-6.3.0-linux-arm64",
           "size": 118423873,
-          "download_count": 33
+          "download_count": 34
         },
         {
           "name": "ocis-6.3.0-linux-arm64.sha256",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v6.3.0/ocis-6.3.0-linux-arm64.sha256",
           "size": 89,
-          "download_count": 6
+          "download_count": 7
         },
         {
           "name": "third-party-licenses.tar.gz",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v6.3.0/third-party-licenses.tar.gz",
           "size": 854181,
-          "download_count": 7
+          "download_count": 8
         }
       ]
     },
@@ -3231,85 +3323,85 @@
           "name": "End-User-License-Agreement-for-ownCloud-Infinite-Scale.pdf",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v6.2.0/End-User-License-Agreement-for-ownCloud-Infinite-Scale.pdf",
           "size": 77879,
-          "download_count": 16
+          "download_count": 18
         },
         {
           "name": "ocis-6.2.0-darwin-amd64",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v6.2.0/ocis-6.2.0-darwin-amd64",
           "size": 108739184,
-          "download_count": 29
+          "download_count": 30
         },
         {
           "name": "ocis-6.2.0-darwin-amd64.sha256",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v6.2.0/ocis-6.2.0-darwin-amd64.sha256",
           "size": 90,
-          "download_count": 7
+          "download_count": 8
         },
         {
           "name": "ocis-6.2.0-darwin-arm64",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v6.2.0/ocis-6.2.0-darwin-arm64",
           "size": 106413746,
-          "download_count": 31
+          "download_count": 32
         },
         {
           "name": "ocis-6.2.0-darwin-arm64.sha256",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v6.2.0/ocis-6.2.0-darwin-arm64.sha256",
           "size": 90,
-          "download_count": 8
+          "download_count": 9
         },
         {
           "name": "ocis-6.2.0-linux-386",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v6.2.0/ocis-6.2.0-linux-386",
           "size": 102408344,
-          "download_count": 39
+          "download_count": 40
         },
         {
           "name": "ocis-6.2.0-linux-386.sha256",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v6.2.0/ocis-6.2.0-linux-386.sha256",
           "size": 87,
-          "download_count": 8
+          "download_count": 9
         },
         {
           "name": "ocis-6.2.0-linux-amd64",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v6.2.0/ocis-6.2.0-linux-amd64",
           "size": 110003392,
-          "download_count": 294
+          "download_count": 295
         },
         {
           "name": "ocis-6.2.0-linux-amd64.sha256",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v6.2.0/ocis-6.2.0-linux-amd64.sha256",
           "size": 89,
-          "download_count": 10
+          "download_count": 11
         },
         {
           "name": "ocis-6.2.0-linux-arm",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v6.2.0/ocis-6.2.0-linux-arm",
           "size": 102236312,
-          "download_count": 11
+          "download_count": 12
         },
         {
           "name": "ocis-6.2.0-linux-arm.sha256",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v6.2.0/ocis-6.2.0-linux-arm.sha256",
           "size": 87,
-          "download_count": 7
+          "download_count": 8
         },
         {
           "name": "ocis-6.2.0-linux-arm64",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v6.2.0/ocis-6.2.0-linux-arm64",
           "size": 117637441,
-          "download_count": 56
+          "download_count": 57
         },
         {
           "name": "ocis-6.2.0-linux-arm64.sha256",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v6.2.0/ocis-6.2.0-linux-arm64.sha256",
           "size": 89,
-          "download_count": 7
+          "download_count": 8
         },
         {
           "name": "third-party-licenses.tar.gz",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v6.2.0/third-party-licenses.tar.gz",
           "size": 837499,
-          "download_count": 9
+          "download_count": 10
         }
       ]
     },
@@ -3323,85 +3415,85 @@
           "name": "End-User-License-Agreement-for-ownCloud-Infinite-Scale.pdf",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v5.0.6/End-User-License-Agreement-for-ownCloud-Infinite-Scale.pdf",
           "size": 77879,
-          "download_count": 9
+          "download_count": 10
         },
         {
           "name": "ocis-5.0.6-darwin-amd64",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v5.0.6/ocis-5.0.6-darwin-amd64",
           "size": 101797936,
-          "download_count": 22
+          "download_count": 23
         },
         {
           "name": "ocis-5.0.6-darwin-amd64.sha256",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v5.0.6/ocis-5.0.6-darwin-amd64.sha256",
           "size": 90,
-          "download_count": 7
+          "download_count": 8
         },
         {
           "name": "ocis-5.0.6-darwin-arm64",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v5.0.6/ocis-5.0.6-darwin-arm64",
           "size": 99512882,
-          "download_count": 21
+          "download_count": 22
         },
         {
           "name": "ocis-5.0.6-darwin-arm64.sha256",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v5.0.6/ocis-5.0.6-darwin-arm64.sha256",
           "size": 90,
-          "download_count": 7
+          "download_count": 8
         },
         {
           "name": "ocis-5.0.6-linux-386",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v5.0.6/ocis-5.0.6-linux-386",
           "size": 93814936,
-          "download_count": 19
+          "download_count": 20
         },
         {
           "name": "ocis-5.0.6-linux-386.sha256",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v5.0.6/ocis-5.0.6-linux-386.sha256",
           "size": 87,
-          "download_count": 6
+          "download_count": 7
         },
         {
           "name": "ocis-5.0.6-linux-amd64",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v5.0.6/ocis-5.0.6-linux-amd64",
           "size": 101470336,
-          "download_count": 55
+          "download_count": 56
         },
         {
           "name": "ocis-5.0.6-linux-amd64.sha256",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v5.0.6/ocis-5.0.6-linux-amd64.sha256",
           "size": 89,
-          "download_count": 6
+          "download_count": 7
         },
         {
           "name": "ocis-5.0.6-linux-arm",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v5.0.6/ocis-5.0.6-linux-arm",
           "size": 93716632,
-          "download_count": 5
+          "download_count": 6
         },
         {
           "name": "ocis-5.0.6-linux-arm.sha256",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v5.0.6/ocis-5.0.6-linux-arm.sha256",
           "size": 87,
-          "download_count": 6
+          "download_count": 7
         },
         {
           "name": "ocis-5.0.6-linux-arm64",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v5.0.6/ocis-5.0.6-linux-arm64",
           "size": 108790081,
-          "download_count": 24
+          "download_count": 25
         },
         {
           "name": "ocis-5.0.6-linux-arm64.sha256",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v5.0.6/ocis-5.0.6-linux-arm64.sha256",
           "size": 89,
-          "download_count": 7
+          "download_count": 8
         },
         {
           "name": "third-party-licenses.tar.gz",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v5.0.6/third-party-licenses.tar.gz",
           "size": 850220,
-          "download_count": 8
+          "download_count": 9
         }
       ]
     },
@@ -3421,7 +3513,7 @@
           "name": "ocis-6.1.0-darwin-amd64",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v6.1.0/ocis-6.1.0-darwin-amd64",
           "size": 109224704,
-          "download_count": 27
+          "download_count": 28
         },
         {
           "name": "ocis-6.1.0-darwin-amd64.sha256",
@@ -3433,7 +3525,7 @@
           "name": "ocis-6.1.0-darwin-arm64",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v6.1.0/ocis-6.1.0-darwin-arm64",
           "size": 106886562,
-          "download_count": 26
+          "download_count": 27
         },
         {
           "name": "ocis-6.1.0-darwin-arm64.sha256",
@@ -3451,7 +3543,7 @@
           "name": "ocis-6.1.0-linux-386.sha256",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v6.1.0/ocis-6.1.0-linux-386.sha256",
           "size": 87,
-          "download_count": 7
+          "download_count": 8
         },
         {
           "name": "ocis-6.1.0-linux-amd64",
@@ -3487,7 +3579,7 @@
           "name": "ocis-6.1.0-linux-arm64.sha256",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v6.1.0/ocis-6.1.0-linux-arm64.sha256",
           "size": 89,
-          "download_count": 9
+          "download_count": 10
         },
         {
           "name": "third-party-licenses.tar.gz",
@@ -3507,85 +3599,85 @@
           "name": "End-User-License-Agreement-for-ownCloud-Infinite-Scale.pdf",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v6.0.0/End-User-License-Agreement-for-ownCloud-Infinite-Scale.pdf",
           "size": 77879,
-          "download_count": 15
+          "download_count": 16
         },
         {
           "name": "ocis-6.0.0-darwin-amd64",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v6.0.0/ocis-6.0.0-darwin-amd64",
           "size": 108428528,
-          "download_count": 37
+          "download_count": 38
         },
         {
           "name": "ocis-6.0.0-darwin-amd64.sha256",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v6.0.0/ocis-6.0.0-darwin-amd64.sha256",
           "size": 90,
-          "download_count": 7
+          "download_count": 8
         },
         {
           "name": "ocis-6.0.0-darwin-arm64",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v6.0.0/ocis-6.0.0-darwin-arm64",
           "size": 106117170,
-          "download_count": 41
+          "download_count": 42
         },
         {
           "name": "ocis-6.0.0-darwin-arm64.sha256",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v6.0.0/ocis-6.0.0-darwin-arm64.sha256",
           "size": 90,
-          "download_count": 7
+          "download_count": 8
         },
         {
           "name": "ocis-6.0.0-linux-386",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v6.0.0/ocis-6.0.0-linux-386",
           "size": 101949592,
-          "download_count": 34
+          "download_count": 35
         },
         {
           "name": "ocis-6.0.0-linux-386.sha256",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v6.0.0/ocis-6.0.0-linux-386.sha256",
           "size": 87,
-          "download_count": 7
+          "download_count": 8
         },
         {
           "name": "ocis-6.0.0-linux-amd64",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v6.0.0/ocis-6.0.0-linux-amd64",
           "size": 109692864,
-          "download_count": 210
+          "download_count": 211
         },
         {
           "name": "ocis-6.0.0-linux-amd64.sha256",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v6.0.0/ocis-6.0.0-linux-amd64.sha256",
           "size": 89,
-          "download_count": 13
+          "download_count": 14
         },
         {
           "name": "ocis-6.0.0-linux-arm",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v6.0.0/ocis-6.0.0-linux-arm",
           "size": 101777560,
-          "download_count": 17
+          "download_count": 18
         },
         {
           "name": "ocis-6.0.0-linux-arm.sha256",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v6.0.0/ocis-6.0.0-linux-arm.sha256",
           "size": 87,
-          "download_count": 8
+          "download_count": 9
         },
         {
           "name": "ocis-6.0.0-linux-arm64",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v6.0.0/ocis-6.0.0-linux-arm64",
           "size": 117375297,
-          "download_count": 57
+          "download_count": 58
         },
         {
           "name": "ocis-6.0.0-linux-arm64.sha256",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v6.0.0/ocis-6.0.0-linux-arm64.sha256",
           "size": 89,
-          "download_count": 7
+          "download_count": 8
         },
         {
           "name": "third-party-licenses.tar.gz",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v6.0.0/third-party-licenses.tar.gz",
           "size": 870576,
-          "download_count": 9
+          "download_count": 11
         }
       ]
     },
@@ -3605,7 +3697,7 @@
           "name": "ocis-5.0.5-darwin-amd64",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v5.0.5/ocis-5.0.5-darwin-amd64",
           "size": 101772896,
-          "download_count": 49
+          "download_count": 50
         },
         {
           "name": "ocis-5.0.5-darwin-amd64.sha256",
@@ -3617,7 +3709,7 @@
           "name": "ocis-5.0.5-darwin-arm64",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v5.0.5/ocis-5.0.5-darwin-arm64",
           "size": 99479378,
-          "download_count": 42
+          "download_count": 43
         },
         {
           "name": "ocis-5.0.5-darwin-arm64.sha256",
@@ -3629,55 +3721,55 @@
           "name": "ocis-5.0.5-linux-386",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v5.0.5/ocis-5.0.5-linux-386",
           "size": 93790360,
-          "download_count": 30
+          "download_count": 31
         },
         {
           "name": "ocis-5.0.5-linux-386.sha256",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v5.0.5/ocis-5.0.5-linux-386.sha256",
           "size": 87,
-          "download_count": 22
+          "download_count": 23
         },
         {
           "name": "ocis-5.0.5-linux-amd64",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v5.0.5/ocis-5.0.5-linux-amd64",
           "size": 101441376,
-          "download_count": 379
+          "download_count": 380
         },
         {
           "name": "ocis-5.0.5-linux-amd64.sha256",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v5.0.5/ocis-5.0.5-linux-amd64.sha256",
           "size": 89,
-          "download_count": 17
+          "download_count": 18
         },
         {
           "name": "ocis-5.0.5-linux-arm",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v5.0.5/ocis-5.0.5-linux-arm",
           "size": 93716632,
-          "download_count": 14
+          "download_count": 15
         },
         {
           "name": "ocis-5.0.5-linux-arm.sha256",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v5.0.5/ocis-5.0.5-linux-arm.sha256",
           "size": 87,
-          "download_count": 9
+          "download_count": 10
         },
         {
           "name": "ocis-5.0.5-linux-arm64",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v5.0.5/ocis-5.0.5-linux-arm64",
           "size": 108790081,
-          "download_count": 69
+          "download_count": 70
         },
         {
           "name": "ocis-5.0.5-linux-arm64.sha256",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v5.0.5/ocis-5.0.5-linux-arm64.sha256",
           "size": 89,
-          "download_count": 9
+          "download_count": 10
         },
         {
           "name": "third-party-licenses.tar.gz",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v5.0.5/third-party-licenses.tar.gz",
           "size": 850320,
-          "download_count": 9
+          "download_count": 10
         }
       ]
     },
@@ -3691,13 +3783,13 @@
           "name": "End-User-License-Agreement-for-ownCloud-Infinite-Scale.pdf",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v5.0.4/End-User-License-Agreement-for-ownCloud-Infinite-Scale.pdf",
           "size": 77879,
-          "download_count": 9
+          "download_count": 10
         },
         {
           "name": "ocis-5.0.4-darwin-amd64",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v5.0.4/ocis-5.0.4-darwin-amd64",
           "size": 101772896,
-          "download_count": 8
+          "download_count": 9
         },
         {
           "name": "ocis-5.0.4-darwin-amd64.sha256",
@@ -3709,67 +3801,67 @@
           "name": "ocis-5.0.4-darwin-arm64",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v5.0.4/ocis-5.0.4-darwin-arm64",
           "size": 99479378,
-          "download_count": 7
+          "download_count": 8
         },
         {
           "name": "ocis-5.0.4-darwin-arm64.sha256",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v5.0.4/ocis-5.0.4-darwin-arm64.sha256",
           "size": 90,
-          "download_count": 6
+          "download_count": 7
         },
         {
           "name": "ocis-5.0.4-linux-386",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v5.0.4/ocis-5.0.4-linux-386",
           "size": 93790360,
-          "download_count": 6
+          "download_count": 7
         },
         {
           "name": "ocis-5.0.4-linux-386.sha256",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v5.0.4/ocis-5.0.4-linux-386.sha256",
           "size": 87,
-          "download_count": 6
+          "download_count": 7
         },
         {
           "name": "ocis-5.0.4-linux-amd64",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v5.0.4/ocis-5.0.4-linux-amd64",
           "size": 101441376,
-          "download_count": 89
+          "download_count": 90
         },
         {
           "name": "ocis-5.0.4-linux-amd64.sha256",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v5.0.4/ocis-5.0.4-linux-amd64.sha256",
           "size": 89,
-          "download_count": 13
+          "download_count": 14
         },
         {
           "name": "ocis-5.0.4-linux-arm",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v5.0.4/ocis-5.0.4-linux-arm",
           "size": 93716632,
-          "download_count": 8
+          "download_count": 9
         },
         {
           "name": "ocis-5.0.4-linux-arm.sha256",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v5.0.4/ocis-5.0.4-linux-arm.sha256",
           "size": 87,
-          "download_count": 6
+          "download_count": 7
         },
         {
           "name": "ocis-5.0.4-linux-arm64",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v5.0.4/ocis-5.0.4-linux-arm64",
           "size": 108790081,
-          "download_count": 15
+          "download_count": 16
         },
         {
           "name": "ocis-5.0.4-linux-arm64.sha256",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v5.0.4/ocis-5.0.4-linux-arm64.sha256",
           "size": 89,
-          "download_count": 7
+          "download_count": 8
         },
         {
           "name": "third-party-licenses.tar.gz",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v5.0.4/third-party-licenses.tar.gz",
           "size": 851561,
-          "download_count": 7
+          "download_count": 8
         }
       ]
     },
@@ -3801,13 +3893,13 @@
           "name": "ocis-5.0.3-darwin-arm64",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v5.0.3/ocis-5.0.3-darwin-arm64",
           "size": 99462786,
-          "download_count": 12
+          "download_count": 13
         },
         {
           "name": "ocis-5.0.3-darwin-arm64.sha256",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v5.0.3/ocis-5.0.3-darwin-arm64.sha256",
           "size": 90,
-          "download_count": 8
+          "download_count": 9
         },
         {
           "name": "ocis-5.0.3-linux-386",
@@ -3825,13 +3917,13 @@
           "name": "ocis-5.0.3-linux-amd64",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v5.0.3/ocis-5.0.3-linux-amd64",
           "size": 101433184,
-          "download_count": 84
+          "download_count": 85
         },
         {
           "name": "ocis-5.0.3-linux-amd64.sha256",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v5.0.3/ocis-5.0.3-linux-amd64.sha256",
           "size": 89,
-          "download_count": 9
+          "download_count": 10
         },
         {
           "name": "ocis-5.0.3-linux-arm",
@@ -3843,13 +3935,13 @@
           "name": "ocis-5.0.3-linux-arm.sha256",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v5.0.3/ocis-5.0.3-linux-arm.sha256",
           "size": 87,
-          "download_count": 8
+          "download_count": 9
         },
         {
           "name": "ocis-5.0.3-linux-arm64",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v5.0.3/ocis-5.0.3-linux-arm64",
           "size": 108790081,
-          "download_count": 17
+          "download_count": 18
         },
         {
           "name": "ocis-5.0.3-linux-arm64.sha256",
@@ -3861,7 +3953,7 @@
           "name": "third-party-licenses.tar.gz",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v5.0.3/third-party-licenses.tar.gz",
           "size": 851351,
-          "download_count": 8
+          "download_count": 9
         }
       ]
     },
@@ -3875,13 +3967,13 @@
           "name": "End-User-License-Agreement-for-ownCloud-Infinite-Scale.pdf",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v5.0.2/End-User-License-Agreement-for-ownCloud-Infinite-Scale.pdf",
           "size": 77879,
-          "download_count": 9
+          "download_count": 10
         },
         {
           "name": "ocis-5.0.2-darwin-amd64",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v5.0.2/ocis-5.0.2-darwin-amd64",
           "size": 101756384,
-          "download_count": 27
+          "download_count": 28
         },
         {
           "name": "ocis-5.0.2-darwin-amd64.sha256",
@@ -3893,67 +3985,67 @@
           "name": "ocis-5.0.2-darwin-arm64",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v5.0.2/ocis-5.0.2-darwin-arm64",
           "size": 99462722,
-          "download_count": 9
+          "download_count": 10
         },
         {
           "name": "ocis-5.0.2-darwin-arm64.sha256",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v5.0.2/ocis-5.0.2-darwin-arm64.sha256",
           "size": 90,
-          "download_count": 6
+          "download_count": 7
         },
         {
           "name": "ocis-5.0.2-linux-386",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v5.0.2/ocis-5.0.2-linux-386",
           "size": 93769880,
-          "download_count": 5
+          "download_count": 6
         },
         {
           "name": "ocis-5.0.2-linux-386.sha256",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v5.0.2/ocis-5.0.2-linux-386.sha256",
           "size": 87,
-          "download_count": 6
+          "download_count": 7
         },
         {
           "name": "ocis-5.0.2-linux-amd64",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v5.0.2/ocis-5.0.2-linux-amd64",
           "size": 101420928,
-          "download_count": 47
+          "download_count": 48
         },
         {
           "name": "ocis-5.0.2-linux-amd64.sha256",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v5.0.2/ocis-5.0.2-linux-amd64.sha256",
           "size": 89,
-          "download_count": 11
+          "download_count": 12
         },
         {
           "name": "ocis-5.0.2-linux-arm",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v5.0.2/ocis-5.0.2-linux-arm",
           "size": 93716632,
-          "download_count": 6
+          "download_count": 7
         },
         {
           "name": "ocis-5.0.2-linux-arm.sha256",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v5.0.2/ocis-5.0.2-linux-arm.sha256",
           "size": 87,
-          "download_count": 7
+          "download_count": 8
         },
         {
           "name": "ocis-5.0.2-linux-arm64",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v5.0.2/ocis-5.0.2-linux-arm64",
           "size": 108790081,
-          "download_count": 10
+          "download_count": 11
         },
         {
           "name": "ocis-5.0.2-linux-arm64.sha256",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v5.0.2/ocis-5.0.2-linux-arm64.sha256",
           "size": 89,
-          "download_count": 7
+          "download_count": 8
         },
         {
           "name": "third-party-licenses.tar.gz",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v5.0.2/third-party-licenses.tar.gz",
           "size": 833689,
-          "download_count": 7
+          "download_count": 8
         }
       ]
     },
@@ -3967,85 +4059,85 @@
           "name": "End-User-License-Agreement-for-ownCloud-Infinite-Scale.pdf",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v5.0.1/End-User-License-Agreement-for-ownCloud-Infinite-Scale.pdf",
           "size": 77879,
-          "download_count": 124
+          "download_count": 125
         },
         {
           "name": "ocis-5.0.1-darwin-amd64",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v5.0.1/ocis-5.0.1-darwin-amd64",
           "size": 101756384,
-          "download_count": 8
+          "download_count": 9
         },
         {
           "name": "ocis-5.0.1-darwin-amd64.sha256",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v5.0.1/ocis-5.0.1-darwin-amd64.sha256",
           "size": 90,
-          "download_count": 7
+          "download_count": 8
         },
         {
           "name": "ocis-5.0.1-darwin-arm64",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v5.0.1/ocis-5.0.1-darwin-arm64",
           "size": 99462722,
-          "download_count": 10
+          "download_count": 11
         },
         {
           "name": "ocis-5.0.1-darwin-arm64.sha256",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v5.0.1/ocis-5.0.1-darwin-arm64.sha256",
           "size": 90,
-          "download_count": 9
+          "download_count": 10
         },
         {
           "name": "ocis-5.0.1-linux-386",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v5.0.1/ocis-5.0.1-linux-386",
           "size": 93769880,
-          "download_count": 15
+          "download_count": 16
         },
         {
           "name": "ocis-5.0.1-linux-386.sha256",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v5.0.1/ocis-5.0.1-linux-386.sha256",
           "size": 87,
-          "download_count": 7
+          "download_count": 8
         },
         {
           "name": "ocis-5.0.1-linux-amd64",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v5.0.1/ocis-5.0.1-linux-amd64",
           "size": 101420928,
-          "download_count": 173
+          "download_count": 174
         },
         {
           "name": "ocis-5.0.1-linux-amd64.sha256",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v5.0.1/ocis-5.0.1-linux-amd64.sha256",
           "size": 89,
-          "download_count": 13
+          "download_count": 14
         },
         {
           "name": "ocis-5.0.1-linux-arm",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v5.0.1/ocis-5.0.1-linux-arm",
           "size": 93716632,
-          "download_count": 7
+          "download_count": 8
         },
         {
           "name": "ocis-5.0.1-linux-arm.sha256",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v5.0.1/ocis-5.0.1-linux-arm.sha256",
           "size": 87,
-          "download_count": 7
+          "download_count": 8
         },
         {
           "name": "ocis-5.0.1-linux-arm64",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v5.0.1/ocis-5.0.1-linux-arm64",
           "size": 108790081,
-          "download_count": 28
+          "download_count": 29
         },
         {
           "name": "ocis-5.0.1-linux-arm64.sha256",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v5.0.1/ocis-5.0.1-linux-arm64.sha256",
           "size": 89,
-          "download_count": 10
+          "download_count": 11
         },
         {
           "name": "third-party-licenses.tar.gz",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v5.0.1/third-party-licenses.tar.gz",
           "size": 833715,
-          "download_count": 8
+          "download_count": 9
         }
       ]
     },
@@ -4059,85 +4151,85 @@
           "name": "End-User-License-Agreement-for-ownCloud-Infinite-Scale.pdf",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v4.0.7/End-User-License-Agreement-for-ownCloud-Infinite-Scale.pdf",
           "size": 77879,
-          "download_count": 11
+          "download_count": 12
         },
         {
           "name": "ocis-4.0.7-darwin-amd64",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v4.0.7/ocis-4.0.7-darwin-amd64",
           "size": 97997040,
-          "download_count": 24
+          "download_count": 25
         },
         {
           "name": "ocis-4.0.7-darwin-amd64.sha256",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v4.0.7/ocis-4.0.7-darwin-amd64.sha256",
           "size": 90,
-          "download_count": 7
+          "download_count": 8
         },
         {
           "name": "ocis-4.0.7-darwin-arm64",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v4.0.7/ocis-4.0.7-darwin-arm64",
           "size": 95896722,
-          "download_count": 26
+          "download_count": 27
         },
         {
           "name": "ocis-4.0.7-darwin-arm64.sha256",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v4.0.7/ocis-4.0.7-darwin-arm64.sha256",
           "size": 90,
-          "download_count": 7
+          "download_count": 8
         },
         {
           "name": "ocis-4.0.7-linux-386",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v4.0.7/ocis-4.0.7-linux-386",
           "size": 90677400,
-          "download_count": 23
+          "download_count": 24
         },
         {
           "name": "ocis-4.0.7-linux-386.sha256",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v4.0.7/ocis-4.0.7-linux-386.sha256",
           "size": 87,
-          "download_count": 6
+          "download_count": 7
         },
         {
           "name": "ocis-4.0.7-linux-amd64",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v4.0.7/ocis-4.0.7-linux-amd64",
           "size": 97971496,
-          "download_count": 42
+          "download_count": 43
         },
         {
           "name": "ocis-4.0.7-linux-amd64.sha256",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v4.0.7/ocis-4.0.7-linux-amd64.sha256",
           "size": 89,
-          "download_count": 11
+          "download_count": 12
         },
         {
           "name": "ocis-4.0.7-linux-arm",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v4.0.7/ocis-4.0.7-linux-arm",
           "size": 90636440,
-          "download_count": 7
+          "download_count": 8
         },
         {
           "name": "ocis-4.0.7-linux-arm.sha256",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v4.0.7/ocis-4.0.7-linux-arm.sha256",
           "size": 87,
-          "download_count": 6
+          "download_count": 7
         },
         {
           "name": "ocis-4.0.7-linux-arm64",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v4.0.7/ocis-4.0.7-linux-arm64",
           "size": 104792385,
-          "download_count": 25
+          "download_count": 26
         },
         {
           "name": "ocis-4.0.7-linux-arm64.sha256",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v4.0.7/ocis-4.0.7-linux-arm64.sha256",
           "size": 89,
-          "download_count": 6
+          "download_count": 7
         },
         {
           "name": "third-party-licenses.tar.gz",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v4.0.7/third-party-licenses.tar.gz",
           "size": 886339,
-          "download_count": 7
+          "download_count": 8
         }
       ]
     },
@@ -4157,7 +4249,7 @@
           "name": "ocis-5.0.0-darwin-amd64",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v5.0.0/ocis-5.0.0-darwin-amd64",
           "size": 101697600,
-          "download_count": 22
+          "download_count": 23
         },
         {
           "name": "ocis-5.0.0-darwin-amd64.sha256",
@@ -4175,25 +4267,25 @@
           "name": "ocis-5.0.0-darwin-arm64.sha256",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v5.0.0/ocis-5.0.0-darwin-arm64.sha256",
           "size": 90,
-          "download_count": 7
+          "download_count": 8
         },
         {
           "name": "ocis-5.0.0-linux-386",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v5.0.0/ocis-5.0.0-linux-386",
           "size": 93720728,
-          "download_count": 18
+          "download_count": 19
         },
         {
           "name": "ocis-5.0.0-linux-386.sha256",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v5.0.0/ocis-5.0.0-linux-386.sha256",
           "size": 87,
-          "download_count": 8
+          "download_count": 9
         },
         {
           "name": "ocis-5.0.0-linux-amd64",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v5.0.0/ocis-5.0.0-linux-amd64",
           "size": 101367488,
-          "download_count": 143
+          "download_count": 144
         },
         {
           "name": "ocis-5.0.0-linux-amd64.sha256",
@@ -4211,7 +4303,7 @@
           "name": "ocis-5.0.0-linux-arm.sha256",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v5.0.0/ocis-5.0.0-linux-arm.sha256",
           "size": 87,
-          "download_count": 8
+          "download_count": 9
         },
         {
           "name": "ocis-5.0.0-linux-arm64",
@@ -4229,7 +4321,7 @@
           "name": "third-party-licenses.tar.gz",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v5.0.0/third-party-licenses.tar.gz",
           "size": 831036,
-          "download_count": 8
+          "download_count": 9
         }
       ]
     },
@@ -4243,67 +4335,67 @@
           "name": "End-User-License-Agreement-for-ownCloud-Infinite-Scale.pdf",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v4.0.6/End-User-License-Agreement-for-ownCloud-Infinite-Scale.pdf",
           "size": 77879,
-          "download_count": 18
+          "download_count": 19
         },
         {
           "name": "ocis-4.0.6-darwin-amd64",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v4.0.6/ocis-4.0.6-darwin-amd64",
           "size": 106064368,
-          "download_count": 54
+          "download_count": 55
         },
         {
           "name": "ocis-4.0.6-darwin-amd64.sha256",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v4.0.6/ocis-4.0.6-darwin-amd64.sha256",
           "size": 90,
-          "download_count": 10
+          "download_count": 11
         },
         {
           "name": "ocis-4.0.6-darwin-arm64",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v4.0.6/ocis-4.0.6-darwin-arm64",
           "size": 103436914,
-          "download_count": 59
+          "download_count": 60
         },
         {
           "name": "ocis-4.0.6-darwin-arm64.sha256",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v4.0.6/ocis-4.0.6-darwin-arm64.sha256",
           "size": 90,
-          "download_count": 9
+          "download_count": 10
         },
         {
           "name": "ocis-4.0.6-linux-386",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v4.0.6/ocis-4.0.6-linux-386",
           "size": 89563136,
-          "download_count": 53
+          "download_count": 54
         },
         {
           "name": "ocis-4.0.6-linux-386.sha256",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v4.0.6/ocis-4.0.6-linux-386.sha256",
           "size": 87,
-          "download_count": 9
+          "download_count": 10
         },
         {
           "name": "ocis-4.0.6-linux-amd64",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v4.0.6/ocis-4.0.6-linux-amd64",
           "size": 97112584,
-          "download_count": 129
+          "download_count": 130
         },
         {
           "name": "ocis-4.0.6-linux-amd64.sha256",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v4.0.6/ocis-4.0.6-linux-amd64.sha256",
           "size": 89,
-          "download_count": 24
+          "download_count": 25
         },
         {
           "name": "ocis-4.0.6-linux-arm",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v4.0.6/ocis-4.0.6-linux-arm",
           "size": 89522176,
-          "download_count": 9
+          "download_count": 10
         },
         {
           "name": "ocis-4.0.6-linux-arm.sha256",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v4.0.6/ocis-4.0.6-linux-arm.sha256",
           "size": 87,
-          "download_count": 9
+          "download_count": 10
         },
         {
           "name": "ocis-4.0.6-linux-arm64",
@@ -4315,13 +4407,13 @@
           "name": "ocis-4.0.6-linux-arm64.sha256",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v4.0.6/ocis-4.0.6-linux-arm64.sha256",
           "size": 89,
-          "download_count": 11
+          "download_count": 12
         },
         {
           "name": "third-party-licenses.tar.gz",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v4.0.6/third-party-licenses.tar.gz",
           "size": 880952,
-          "download_count": 10
+          "download_count": 11
         }
       ]
     },
@@ -4335,19 +4427,19 @@
           "name": "End-User-License-Agreement-for-ownCloud-Infinite-Scale.pdf",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v4.0.5/End-User-License-Agreement-for-ownCloud-Infinite-Scale.pdf",
           "size": 77879,
-          "download_count": 19
+          "download_count": 20
         },
         {
           "name": "ocis-4.0.5-darwin-amd64",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v4.0.5/ocis-4.0.5-darwin-amd64",
           "size": 106050736,
-          "download_count": 33
+          "download_count": 34
         },
         {
           "name": "ocis-4.0.5-darwin-amd64.sha256",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v4.0.5/ocis-4.0.5-darwin-amd64.sha256",
           "size": 90,
-          "download_count": 14
+          "download_count": 15
         },
         {
           "name": "ocis-4.0.5-darwin-arm64",
@@ -4383,31 +4475,31 @@
           "name": "ocis-4.0.5-linux-amd64.sha256",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v4.0.5/ocis-4.0.5-linux-amd64.sha256",
           "size": 89,
-          "download_count": 23
+          "download_count": 24
         },
         {
           "name": "ocis-4.0.5-linux-arm",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v4.0.5/ocis-4.0.5-linux-arm",
           "size": 89522176,
-          "download_count": 11
+          "download_count": 12
         },
         {
           "name": "ocis-4.0.5-linux-arm.sha256",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v4.0.5/ocis-4.0.5-linux-arm.sha256",
           "size": 87,
-          "download_count": 8
+          "download_count": 9
         },
         {
           "name": "ocis-4.0.5-linux-arm64",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v4.0.5/ocis-4.0.5-linux-arm64",
           "size": 103415808,
-          "download_count": 38
+          "download_count": 39
         },
         {
           "name": "ocis-4.0.5-linux-arm64.sha256",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v4.0.5/ocis-4.0.5-linux-arm64.sha256",
           "size": 89,
-          "download_count": 10
+          "download_count": 11
         },
         {
           "name": "third-party-licenses.tar.gz",
@@ -4427,37 +4519,37 @@
           "name": "End-User-License-Agreement-for-ownCloud-Infinite-Scale.pdf",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v4.0.4/End-User-License-Agreement-for-ownCloud-Infinite-Scale.pdf",
           "size": 77879,
-          "download_count": 8
+          "download_count": 9
         },
         {
           "name": "ocis-4.0.4-darwin-amd64",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v4.0.4/ocis-4.0.4-darwin-amd64",
           "size": 105961728,
-          "download_count": 7
+          "download_count": 8
         },
         {
           "name": "ocis-4.0.4-darwin-amd64.sha256",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v4.0.4/ocis-4.0.4-darwin-amd64.sha256",
           "size": 90,
-          "download_count": 8
+          "download_count": 9
         },
         {
           "name": "ocis-4.0.4-darwin-arm64",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v4.0.4/ocis-4.0.4-darwin-arm64",
           "size": 103345858,
-          "download_count": 8
+          "download_count": 9
         },
         {
           "name": "ocis-4.0.4-darwin-arm64.sha256",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v4.0.4/ocis-4.0.4-darwin-arm64.sha256",
           "size": 90,
-          "download_count": 8
+          "download_count": 9
         },
         {
           "name": "ocis-4.0.4-linux-386",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v4.0.4/ocis-4.0.4-linux-386",
           "size": 89473024,
-          "download_count": 6
+          "download_count": 7
         },
         {
           "name": "ocis-4.0.4-linux-386.sha256",
@@ -4469,43 +4561,43 @@
           "name": "ocis-4.0.4-linux-amd64",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v4.0.4/ocis-4.0.4-linux-amd64",
           "size": 96850424,
-          "download_count": 35
+          "download_count": 36
         },
         {
           "name": "ocis-4.0.4-linux-amd64.sha256",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v4.0.4/ocis-4.0.4-linux-amd64.sha256",
           "size": 89,
-          "download_count": 13
+          "download_count": 14
         },
         {
           "name": "ocis-4.0.4-linux-arm",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v4.0.4/ocis-4.0.4-linux-arm",
           "size": 89522176,
-          "download_count": 9
+          "download_count": 10
         },
         {
           "name": "ocis-4.0.4-linux-arm.sha256",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v4.0.4/ocis-4.0.4-linux-arm.sha256",
           "size": 87,
-          "download_count": 7
+          "download_count": 8
         },
         {
           "name": "ocis-4.0.4-linux-arm64",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v4.0.4/ocis-4.0.4-linux-arm64",
           "size": 103350272,
-          "download_count": 9
+          "download_count": 10
         },
         {
           "name": "ocis-4.0.4-linux-arm64.sha256",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v4.0.4/ocis-4.0.4-linux-arm64.sha256",
           "size": 89,
-          "download_count": 8
+          "download_count": 9
         },
         {
           "name": "third-party-licenses.tar.gz",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v4.0.4/third-party-licenses.tar.gz",
           "size": 875893,
-          "download_count": 9
+          "download_count": 10
         }
       ]
     },
@@ -4519,67 +4611,67 @@
           "name": "End-User-License-Agreement-for-ownCloud-Infinite-Scale.pdf",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v4.0.3/End-User-License-Agreement-for-ownCloud-Infinite-Scale.pdf",
           "size": 77879,
-          "download_count": 9
+          "download_count": 10
         },
         {
           "name": "ocis-4.0.3-darwin-amd64",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v4.0.3/ocis-4.0.3-darwin-amd64",
           "size": 105961040,
-          "download_count": 10
+          "download_count": 11
         },
         {
           "name": "ocis-4.0.3-darwin-amd64.sha256",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v4.0.3/ocis-4.0.3-darwin-amd64.sha256",
           "size": 90,
-          "download_count": 8
+          "download_count": 9
         },
         {
           "name": "ocis-4.0.3-darwin-arm64",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v4.0.3/ocis-4.0.3-darwin-arm64",
           "size": 103328674,
-          "download_count": 9
+          "download_count": 10
         },
         {
           "name": "ocis-4.0.3-darwin-arm64.sha256",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v4.0.3/ocis-4.0.3-darwin-arm64.sha256",
           "size": 90,
-          "download_count": 8
+          "download_count": 9
         },
         {
           "name": "ocis-4.0.3-linux-386",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v4.0.3/ocis-4.0.3-linux-386",
           "size": 89468928,
-          "download_count": 6
+          "download_count": 7
         },
         {
           "name": "ocis-4.0.3-linux-386.sha256",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v4.0.3/ocis-4.0.3-linux-386.sha256",
           "size": 87,
-          "download_count": 8
+          "download_count": 9
         },
         {
           "name": "ocis-4.0.3-linux-amd64",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v4.0.3/ocis-4.0.3-linux-amd64",
           "size": 96850424,
-          "download_count": 38
+          "download_count": 39
         },
         {
           "name": "ocis-4.0.3-linux-amd64.sha256",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v4.0.3/ocis-4.0.3-linux-amd64.sha256",
           "size": 89,
-          "download_count": 17
+          "download_count": 18
         },
         {
           "name": "ocis-4.0.3-linux-arm",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v4.0.3/ocis-4.0.3-linux-arm",
           "size": 89522176,
-          "download_count": 8
+          "download_count": 9
         },
         {
           "name": "ocis-4.0.3-linux-arm.sha256",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v4.0.3/ocis-4.0.3-linux-arm.sha256",
           "size": 87,
-          "download_count": 8
+          "download_count": 9
         },
         {
           "name": "ocis-4.0.3-linux-arm64",
@@ -4591,13 +4683,13 @@
           "name": "ocis-4.0.3-linux-arm64.sha256",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v4.0.3/ocis-4.0.3-linux-arm64.sha256",
           "size": 89,
-          "download_count": 11
+          "download_count": 12
         },
         {
           "name": "third-party-licenses.tar.gz",
           "browser_download_url": "https://github.com/owncloud/ocis/releases/download/v4.0.3/third-party-licenses.tar.gz",
           "size": 864830,
-          "download_count": 8
+          "download_count": 9
         }
       ]
     }
@@ -4613,7 +4705,7 @@
           "name": "ownCloud-7.1.1.19543-arm64.pkg",
           "browser_download_url": "https://github.com/owncloud/client/releases/download/v7.1.1/ownCloud-7.1.1.19543-arm64.pkg",
           "size": 46510819,
-          "download_count": 426
+          "download_count": 432
         },
         {
           "name": "ownCloud-7.1.1.19543-arm64.pkg.tbz",
@@ -4637,7 +4729,7 @@
           "name": "ownCloud-7.1.1.19543-x86_64.AppImage",
           "browser_download_url": "https://github.com/owncloud/client/releases/download/v7.1.1/ownCloud-7.1.1.19543-x86_64.AppImage",
           "size": 76282360,
-          "download_count": 173
+          "download_count": 176
         },
         {
           "name": "ownCloud-7.1.1.19543-x86_64.AppImage.sha256",
@@ -4649,19 +4741,19 @@
           "name": "ownCloud-7.1.1.19543-x86_64.AppImage.zsync",
           "browser_download_url": "https://github.com/owncloud/client/releases/download/v7.1.1/ownCloud-7.1.1.19543-x86_64.AppImage.zsync",
           "size": 260979,
-          "download_count": 37
+          "download_count": 38
         },
         {
           "name": "ownCloud-7.1.1.19543-x86_64.pkg",
           "browser_download_url": "https://github.com/owncloud/client/releases/download/v7.1.1/ownCloud-7.1.1.19543-x86_64.pkg",
           "size": 50349187,
-          "download_count": 220
+          "download_count": 223
         },
         {
           "name": "ownCloud-7.1.1.19543-x86_64.pkg.tbz",
           "browser_download_url": "https://github.com/owncloud/client/releases/download/v7.1.1/ownCloud-7.1.1.19543-x86_64.pkg.tbz",
           "size": 50497750,
-          "download_count": 22
+          "download_count": 25
         },
         {
           "name": "ownCloud-7.1.1.19543-x86_64.pkg.tbz.eddsa.sig",
@@ -4679,13 +4771,13 @@
           "name": "ownCloud-7.1.1.19543.x64.GPO.msi",
           "browser_download_url": "https://github.com/owncloud/client/releases/download/v7.1.1/ownCloud-7.1.1.19543.x64.GPO.msi",
           "size": 39018496,
-          "download_count": 76
+          "download_count": 81
         },
         {
           "name": "ownCloud-7.1.1.19543.x64.msi",
           "browser_download_url": "https://github.com/owncloud/client/releases/download/v7.1.1/ownCloud-7.1.1.19543.x64.msi",
           "size": 39407616,
-          "download_count": 449
+          "download_count": 455
         },
         {
           "name": "owncloud-client_7.1.1.19543_amd64.deb",
@@ -4697,7 +4789,7 @@
           "name": "owncloud-client_7.1.1.19543_x86_64.rpm",
           "browser_download_url": "https://github.com/owncloud/client/releases/download/v7.1.1/owncloud-client_7.1.1.19543_x86_64.rpm",
           "size": 83165461,
-          "download_count": 69
+          "download_count": 71
         }
       ]
     },
@@ -4711,7 +4803,7 @@
           "name": "ownCloud-7.1.0.19041-arm64.pkg",
           "browser_download_url": "https://github.com/owncloud/client/releases/download/v7.1.0/ownCloud-7.1.0.19041-arm64.pkg",
           "size": 46515292,
-          "download_count": 209
+          "download_count": 210
         },
         {
           "name": "ownCloud-7.1.0.19041-arm64.pkg.tbz",
@@ -4809,7 +4901,7 @@
           "name": "ownCloud-6.0.3.18040-arm64.pkg",
           "browser_download_url": "https://github.com/owncloud/client/releases/download/v6.0.3/ownCloud-6.0.3.18040-arm64.pkg",
           "size": 47122637,
-          "download_count": 370
+          "download_count": 371
         },
         {
           "name": "ownCloud-6.0.3.18040-arm64.pkg.tbz",
@@ -4881,7 +4973,7 @@
           "name": "ownCloud-6.0.3.18040.x64.msi",
           "browser_download_url": "https://github.com/owncloud/client/releases/download/v6.0.3/ownCloud-6.0.3.18040.x64.msi",
           "size": 40128512,
-          "download_count": 923
+          "download_count": 927
         },
         {
           "name": "owncloud-client_6.0.3.18040_amd64.deb",
@@ -4893,7 +4985,7 @@
           "name": "owncloud-client_6.0.3.18040_x86_64.rpm",
           "browser_download_url": "https://github.com/owncloud/client/releases/download/v6.0.3/owncloud-client_6.0.3.18040_x86_64.rpm",
           "size": 83820960,
-          "download_count": 60
+          "download_count": 61
         }
       ]
     },
@@ -5255,7 +5347,7 @@
           "name": "ownCloud-5.3.2.15463.x64.msi",
           "browser_download_url": "https://github.com/owncloud/client/releases/download/v5.3.2/ownCloud-5.3.2.15463.x64.msi",
           "size": 22040576,
-          "download_count": 120
+          "download_count": 122
         },
         {
           "name": "owncloud-client_5.3.2.15463_amd64.deb",
@@ -5575,7 +5667,7 @@
           "name": "ownCloud-5.2.0.12726.x64.msi",
           "browser_download_url": "https://github.com/owncloud/client/releases/download/v5.2.0/ownCloud-5.2.0.12726.x64.msi",
           "size": 21512192,
-          "download_count": 8
+          "download_count": 9
         },
         {
           "name": "owncloud-client_5.2.0.12726.deb",
@@ -5815,7 +5907,7 @@
           "name": "ownCloud-4.2.0.11670.x64.msi",
           "browser_download_url": "https://github.com/owncloud/client/releases/download/v4.2.0/ownCloud-4.2.0.11670.x64.msi",
           "size": 20193280,
-          "download_count": 14
+          "download_count": 15
         },
         {
           "name": "ownCloud-4.2.0.11670.x86.GPO.msi",
@@ -6347,7 +6439,7 @@
           "name": "ownCloud-2.11.0.8354.x64.msi",
           "browser_download_url": "https://github.com/owncloud/client/releases/download/v2.11.0/ownCloud-2.11.0.8354.x64.msi",
           "size": 20926464,
-          "download_count": 5
+          "download_count": 6
         },
         {
           "name": "ownCloud-2.11.0.8354.x86.GPO.msi",
@@ -6993,7 +7085,7 @@
           "name": "owncloud_4.8.4-original-release.apk",
           "browser_download_url": "https://github.com/owncloud/android/releases/download/v4.8.4/owncloud_4.8.4-original-release.apk",
           "size": 14447953,
-          "download_count": 800
+          "download_count": 811
         }
       ]
     },
@@ -7007,7 +7099,7 @@
           "name": "owncloud_4.8.3-original-release.apk",
           "browser_download_url": "https://github.com/owncloud/android/releases/download/v4.8.3/owncloud_4.8.3-original-release.apk",
           "size": 14447613,
-          "download_count": 292
+          "download_count": 294
         }
       ]
     },
@@ -7948,49 +8040,49 @@
           "name": "owncloud-complete-20261103.tar.bz2",
           "browser_download_url": "https://github.com/owncloud/core/releases/download/v11.1.0/owncloud-complete-20261103.tar.bz2",
           "size": 102479317,
-          "download_count": 81
+          "download_count": 101
         },
         {
           "name": "owncloud-complete-20261103.zip",
           "browser_download_url": "https://github.com/owncloud/core/releases/download/v11.1.0/owncloud-complete-20261103.zip",
           "size": 137340771,
-          "download_count": 23
+          "download_count": 31
         },
         {
           "name": "owncloud-complete-20261103-qa.tar.bz2",
           "browser_download_url": "https://github.com/owncloud/core/releases/download/v11.1.0/owncloud-complete-20261103-qa.tar.bz2",
           "size": 113412698,
-          "download_count": 89
+          "download_count": 112
         },
         {
           "name": "owncloud-complete-20261103-qa.zip",
           "browser_download_url": "https://github.com/owncloud/core/releases/download/v11.1.0/owncloud-complete-20261103-qa.zip",
           "size": 151989322,
-          "download_count": 6
+          "download_count": 8
         },
         {
           "name": "owncloud-11.1.0.tar.bz2",
           "browser_download_url": "https://github.com/owncloud/core/releases/download/v11.1.0/owncloud-11.1.0.tar.bz2",
           "size": 54607361,
-          "download_count": 31
+          "download_count": 39
         },
         {
           "name": "owncloud-11.1.0.zip",
           "browser_download_url": "https://github.com/owncloud/core/releases/download/v11.1.0/owncloud-11.1.0.zip",
           "size": 69070361,
-          "download_count": 19
+          "download_count": 94
         },
         {
           "name": "owncloud-11.1.0-qa.tar.bz2",
           "browser_download_url": "https://github.com/owncloud/core/releases/download/v11.1.0/owncloud-11.1.0-qa.tar.bz2",
           "size": 65450639,
-          "download_count": 9
+          "download_count": 13
         },
         {
           "name": "owncloud-11.1.0-qa.zip",
           "browser_download_url": "https://github.com/owncloud/core/releases/download/v11.1.0/owncloud-11.1.0-qa.zip",
           "size": 83718908,
-          "download_count": 25
+          "download_count": 27
         }
       ]
     },
@@ -8010,7 +8102,7 @@
           "name": "owncloud-complete-20260925.zip",
           "browser_download_url": "https://github.com/owncloud/core/releases/download/v11.0.1/owncloud-complete-20260925.zip",
           "size": 137002772,
-          "download_count": 417
+          "download_count": 418
         },
         {
           "name": "owncloud-complete-20260925-qa.tar.bz2",
@@ -8028,13 +8120,13 @@
           "name": "owncloud-11.0.1.tar.bz2",
           "browser_download_url": "https://github.com/owncloud/core/releases/download/v11.0.1/owncloud-11.0.1.tar.bz2",
           "size": 54182875,
-          "download_count": 522
+          "download_count": 529
         },
         {
           "name": "owncloud-11.0.1.zip",
           "browser_download_url": "https://github.com/owncloud/core/releases/download/v11.0.1/owncloud-11.0.1.zip",
           "size": 69028203,
-          "download_count": 327
+          "download_count": 333
         },
         {
           "name": "owncloud-11.0.1-qa.tar.bz2",
@@ -8060,13 +8152,13 @@
           "name": "owncloud-11.0.0.tar.bz2",
           "browser_download_url": "https://github.com/owncloud/core/releases/download/v11.0.0/owncloud-11.0.0.tar.bz2",
           "size": 55248500,
-          "download_count": 784
+          "download_count": 786
         },
         {
           "name": "owncloud-11.0.0.zip",
           "browser_download_url": "https://github.com/owncloud/core/releases/download/v11.0.0/owncloud-11.0.0.zip",
           "size": 69972670,
-          "download_count": 752
+          "download_count": 755
         },
         {
           "name": "owncloud-11.0.0-qa.tar.bz2",
@@ -8116,19 +8208,19 @@
           "name": "owncloud-complete-20261103.tar.bz2",
           "browser_download_url": "https://github.com/owncloud/core/releases/download/v10.16.7/owncloud-complete-20261103.tar.bz2",
           "size": 76695817,
-          "download_count": 78
+          "download_count": 96
         },
         {
           "name": "owncloud-complete-20261103.zip",
           "browser_download_url": "https://github.com/owncloud/core/releases/download/v10.16.7/owncloud-complete-20261103.zip",
           "size": 105650034,
-          "download_count": 14
+          "download_count": 20
         },
         {
           "name": "owncloud-complete-20261103-qa.tar.bz2",
           "browser_download_url": "https://github.com/owncloud/core/releases/download/v10.16.7/owncloud-complete-20261103-qa.tar.bz2",
           "size": 87522354,
-          "download_count": 61
+          "download_count": 84
         },
         {
           "name": "owncloud-complete-20261103-qa.zip",
@@ -8140,13 +8232,13 @@
           "name": "owncloud-10.16.7.tar.bz2",
           "browser_download_url": "https://github.com/owncloud/core/releases/download/v10.16.7/owncloud-10.16.7.tar.bz2",
           "size": 57831576,
-          "download_count": 14
+          "download_count": 16
         },
         {
           "name": "owncloud-10.16.7.zip",
           "browser_download_url": "https://github.com/owncloud/core/releases/download/v10.16.7/owncloud-10.16.7.zip",
           "size": 72343067,
-          "download_count": 4
+          "download_count": 70
         },
         {
           "name": "owncloud-10.16.7-qa.tar.bz2",
@@ -8172,49 +8264,49 @@
           "name": "owncloud-complete-20261006.tar.bz2",
           "browser_download_url": "https://github.com/owncloud/core/releases/download/v10.16.6/owncloud-complete-20261006.tar.bz2",
           "size": 76688706,
-          "download_count": 866
+          "download_count": 869
         },
         {
           "name": "owncloud-complete-20261006.zip",
           "browser_download_url": "https://github.com/owncloud/core/releases/download/v10.16.6/owncloud-complete-20261006.zip",
           "size": 106106482,
-          "download_count": 278
+          "download_count": 280
         },
         {
           "name": "owncloud-complete-20261006-qa.tar.bz2",
           "browser_download_url": "https://github.com/owncloud/core/releases/download/v10.16.6/owncloud-complete-20261006-qa.tar.bz2",
           "size": 87743807,
-          "download_count": 296
+          "download_count": 297
         },
         {
           "name": "owncloud-complete-20261006-qa.zip",
           "browser_download_url": "https://github.com/owncloud/core/releases/download/v10.16.6/owncloud-complete-20261006-qa.zip",
           "size": 120653360,
-          "download_count": 123
+          "download_count": 125
         },
         {
           "name": "owncloud-10.16.6.tar.bz2",
           "browser_download_url": "https://github.com/owncloud/core/releases/download/v10.16.6/owncloud-10.16.6.tar.bz2",
           "size": 57843056,
-          "download_count": 568
+          "download_count": 576
         },
         {
           "name": "owncloud-10.16.6.zip",
           "browser_download_url": "https://github.com/owncloud/core/releases/download/v10.16.6/owncloud-10.16.6.zip",
           "size": 72800332,
-          "download_count": 190
+          "download_count": 194
         },
         {
           "name": "owncloud-10.16.6-qa.tar.bz2",
           "browser_download_url": "https://github.com/owncloud/core/releases/download/v10.16.6/owncloud-10.16.6-qa.tar.bz2",
           "size": 69129315,
-          "download_count": 175
+          "download_count": 177
         },
         {
           "name": "owncloud-10.16.6-qa.zip",
           "browser_download_url": "https://github.com/owncloud/core/releases/download/v10.16.6/owncloud-10.16.6-qa.zip",
           "size": 87347227,
-          "download_count": 139
+          "download_count": 141
         }
       ]
     },
@@ -8290,7 +8382,7 @@
           "name": "owncloud-10.16.4.zip",
           "browser_download_url": "https://github.com/owncloud/core/releases/download/v10.16.4/owncloud-10.16.4.zip",
           "size": 72686154,
-          "download_count": 329
+          "download_count": 330
         },
         {
           "name": "owncloud-10.16.4-qa.tar.bz2",
@@ -8589,25 +8681,25 @@
   ],
   "apps": {
     "twofactor_totp": {
-      "0.9.0": 222
+      "0.9.0": 230
     },
     "asyntai": {
       "1.0.0": 60
     },
     "contacts": {
-      "1.5.5": 1007,
-      "1.6.0": 655
+      "1.5.5": 1024,
+      "1.6.0": 668
     },
     "calendar": {
       "2.0.0": 762,
       "2.0.1": 1000,
-      "2.0.2": 414,
+      "2.0.2": 460,
       "2.1.0": 499,
       "2.1.1": 602,
-      "2.1.2": 187
+      "2.1.2": 214
     },
     "market": {
-      "0.9.1": 8062
+      "0.9.1": 8088
     },
     "phonetrack": {
       "0.2.8": 19
@@ -8636,7 +8728,7 @@
     },
     "files_reader": {
       "1.1.2": 5,
-      "1.2.3": 34
+      "1.2.3": 36
     },
     "files_opds": {
       "0.8.6": 3,
@@ -8647,7 +8739,7 @@
       "1.1.3": 22
     },
     "wallpaper": {
-      "0.2.2": 556
+      "0.2.2": 561
     },
     "twofactor_privacyidea": {
       "2.2.0": 4,
@@ -8672,7 +8764,7 @@
       "0.9.3": 4,
       "0.9.5": 3,
       "0.9.6": 5,
-      "0.9.7": 849
+      "0.9.7": 855
     },
     "syncblue": {
       "1.2.1": 4,
@@ -8714,11 +8806,11 @@
     },
     "qownnotesapi": {
       "17.7.0": 2,
-      "19.1.0": 65,
-      "21.3.0": 61
+      "19.1.0": 66,
+      "21.3.0": 62
     },
     "openotp_auth": {
-      "1.2.3": 283
+      "1.2.3": 284
     },
     "opencloudmesh": {
       "0.1.1": 3,
@@ -8729,14 +8821,14 @@
       "2.0.4": 3,
       "2.0.5": 2,
       "2.0.6": 3,
-      "2.0.7": 372
+      "2.0.7": 377
     },
     "nextbackup": {
       "21.1.0": 3,
       "21.1.1": 90
     },
     "metadata": {
-      "0.10.0": 484
+      "0.10.0": 489
     },
     "groupalert": {
       "1.0.6": 3,
@@ -8746,10 +8838,10 @@
     "files_textviewer": {
       "1.0.1": 2,
       "1.0.2": 2,
-      "1.0.3": 401
+      "1.0.3": 405
     },
     "files_3dviewer": {
-      "0.0.1": 134
+      "0.0.1": 135
     },
     "federatedgroups": {
       "0.1.1": 2,
@@ -8761,7 +8853,7 @@
       "1.2.3": 2,
       "1.2.4": 4,
       "1.3.6": 5,
-      "1.3.7": 464
+      "1.3.7": 475
     },
     "e2eeshare": {
       "1.0.0": 2,
@@ -8815,7 +8907,7 @@
     },
     "cms_pico": {
       "0.9.7": 3,
-      "0.9.8": 70
+      "0.9.8": 71
     },
     "checksum": {
       "0.3.5": 2,
@@ -8838,7 +8930,7 @@
       "0.18.8": 1,
       "0.18.9": 1,
       "0.19.0": 1,
-      "0.19.1": 119
+      "0.19.1": 121
     },
     "bplog": {
       "0.1.0": 3,
@@ -8850,13 +8942,13 @@
       "0.10.3": 4,
       "0.10.4": 3,
       "0.10.5": 3,
-      "0.10.6": 181
+      "0.10.6": 184
     },
     "afterlogic": {
       "1.1.2": 2,
       "1.2.1": 3,
       "1.2.2": 2,
-      "1.2.3": 142
+      "1.2.3": 144
     },
     "richdocuments": {
       "1.1.20": 3,
@@ -8892,17 +8984,17 @@
       "4.2.0": 7,
       "4.2.1": 5,
       "4.2.2": 6,
-      "4.2.3": 999
+      "4.2.3": 1007
     },
     "onlyoffice": {
       "1.1.3": 5,
       "1.1.4": 4,
       "1.1.5": 4,
-      "1.1.6": 3,
+      "1.1.6": 4,
       "1.2.0": 3,
       "1.3.0": 3,
       "1.4.0": 4,
-      "10.0.0": 1746,
+      "10.0.0": 1780,
       "2.0.1": 3,
       "2.0.3": 3,
       "2.1.1": 3,
@@ -8910,7 +9002,7 @@
       "2.1.5": 3,
       "2.1.7": 3,
       "2.2.1": 3,
-      "2.3.1": 4,
+      "2.3.1": 5,
       "3.0.1": 3,
       "3.0.3": 5,
       "4.0.1": 4,
@@ -8931,12 +9023,12 @@
       "7.5.3": 3,
       "7.5.4": 3,
       "7.6.7": 3,
-      "7.8.1": 27,
+      "7.8.1": 28,
       "8.2.1": 3,
       "8.2.3": 9,
       "9.1.1": 3,
       "9.10.1": 4,
-      "9.12.1": 944,
+      "9.12.1": 945,
       "9.3.1": 4,
       "9.5.1": 4,
       "9.6.1": 7,
@@ -8984,7 +9076,7 @@
       "1.0.2": 3,
       "1.1.0": 2,
       "1.10.0": 3,
-      "1.11.0": 29,
+      "1.11.0": 30,
       "1.2.0": 2,
       "1.2.1": 2,
       "1.3.1": 3,
@@ -9017,7 +9109,7 @@
       "2.5.1": 2,
       "2.5.2": 18,
       "2.6.0": 515,
-      "2.6.1": 998
+      "2.6.1": 1008
     },
     "example-app": {
       "1.0.0": 3,
@@ -9083,8 +9175,8 @@
       "0.3.1": 30
     },
     "web-app-skeleton": {
-      "0.1.0": 1319,
-      "0.2.0": 1324
+      "0.1.0": 1329,
+      "0.2.0": 1334
     },
     "web-app-dicom-viewer": {
       "1.0.0": 18
@@ -9158,7 +9250,7 @@
       "0.1.0": 19
     },
     "3dviewer": {
-      "0.1.0": 52
+      "0.1.0": 54
     },
     "example-extension": {
       "0.1.0": 1
@@ -9168,7 +9260,7 @@
     "android": {
       "url": "https://play.google.com/store/apps/details?id=com.owncloud.android&hl=en&gl=us",
       "rating": 4.5,
-      "ratingCount": 14682,
+      "ratingCount": 14684,
       "installs": "500,000+"
     },
     "ios": {

@@ -78,8 +78,11 @@ export function releaseDownloads(release: RawRelease): number {
   return release.assets.reduce((sum, a) => sum + (a.download_count ?? 0), 0);
 }
 
-/** Resolves a release's assets into binary rows (matchBinaries or matchClassicArchives). */
-type AssetMatcher = (assets: RawAsset[]) => DownloadBinary[];
+/**
+ * Resolves a release's assets into binary rows (matchBinaries or
+ * matchClassicArchives), given the release's version with any leading "v" trimmed.
+ */
+type AssetMatcher = (assets: RawAsset[], version: string) => DownloadBinary[];
 
 /**
  * Normalize one raw release into a historical release entry: trim a leading "v"
@@ -88,12 +91,13 @@ type AssetMatcher = (assets: RawAsset[]) => DownloadBinary[];
  * surfaces, matchClassicArchives for the classic server).
  */
 export function normalizeFullRelease(release: RawRelease, matcher: AssetMatcher): DownloadRelease {
+  const version = release.tag_name.replace(/^v/, "");
   return {
-    version: release.tag_name.replace(/^v/, ""),
+    version,
     releaseUrl: release.html_url,
     publishedAt: release.published_at,
     downloads: releaseDownloads(release),
-    binaries: matcher(release.assets),
+    binaries: matcher(release.assets, version),
   };
 }
 
@@ -101,26 +105,40 @@ export function normalizeFullRelease(release: RawRelease, matcher: AssetMatcher)
  * Resolve the classic server's archives into download rows. Classic ships a
  * single PHP source archive per format rather than per-OS binaries, so the
  * OS/arch RULES do not apply: the archive format leads the row (as the "os"
- * field the button renders prominently) and "arch" is left empty — repeating a
- * generic "Server archive" label on every row carries no information. Returns
- * rows in `.tar.bz2`, `.zip` order.
+ * field the button renders prominently) and the variant fills "arch" — the
+ * server archive `owncloud-<version>` of this very release, or the
+ * `owncloud-complete-<date>` bundle, which adds the bundled apps. Each release
+ * also carries `-qa` builds of both, which are never listed. Assets are matched
+ * by exact name pattern (case-insensitively), not by position: the GitHub API's
+ * asset order varies between releases, and a first-suffix match once swapped
+ * the server archive for the complete bundle (owncloud/core#41971). Returns
+ * rows in server tar.bz2, zip, then complete tar.bz2, zip order, and warns when
+ * no server archive matches, so a change in the release's file naming does not
+ * silently drop its server download buttons.
  */
-export function matchClassicArchives(assets: RawAsset[]): DownloadBinary[] {
-  const FORMATS: { ext: string; label: string }[] = [
-    { ext: ".tar.bz2", label: "tar.bz2" },
-    { ext: ".zip", label: "zip" },
+export function matchClassicArchives(assets: RawAsset[], version: string): DownloadBinary[] {
+  const escaped = version.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const VARIANTS: { label: string; re: RegExp }[] = [
+    { label: "server", re: new RegExp(`^owncloud-${escaped}\\.(tar\\.bz2|zip)$`, "i") },
+    { label: "complete", re: /^owncloud-complete-\d{8}\.(tar\.bz2|zip)$/i },
   ];
+  const FORMATS = ["tar.bz2", "zip"];
   const rows: DownloadBinary[] = [];
-  for (const fmt of FORMATS) {
-    const hit = assets.find((a) => a.name.endsWith(fmt.ext));
-    if (hit) {
-      rows.push({
-        os: fmt.label,
-        arch: "",
-        size: formatSize(hit.size),
-        url: hit.browser_download_url,
-      });
+  for (const variant of VARIANTS) {
+    for (const fmt of FORMATS) {
+      const hit = assets.find((a) => variant.re.exec(a.name)?.[1].toLowerCase() === fmt);
+      if (hit) {
+        rows.push({
+          os: fmt,
+          arch: variant.label,
+          size: formatSize(hit.size),
+          url: hit.browser_download_url,
+        });
+      }
     }
+  }
+  if (!rows.some((r) => r.arch === "server")) {
+    console.warn(`WARN: no server archive matched for ownCloud Classic ${version}; it lists none.`);
   }
   return rows;
 }

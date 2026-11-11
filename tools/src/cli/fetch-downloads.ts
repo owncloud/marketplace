@@ -155,6 +155,14 @@ function compareVersions(a: readonly number[], b: readonly number[]): number {
 }
 
 /**
+ * Whether a classic release asset is a downloadable archive (.tar.bz2 / .zip,
+ * in any case) rather than one of its checksum or signature sidecars.
+ */
+export function isClassicArchive(name: string): boolean {
+  return /\.(tar\.bz2|zip)$/i.test(name);
+}
+
+/**
  * Select all classic Server releases from owncloud/core's releases, newest-first.
  * Keeps only stable (non-draft, non-prerelease) releases whose tag is a plain
  * version at or above CLASSIC_FLOOR, sorted by numeric version compare (so
@@ -234,9 +242,7 @@ export async function fetchClassic(): Promise<RawRelease[]> {
     return selectReleases(releases)
       .map((selected) => ({
         ...selected,
-        assets: selected.assets.filter(
-          (a) => a.name.endsWith(".tar.bz2") || a.name.endsWith(".zip"),
-        ),
+        assets: selected.assets.filter((a) => isClassicArchive(a.name)),
       }))
       .filter((r) => r.assets.length > 0);
   } catch (err) {

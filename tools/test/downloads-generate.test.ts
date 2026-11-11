@@ -6,6 +6,7 @@ import {
   formatSize,
   matchBinaries,
   matchClientPackages,
+  matchClassicArchives,
   buildClientLines,
   buildClassicLines,
   releaseDownloads,
@@ -156,6 +157,92 @@ describe("matchClientPackages", () => {
 
   it("returns [] for unrelated assets", () => {
     expect(matchClientPackages([asset("README.md"), asset("source.tar.gz")])).toEqual([]);
+  });
+});
+
+describe("matchClassicArchives", () => {
+  // Every owncloud/core release carries the server archives, their QA builds and
+  // the complete bundle with its QA build, in each of the two formats.
+  const classicAssets = [
+    asset("owncloud-10.16.5.tar.bz2"),
+    asset("owncloud-10.16.5.zip"),
+    asset("owncloud-10.16.5-qa.tar.bz2"),
+    asset("owncloud-10.16.5-qa.zip"),
+    asset("owncloud-complete-20260925.tar.bz2"),
+    asset("owncloud-complete-20260925.zip"),
+    asset("owncloud-complete-20260925-qa.tar.bz2"),
+    asset("owncloud-complete-20260925-qa.zip"),
+    asset("owncloud-10.16.5.tar.bz2.sha256"),
+  ];
+  const expected = [
+    "tar.bz2 server owncloud-10.16.5.tar.bz2",
+    "zip server owncloud-10.16.5.zip",
+    "tar.bz2 complete owncloud-complete-20260925.tar.bz2",
+    "zip complete owncloud-complete-20260925.zip",
+  ];
+  const describeRows = (assets: RawAsset[], version = "10.16.5") =>
+    matchClassicArchives(assets, version).map(
+      (b) => `${b.os} ${b.arch} ${b.url.replace("https://example.com/", "")}`,
+    );
+
+  it("lists the server archives and the complete bundle, never a QA build", () => {
+    expect(describeRows(classicAssets)).toEqual(expected);
+  });
+
+  // owncloud/core#41971: the GitHub API's asset order varies between releases
+  // (upload order, then name order), so the pick must not depend on it.
+  it("does not depend on the order the assets are listed in", () => {
+    expect(describeRows([...classicAssets].reverse())).toEqual(expected);
+    expect(describeRows([...classicAssets].sort((a, b) => a.name.localeCompare(b.name)))).toEqual(
+      expected,
+    );
+  });
+
+  it("lists only the server archives for a release without a complete bundle", () => {
+    expect(
+      describeRows([asset("owncloud-10.15.0.tar.bz2"), asset("owncloud-10.15.0.zip")], "10.15.0"),
+    ).toEqual(["tar.bz2 server owncloud-10.15.0.tar.bz2", "zip server owncloud-10.15.0.zip"]);
+  });
+
+  it("ignores a server archive of another version attached to the release", () => {
+    expect(
+      describeRows([asset("owncloud-10.16.4.tar.bz2"), asset("owncloud-10.16.5.tar.bz2")]),
+    ).toEqual(["tar.bz2 server owncloud-10.16.5.tar.bz2"]);
+  });
+
+  it("matches archive names case-insensitively", () => {
+    expect(
+      describeRows([asset("ownCloud-10.16.5.ZIP"), asset("OWNCLOUD-COMPLETE-20260925.Tar.Bz2")]),
+    ).toEqual([
+      "zip server ownCloud-10.16.5.ZIP",
+      "tar.bz2 complete OWNCLOUD-COMPLETE-20260925.Tar.Bz2",
+    ]);
+  });
+
+  it("warns when the server archive is missing, even if the complete bundle matches", () => {
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    try {
+      expect(describeRows([asset("owncloud-complete-20260925.zip")])).toEqual([
+        "zip complete owncloud-complete-20260925.zip",
+      ]);
+      expect(warn).toHaveBeenCalledOnce();
+      expect(warn.mock.calls[0][0]).toContain("10.16.5");
+    } finally {
+      warn.mockRestore();
+    }
+  });
+
+  it("returns [] for unrelated assets and warns that the release lists nothing", () => {
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    try {
+      expect(
+        matchClassicArchives([asset("README.md"), asset("owncloud-10.16.5-qa.zip")], "10.16.5"),
+      ).toEqual([]);
+      expect(warn).toHaveBeenCalledOnce();
+      expect(warn.mock.calls[0][0]).toContain("10.16.5");
+    } finally {
+      warn.mockRestore();
+    }
   });
 });
 
@@ -372,9 +459,9 @@ describe("normalizeDownloads", () => {
       ],
     });
     expect(out.server?.releases.map((r) => r.version)).toEqual(["10.16.3", "10.15.5"]);
-    // Classic archives lead with the format (in `os`) and leave `arch` empty.
+    // Classic archives lead with the format (in `os`), the variant in `arch`.
     expect(out.server?.releases[0].binaries[0].os).toBe("tar.bz2");
-    expect(out.server?.releases[0].binaries[0].arch).toBe("");
+    expect(out.server?.releases[0].binaries[0].arch).toBe("server");
   });
 
   // owncloud/marketplace#269: 11.0.x and 10.16.x are supported side by side, so

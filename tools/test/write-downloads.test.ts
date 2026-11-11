@@ -109,13 +109,13 @@ describe("writeDownloads", () => {
     expect(written.server.binaries).toEqual([
       {
         os: "tar.bz2",
-        arch: "",
+        arch: "server",
         size: "58.0 MB",
         url: "https://download.owncloud.com/server/stable/owncloud-10.16.3.tar.bz2",
       },
       {
         os: "zip",
-        arch: "",
+        arch: "server",
         size: "72.0 MB",
         url: "https://download.owncloud.com/server/stable/owncloud-10.16.3.zip",
       },

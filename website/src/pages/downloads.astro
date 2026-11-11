@@ -443,7 +443,9 @@ const generated = downloads ? fmtDate(downloads.generatedAt) : null;
     margin: 0;
     padding: 0;
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+    /* Wide enough for the longest row ("macOS Apple Silicon", "tar.bz2 complete")
+       plus its size, which never wrap. */
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
     gap: 12px;
   }
   .download {

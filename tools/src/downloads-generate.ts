@@ -101,25 +101,33 @@ export function normalizeFullRelease(release: RawRelease, matcher: AssetMatcher)
  * Resolve the classic server's archives into download rows. Classic ships a
  * single PHP source archive per format rather than per-OS binaries, so the
  * OS/arch RULES do not apply: the archive format leads the row (as the "os"
- * field the button renders prominently) and "arch" is left empty — repeating a
- * generic "Server archive" label on every row carries no information. Returns
- * rows in `.tar.bz2`, `.zip` order.
+ * field the button renders prominently) and the variant fills "arch" — the
+ * core archive `owncloud-<version>` or the `owncloud-complete-<date>` bundle,
+ * which adds the bundled apps. Each release also carries `-qa` builds of both,
+ * which are never listed. Assets are matched by exact name pattern, not by
+ * position: the GitHub API's asset order varies between releases, and a
+ * first-suffix match once swapped the core archive for the complete bundle
+ * (owncloud/core#41971). Returns rows in core tar.bz2, zip, then complete
+ * tar.bz2, zip order.
  */
 export function matchClassicArchives(assets: RawAsset[]): DownloadBinary[] {
-  const FORMATS: { ext: string; label: string }[] = [
-    { ext: ".tar.bz2", label: "tar.bz2" },
-    { ext: ".zip", label: "zip" },
+  const VARIANTS: { label: string; re: RegExp }[] = [
+    { label: "core", re: /^owncloud-\d+\.\d+\.\d+\.(tar\.bz2|zip)$/ },
+    { label: "complete", re: /^owncloud-complete-\d{8}\.(tar\.bz2|zip)$/ },
   ];
+  const FORMATS = ["tar.bz2", "zip"];
   const rows: DownloadBinary[] = [];
-  for (const fmt of FORMATS) {
-    const hit = assets.find((a) => a.name.endsWith(fmt.ext));
-    if (hit) {
-      rows.push({
-        os: fmt.label,
-        arch: "",
-        size: formatSize(hit.size),
-        url: hit.browser_download_url,
-      });
+  for (const variant of VARIANTS) {
+    for (const fmt of FORMATS) {
+      const hit = assets.find((a) => variant.re.exec(a.name)?.[1] === fmt);
+      if (hit) {
+        rows.push({
+          os: fmt,
+          arch: variant.label,
+          size: formatSize(hit.size),
+          url: hit.browser_download_url,
+        });
+      }
     }
   }
   return rows;

@@ -6,6 +6,7 @@ import {
   formatSize,
   matchBinaries,
   matchClientPackages,
+  matchClassicArchives,
   buildClientLines,
   buildClassicLines,
   releaseDownloads,
@@ -156,6 +157,57 @@ describe("matchClientPackages", () => {
 
   it("returns [] for unrelated assets", () => {
     expect(matchClientPackages([asset("README.md"), asset("source.tar.gz")])).toEqual([]);
+  });
+});
+
+describe("matchClassicArchives", () => {
+  // Every owncloud/core release carries the core archives, their QA builds and
+  // the complete bundle with its QA build, in each of the two formats.
+  const classicAssets = [
+    asset("owncloud-10.16.5.tar.bz2"),
+    asset("owncloud-10.16.5.zip"),
+    asset("owncloud-10.16.5-qa.tar.bz2"),
+    asset("owncloud-10.16.5-qa.zip"),
+    asset("owncloud-complete-20260925.tar.bz2"),
+    asset("owncloud-complete-20260925.zip"),
+    asset("owncloud-complete-20260925-qa.tar.bz2"),
+    asset("owncloud-complete-20260925-qa.zip"),
+    asset("owncloud-10.16.5.tar.bz2.sha256"),
+  ];
+  const expected = [
+    "tar.bz2 core owncloud-10.16.5.tar.bz2",
+    "zip core owncloud-10.16.5.zip",
+    "tar.bz2 complete owncloud-complete-20260925.tar.bz2",
+    "zip complete owncloud-complete-20260925.zip",
+  ];
+  const describeRows = (assets: RawAsset[]) =>
+    matchClassicArchives(assets).map(
+      (b) => `${b.os} ${b.arch} ${b.url.replace("https://example.com/", "")}`,
+    );
+
+  it("lists the core archives and the complete bundle, never a QA build", () => {
+    expect(describeRows(classicAssets)).toEqual(expected);
+  });
+
+  // owncloud/core#41971: the GitHub API's asset order varies between releases
+  // (upload order, then name order), so the pick must not depend on it.
+  it("does not depend on the order the assets are listed in", () => {
+    expect(describeRows([...classicAssets].reverse())).toEqual(expected);
+    expect(describeRows([...classicAssets].sort((a, b) => a.name.localeCompare(b.name)))).toEqual(
+      expected,
+    );
+  });
+
+  it("lists only the core archives for a release without a complete bundle", () => {
+    expect(
+      describeRows([asset("owncloud-10.15.0.tar.bz2"), asset("owncloud-10.15.0.zip")]),
+    ).toEqual(["tar.bz2 core owncloud-10.15.0.tar.bz2", "zip core owncloud-10.15.0.zip"]);
+  });
+
+  it("returns [] for unrelated assets", () => {
+    expect(matchClassicArchives([asset("README.md"), asset("owncloud-10.16.5-qa.zip")])).toEqual(
+      [],
+    );
   });
 });
 
@@ -372,9 +424,9 @@ describe("normalizeDownloads", () => {
       ],
     });
     expect(out.server?.releases.map((r) => r.version)).toEqual(["10.16.3", "10.15.5"]);
-    // Classic archives lead with the format (in `os`) and leave `arch` empty.
+    // Classic archives lead with the format (in `os`), the variant in `arch`.
     expect(out.server?.releases[0].binaries[0].os).toBe("tar.bz2");
-    expect(out.server?.releases[0].binaries[0].arch).toBe("");
+    expect(out.server?.releases[0].binaries[0].arch).toBe("core");
   });
 
   // owncloud/marketplace#269: 11.0.x and 10.16.x are supported side by side, so

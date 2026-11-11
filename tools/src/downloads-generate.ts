@@ -113,8 +113,8 @@ export function normalizeFullRelease(release: RawRelease, matcher: AssetMatcher)
  * asset order varies between releases, and a first-suffix match once swapped
  * the server archive for the complete bundle (owncloud/core#41971). Returns
  * rows in server tar.bz2, zip, then complete tar.bz2, zip order, and warns when
- * nothing matches, so a change in the release's file naming does not silently
- * empty its download buttons.
+ * no server archive matches, so a change in the release's file naming does not
+ * silently drop its server download buttons.
  */
 export function matchClassicArchives(assets: RawAsset[], version: string): DownloadBinary[] {
   const escaped = version.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
@@ -137,7 +137,7 @@ export function matchClassicArchives(assets: RawAsset[], version: string): Downl
       }
     }
   }
-  if (rows.length === 0) {
+  if (!rows.some((r) => r.arch === "server")) {
     console.warn(`WARN: no server archive matched for ownCloud Classic ${version}; it lists none.`);
   }
   return rows;

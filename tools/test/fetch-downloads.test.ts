@@ -5,6 +5,7 @@ import {
   buildAppCounts,
   buildExtensionCounts,
   selectClassicReleases,
+  isClassicArchive,
   CLASSIC_REPO,
   SURFACE_REPOS,
   type GhRelease,
@@ -175,6 +176,24 @@ describe("SURFACE_REPOS", () => {
 
   it("does not include the classic server (it is surfaced separately)", () => {
     expect(Object.values(SURFACE_REPOS)).not.toContain(CLASSIC_REPO);
+  });
+});
+
+describe("isClassicArchive", () => {
+  it("keeps .tar.bz2 and .zip archives in any case, and drops their sidecars", () => {
+    expect(
+      [
+        "owncloud-10.16.5.tar.bz2",
+        "owncloud-10.16.5.ZIP",
+        "OWNCLOUD-COMPLETE-20260925.Tar.Bz2",
+        "owncloud-10.16.5.tar.bz2.sha256",
+        "owncloud-10.16.5.zip.asc",
+      ].filter(isClassicArchive),
+    ).toEqual([
+      "owncloud-10.16.5.tar.bz2",
+      "owncloud-10.16.5.ZIP",
+      "OWNCLOUD-COMPLETE-20260925.Tar.Bz2",
+    ]);
   });
 });
 

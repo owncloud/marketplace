@@ -219,6 +219,19 @@ describe("matchClassicArchives", () => {
     ]);
   });
 
+  it("warns when the server archive is missing, even if the complete bundle matches", () => {
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    try {
+      expect(describeRows([asset("owncloud-complete-20260925.zip")])).toEqual([
+        "zip complete owncloud-complete-20260925.zip",
+      ]);
+      expect(warn).toHaveBeenCalledOnce();
+      expect(warn.mock.calls[0][0]).toContain("10.16.5");
+    } finally {
+      warn.mockRestore();
+    }
+  });
+
   it("returns [] for unrelated assets and warns that the release lists nothing", () => {
     const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
     try {

@@ -14,10 +14,10 @@
     "format:check": "prettier --check ."
   },
   "dependencies": {
-    "fast-xml-parser": "^5.11.2",
+    "fast-xml-parser": "^5.12.0",
     "google-play-scraper": "^10.1.4",
-    "image-size": "^2.0.4",
-    "semver": "^7.8.5",
+    "image-size": "^2.1.0",
+    "semver": "^7.8.6",
     "tar": "^7.5.22",
     "yaml": "^2.9.1"
   },
